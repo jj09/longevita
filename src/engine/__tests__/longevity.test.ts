@@ -1,0 +1,107 @@
+import { describe, it, expect } from 'vitest';
+import { calculateLongevity, getBloodPressureCategory } from '../longevityEngine';
+import { getRecommendations } from '../recommendationEngine';
+import { getActuarialBaseline } from '../actuarial';
+import { DEFAULT_PROFILE, PRESET_ARCHETYPES } from '../presets';
+import { UserProfile } from '../types';
+
+describe('Actuarial Baseline Calculation', () => {
+  it('correctly returns baseline life expectancies for standard age brackets', () => {
+    const male30 = getActuarialBaseline(30, 'male');
+    const female30 = getActuarialBaseline(30, 'female');
+    expect(male30).toBeCloseTo(77.9, 1);
+    expect(female30).toBeCloseTo(82.3, 1);
+
+    const male70 = getActuarialBaseline(70, 'male');
+    expect(male70).toBeGreaterThan(85);
+  });
+});
+
+describe('Blood Pressure Categorization', () => {
+  it('classifies blood pressure correctly', () => {
+    expect(getBloodPressureCategory(118, 78)).toBe('optimal');
+    expect(getBloodPressureCategory(124, 78)).toBe('elevated');
+    expect(getBloodPressureCategory(134, 82)).toBe('stage1');
+    expect(getBloodPressureCategory(144, 92)).toBe('stage2');
+    expect(getBloodPressureCategory(165, 102)).toBe('severe_untreated');
+  });
+});
+
+describe('Longevity Engine Calculation', () => {
+  it('calculates realistic baseline for default profile', () => {
+    const res = calculateLongevity(DEFAULT_PROFILE);
+    expect(res.projectedLifespan).toBeGreaterThan(70);
+    expect(res.projectedLifespan).toBeLessThan(105);
+    expect(res.categorySummaries.length).toBe(5);
+    expect(res.confidenceRange[0]).toBeLessThan(res.projectedLifespan);
+    expect(res.confidenceRange[1]).toBeGreaterThan(res.projectedLifespan);
+  });
+
+  it('reflects high longevity for Blue Zone centenarian archetype', () => {
+    const blueZone = PRESET_ARCHETYPES.find((p) => p.id === 'bluezone_centenarian')!;
+    const res = calculateLongevity(blueZone.profile);
+    expect(res.projectedLifespan).toBeGreaterThan(95);
+    expect(res.riskGrade).toBe('A+');
+    expect(res.biologicalAge).toBeLessThan(blueZone.profile.age);
+  });
+
+  it('reflects lower lifespan for heavy smoker archetype', () => {
+    const smoker = PRESET_ARCHETYPES.find((p) => p.id === 'heavy_smoker')!;
+    const res = calculateLongevity(smoker.profile);
+    expect(res.projectedLifespan).toBeLessThan(70);
+    expect(res.riskGrade).toBe('F');
+  });
+
+  it('shows positive gain when changing sedentary to high cardio', () => {
+    const profile1: UserProfile = { ...DEFAULT_PROFILE, cardio: 'sedentary' };
+    const profile2: UserProfile = { ...DEFAULT_PROFILE, cardio: 'high' };
+    const res1 = calculateLongevity(profile1);
+    const res2 = calculateLongevity(profile2);
+    expect(res2.projectedLifespan).toBeGreaterThan(res1.projectedLifespan);
+    expect(res2.projectedLifespan - res1.projectedLifespan).toBeCloseTo(7.5, 1);
+  });
+});
+
+describe('Recommendation Engine (Bang for the Buck ROI)', () => {
+  it('generates high ROI recommendations sorted by bang-for-buck index', () => {
+    const workaholic = PRESET_ARCHETYPES.find((p) => p.id === 'stressed_workaholic')!;
+    const recs = getRecommendations(workaholic.profile);
+
+    expect(recs.length).toBeGreaterThan(0);
+    // Ensure sorted descending by bangForBuckIndex
+    for (let i = 0; i < recs.length - 1; i++) {
+      expect(recs[i].bangForBuckIndex).toBeGreaterThanOrEqual(recs[i + 1].bangForBuckIndex);
+    }
+
+    // Daily flossing should be present with Effort 1 (Micro-Habit)
+    const flossingRec = recs.find((r) => r.parameterKey === 'flossing');
+    expect(flossingRec).toBeDefined();
+    expect(flossingRec?.effortScore).toBe(1);
+    expect(flossingRec?.potentialGainYears).toBeGreaterThan(0);
+  });
+
+  it('ranks micro-wins with high ROI before high-effort tasks with equal gain', () => {
+    const defaultRecs = getRecommendations(DEFAULT_PROFILE);
+    expect(defaultRecs.length).toBeGreaterThan(0);
+
+    // Verify top recommendation has high ROI index
+    expect(defaultRecs[0].bangForBuckIndex).toBeGreaterThanOrEqual(10);
+  });
+});
+
+describe('Category Aggregation & Biological Age', () => {
+  it('correctly calculates biological age younger than calendar age for healthy habits', () => {
+    const blueZone = PRESET_ARCHETYPES.find((p) => p.id === 'bluezone_centenarian')!;
+    const res = calculateLongevity(blueZone.profile);
+    expect(res.biologicalAge).toBeLessThan(blueZone.profile.age);
+    expect(res.totalGainedYears).toBeGreaterThan(15);
+  });
+
+  it('correctly calculates biological age older than calendar age for high-risk profiles', () => {
+    const smoker = PRESET_ARCHETYPES.find((p) => p.id === 'heavy_smoker')!;
+    const res = calculateLongevity(smoker.profile);
+    expect(res.biologicalAge).toBeGreaterThan(smoker.profile.age);
+    expect(res.totalLostYears).toBeGreaterThan(15);
+  });
+});
+

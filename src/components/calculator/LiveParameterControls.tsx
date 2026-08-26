@@ -1,0 +1,858 @@
+import React, { useState } from 'react';
+import { UserProfile } from '../../engine/types';
+import { Dna, Activity, Dumbbell, Apple, Brain, Sparkles, CheckCircle2 } from 'lucide-react';
+
+interface LiveParameterControlsProps {
+  profile: UserProfile;
+  onChange: (updated: UserProfile) => void;
+}
+
+export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ profile, onChange }) => {
+  const [activeTab, setActiveTab] = useState<'demographics' | 'biometrics' | 'fitness' | 'nutrition' | 'lifestyle'>('biometrics');
+
+  const update = <K extends keyof UserProfile>(key: K, value: UserProfile[K]) => {
+    onChange({ ...profile, [key]: value });
+  };
+
+  const tabs = [
+    { id: 'biometrics', label: 'Biometrics', icon: Activity, count: '5 metrics' },
+    { id: 'fitness', label: 'Fitness', icon: Dumbbell, count: '4 metrics' },
+    { id: 'nutrition', label: 'Nutrition', icon: Apple, count: '6 metrics' },
+    { id: 'lifestyle', label: 'Lifestyle & Mind', icon: Brain, count: '9 metrics' },
+    { id: 'demographics', label: 'Demographics', icon: Dna, count: '5 metrics' },
+  ];
+
+  return (
+    <div className="glass-panel rounded-2xl p-5 border border-slate-800/80">
+      {/* Section Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+        <div>
+          <h2 className="text-base font-bold text-slate-100 flex items-center gap-2">
+            <span>Live Longevity Parameter Controls</span>
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          </h2>
+          <p className="text-xs text-slate-400">
+            Tweak any parameter below to immediately see real-time adjustments on your lifespan & ROI
+          </p>
+        </div>
+      </div>
+
+      {/* Tabs Navigation */}
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-2 border-b border-slate-800 mb-5 scrollbar-none">
+        {tabs.map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 whitespace-nowrap ${
+                isActive
+                  ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-sm shadow-emerald-500/10'
+                  : 'bg-slate-900/80 text-slate-400 border border-slate-800 hover:text-slate-200 hover:border-slate-700'
+              }`}
+            >
+              <Icon className={`w-4 h-4 ${isActive ? 'text-emerald-400' : 'text-slate-400'}`} />
+              <span>{tab.label}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Tab Panels */}
+      <div className="space-y-6">
+        {/* ==================================================== */}
+        {/* 1. BIOMETRICS & CLINICAL MARKERS */}
+        {/* ==================================================== */}
+        {activeTab === 'biometrics' && (
+          <div className="space-y-5">
+            {/* Blood Pressure Slider */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <label className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                    <span>Systolic Blood Pressure</span>
+                  </label>
+                  <p className="text-[11px] text-slate-400">Target: &lt;120 mmHg optimal</p>
+                </div>
+                <div className="px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-cyan-300 border border-slate-700">
+                  {profile.systolicBP} mmHg
+                </div>
+              </div>
+              <input
+                type="range"
+                min="95"
+                max="180"
+                step="1"
+                value={profile.systolicBP}
+                onChange={(e) => update('systolicBP', Number(e.target.value))}
+                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+              />
+              <div className="flex justify-between text-[10px] text-slate-500 mt-1 font-medium">
+                <span>Optimal (110)</span>
+                <span>Elevated (125)</span>
+                <span>Stage 1 (135)</span>
+                <span>Stage 2 (150+)</span>
+              </div>
+            </div>
+
+            {/* Diastolic BP Slider */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <label className="text-xs font-bold text-slate-200">Diastolic Blood Pressure</label>
+                  <p className="text-[11px] text-slate-400">Target: &lt;80 mmHg optimal</p>
+                </div>
+                <div className="px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-cyan-300 border border-slate-700">
+                  {profile.diastolicBP} mmHg
+                </div>
+              </div>
+              <input
+                type="range"
+                min="60"
+                max="115"
+                step="1"
+                value={profile.diastolicBP}
+                onChange={(e) => update('diastolicBP', Number(e.target.value))}
+                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+              />
+            </div>
+
+            {/* Blood Sugar / Metabolic Status */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <label className="text-xs font-bold text-slate-200 block mb-1">
+                Fasting Blood Sugar & Metabolic Health
+              </label>
+              <p className="text-[11px] text-slate-400 mb-3">Fasting glucose & HbA1c control</p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {[
+                  { value: 'normal', label: 'Normal (<100 mg/dL)', desc: 'Optimal' },
+                  { value: 'prediabetes', label: 'Prediabetes (100-125)', desc: 'Early resistance' },
+                  { value: 'type2_controlled', label: 'T2D Controlled', desc: 'HbA1c < 7%' },
+                  { value: 'type2_uncontrolled', label: 'T2D Uncontrolled', desc: 'HbA1c >= 8%' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => update('bloodSugar', opt.value as any)}
+                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                      profile.bloodSugar === opt.value
+                        ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40 font-bold'
+                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    <div>{opt.label}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Lipid / Cholesterol Profile */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <label className="text-xs font-bold text-slate-200 block mb-1">
+                Lipids & Cholesterol (ApoB / LDL / Triglycerides)
+              </label>
+              <p className="text-[11px] text-slate-400 mb-3">Cardiovascular atheroma plaque risk</p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {[
+                  { value: 'optimal', label: 'Optimal Lipids', desc: 'ApoB < 70 mg/dL' },
+                  { value: 'moderate_high', label: 'Moderate High', desc: 'Mild elevation' },
+                  { value: 'high_uncontrolled', label: 'High Unmanaged', desc: 'Untreated high LDL' },
+                  { value: 'high_managed_statin', label: 'Statin Managed', desc: 'Controlled on med' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => update('lipidStatus', opt.value as any)}
+                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                      profile.lipidStatus === opt.value
+                        ? 'bg-cyan-500/15 text-cyan-300 border-cyan-500/40 font-bold'
+                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    <div>{opt.label}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* BMI Slider */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <label className="text-xs font-bold text-slate-200">Body Mass Index (BMI)</label>
+                  <p className="text-[11px] text-slate-400">Optimal longevity: 20.0 - 24.5</p>
+                </div>
+                <div className="px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-emerald-300 border border-slate-700">
+                  BMI {profile.bmi.toFixed(1)}
+                </div>
+              </div>
+              <input
+                type="range"
+                min="16.0"
+                max="42.0"
+                step="0.2"
+                value={profile.bmi}
+                onChange={(e) => update('bmi', Number(e.target.value))}
+                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+              />
+              <div className="flex justify-between text-[10px] text-slate-500 mt-1 font-medium">
+                <span>Underweight (&lt;18.5)</span>
+                <span>Optimal (22.0)</span>
+                <span>Overweight (27.5)</span>
+                <span>Obese (32+)</span>
+              </div>
+            </div>
+
+            {/* Resting Heart Rate Slider */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <label className="text-xs font-bold text-slate-200">Resting Heart Rate</label>
+                  <p className="text-[11px] text-slate-400">Cardiovascular fitness indicator</p>
+                </div>
+                <div className="px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-cyan-300 border border-slate-700">
+                  {profile.restingHeartRate} bpm
+                </div>
+              </div>
+              <input
+                type="range"
+                min="45"
+                max="105"
+                step="1"
+                value={profile.restingHeartRate}
+                onChange={(e) => update('restingHeartRate', Number(e.target.value))}
+                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* ==================================================== */}
+        {/* 2. FITNESS & PHYSICAL ACTIVITY */}
+        {/* ==================================================== */}
+        {activeTab === 'fitness' && (
+          <div className="space-y-5">
+            {/* Aerobic Cardio */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <label className="text-xs font-bold text-slate-200 block mb-1">
+                Aerobic Cardio & Zone 2 Training
+              </label>
+              <p className="text-[11px] text-slate-400 mb-3">Mitochondrial conditioning and VO2 max</p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {[
+                  { value: 'sedentary', label: 'Sedentary', desc: '0 min/week' },
+                  { value: 'light', label: 'Light', desc: '< 60 min/week' },
+                  { value: 'moderate', label: 'Moderate', desc: '150 min/week' },
+                  { value: 'high', label: 'Optimal / High', desc: '300+ min/week' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => update('cardio', opt.value as any)}
+                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                      profile.cardio === opt.value
+                        ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40 font-bold'
+                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    <div>{opt.label}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Strength Training */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <label className="text-xs font-bold text-slate-200 block mb-1">
+                Strength & Progressive Resistance Training
+              </label>
+              <p className="text-[11px] text-slate-400 mb-3">Preserves muscle mass (anti-sarcopenia) and bone density</p>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { value: 'none', label: 'None', desc: '0 days/week' },
+                  { value: 'occasional', label: 'Occasional', desc: '1-2 days/week' },
+                  { value: 'optimal', label: 'Optimal', desc: '3+ days/week' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => update('strengthTraining', opt.value as any)}
+                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                      profile.strengthTraining === opt.value
+                        ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40 font-bold'
+                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    <div>{opt.label}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Daily Steps */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <label className="text-xs font-bold text-slate-200 block mb-1">
+                Daily Step Count & Non-Exercise Movement (NEAT)
+              </label>
+              <p className="text-[11px] text-slate-400 mb-3">Daily metabolic activity and vascular flow</p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {[
+                  { value: 'under_4k', label: '< 4,000 steps', desc: 'Low movement' },
+                  { value: '4k_to_7k', label: '4,000 - 7,000', desc: 'Moderate' },
+                  { value: '8k_to_10k', label: '8,000 - 10,000', desc: 'Recommended' },
+                  { value: 'over_10k', label: '10,000+ steps', desc: 'Optimal' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => update('dailySteps', opt.value as any)}
+                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                      profile.dailySteps === opt.value
+                        ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40 font-bold'
+                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    <div>{opt.label}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Daily Sitting Hours */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <label className="text-xs font-bold text-slate-200 block mb-1">
+                Sedentary Sitting Duration
+              </label>
+              <p className="text-[11px] text-slate-400 mb-3">Continuous desk sitting vs active standing breaks</p>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { value: 'under_4h', label: '< 4 hours/day', desc: 'Active lifestyle' },
+                  { value: '4h_to_8h', label: '4 - 8 hours/day', desc: 'Average desk work' },
+                  { value: 'over_8h', label: '8+ hours/day', desc: 'High sedentary' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => update('sittingHours', opt.value as any)}
+                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                      profile.sittingHours === opt.value
+                        ? 'bg-cyan-500/15 text-cyan-300 border-cyan-500/40 font-bold'
+                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    <div>{opt.label}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ==================================================== */}
+        {/* 3. NUTRITION & BLUE ZONE DIET */}
+        {/* ==================================================== */}
+        {activeTab === 'nutrition' && (
+          <div className="space-y-5">
+            {/* Dietary Pattern */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <label className="text-xs font-bold text-slate-200 block mb-1">
+                Overall Dietary Pattern
+              </label>
+              <p className="text-[11px] text-slate-400 mb-3">Blue Zone whole foods vs standard processed</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                {[
+                  { value: 'standard_processed', label: 'Standard Processed', desc: 'High refined carbs & fast food' },
+                  { value: 'moderate_balanced', label: 'Balanced Whole Foods', desc: 'Home-cooked varied diet' },
+                  { value: 'mediterranean_bluezone', label: 'Mediterranean / Blue Zone', desc: 'Olive oil, legumes, plants & wild fish' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => update('dietPattern', opt.value as any)}
+                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                      profile.dietPattern === opt.value
+                        ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40 font-bold'
+                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    <div>{opt.label}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Red & Processed Meat */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <label className="text-xs font-bold text-slate-200 block mb-1">
+                Red & Processed Meat Frequency
+              </label>
+              <div className="grid grid-cols-3 gap-2 mt-2">
+                {[
+                  { value: 'frequent_daily', label: 'Daily / Frequent', desc: 'Bacon, sausage, beef' },
+                  { value: 'weekly_moderate', label: 'Weekly (1-2x/wk)', desc: 'Moderate' },
+                  { value: 'rare_none', label: 'Rare / None', desc: 'Fish & plant proteins' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => update('redMeat', opt.value as any)}
+                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                      profile.redMeat === opt.value
+                        ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40 font-bold'
+                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    <div>{opt.label}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Fruits & Vegetables */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <label className="text-xs font-bold text-slate-200 block mb-1">
+                Daily Fruits, Vegetables & Fiber
+              </label>
+              <div className="grid grid-cols-3 gap-2 mt-2">
+                {[
+                  { value: 'under_2', label: '< 2 servings/day', desc: 'Low fiber' },
+                  { value: '2_to_4', label: '2 - 4 servings/day', desc: 'Moderate' },
+                  { value: '5_plus', label: '5+ servings/day', desc: 'Optimal gut diversity' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => update('veggieFruitServings', opt.value as any)}
+                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                      profile.veggieFruitServings === opt.value
+                        ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40 font-bold'
+                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    <div>{opt.label}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Ultra-processed / Sugar */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <label className="text-xs font-bold text-slate-200 block mb-1">
+                Ultra-Processed Foods & Sugary Drinks
+              </label>
+              <div className="grid grid-cols-3 gap-2 mt-2">
+                {[
+                  { value: 'daily_frequent', label: 'Daily / Sodas', desc: 'High sugar/snacks' },
+                  { value: 'occasional', label: 'Occasional', desc: '1-2x/week' },
+                  { value: 'minimal_rare', label: 'Minimal / Rare', desc: 'Clean whole foods' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => update('ultraProcessed', opt.value as any)}
+                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                      profile.ultraProcessed === opt.value
+                        ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40 font-bold'
+                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    <div>{opt.label}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Polyphenols & Green Tea */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <label className="text-xs font-bold text-slate-200 block mb-1">
+                Polyphenols (Green Tea, Coffee, Berries)
+              </label>
+              <div className="grid grid-cols-3 gap-2 mt-2">
+                {[
+                  { value: 'none', label: 'None', desc: 'No tea/berries' },
+                  { value: 'moderate_coffee_tea', label: 'Moderate Coffee/Tea', desc: '1-3 cups daily' },
+                  { value: 'high_green_tea_berries', label: 'High EGCG Green Tea', desc: 'Matcha & daily berries' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => update('polyphenols', opt.value as any)}
+                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                      profile.polyphenols === opt.value
+                        ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40 font-bold'
+                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    <div>{opt.label}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Water Glasses */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <label className="text-xs font-bold text-slate-200">Daily Water Hydration</label>
+                  <p className="text-[11px] text-slate-400">Optimal: 6 - 8+ glasses</p>
+                </div>
+                <div className="px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-cyan-300 border border-slate-700">
+                  {profile.dailyWaterGlasses} glasses/day
+                </div>
+              </div>
+              <input
+                type="range"
+                min="2"
+                max="14"
+                step="1"
+                value={profile.dailyWaterGlasses}
+                onChange={(e) => update('dailyWaterGlasses', Number(e.target.value))}
+                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* ==================================================== */}
+        {/* 4. LIFESTYLE, SLEEP & MIND */}
+        {/* ==================================================== */}
+        {activeTab === 'lifestyle' && (
+          <div className="space-y-5">
+            {/* Smoking Status */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <label className="text-xs font-bold text-slate-200 block mb-1">
+                Smoking & Tobacco / Vaping Status
+              </label>
+              <p className="text-[11px] text-slate-400 mb-3">#1 modifiable risk factor</p>
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                {[
+                  { value: 'never', label: 'Never Smoked', desc: 'Clean' },
+                  { value: 'former_long', label: 'Former (>10y)', desc: 'Reversed' },
+                  { value: 'former_recent', label: 'Former (<5y)', desc: 'Recovering' },
+                  { value: 'current_light', label: 'Light / Vape', desc: '< 10/day' },
+                  { value: 'current_heavy', label: 'Heavy Smoker', desc: '1+ pack/day' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => update('smoking', opt.value as any)}
+                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                      profile.smoking === opt.value
+                        ? 'bg-rose-500/15 text-rose-300 border-rose-500/40 font-bold'
+                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    <div>{opt.label}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Daily Flossing (Living to 100 Landmark Factor!) */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-emerald-500/30 bg-emerald-950/10">
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-xs font-bold text-emerald-300 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Daily Dental Flossing (Oral Microbiome)</span>
+                </label>
+                <span className="px-2 py-0.5 text-[10px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded">
+                  Top Micro-Win
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400 mb-3">
+                Clears oral endotoxins linked to systemic inflammation and arterial plaque
+              </p>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { value: 'daily_flossing', label: 'Daily Flossing', desc: '+1.2 yrs life' },
+                  { value: 'occasional', label: 'Occasional', desc: '1-3x/week' },
+                  { value: 'rarely_never', label: 'Rarely / Never', desc: '-1.2 yrs penalty' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => update('flossing', opt.value as any)}
+                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                      profile.flossing === opt.value
+                        ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 font-bold'
+                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    <div>{opt.label}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Sleep Hours & Quality */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <label className="text-xs font-bold text-slate-200 block mb-1">
+                Sleep Duration & Quality
+              </label>
+              <p className="text-[11px] text-slate-400 mb-3">Glymphatic brain clearance & hormonal recovery</p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {[
+                  { value: '7_to_8h_optimal', label: '7-8 Hours Optimal', desc: 'Restful & deep' },
+                  { value: '6_to_7h', label: '6 - 7 Hours', desc: 'Average' },
+                  { value: 'under_6h', label: '< 6 Hours', desc: 'Chronic deprivation' },
+                  { value: 'chronic_apnea_insomnia', label: 'Sleep Apnea / Insomnia', desc: 'Disrupted oxygen' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => update('sleep', opt.value as any)}
+                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                      profile.sleep === opt.value
+                        ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40 font-bold'
+                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    <div>{opt.label}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Stress & Mindset */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <label className="text-xs font-bold text-slate-200 block mb-1">
+                Chronic Stress Management & Coping
+              </label>
+              <div className="grid grid-cols-3 gap-2 mt-2">
+                {[
+                  { value: 'well_managed_mindful', label: 'Mindful & Resilient', desc: 'Active coping/calm' },
+                  { value: 'moderate_daily', label: 'Moderate Daily', desc: 'Average stress' },
+                  { value: 'severe_unmanaged', label: 'Severe / Unmanaged', desc: 'High cortisol' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => update('stress', opt.value as any)}
+                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                      profile.stress === opt.value
+                        ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40 font-bold'
+                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    <div>{opt.label}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Social Connection */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <label className="text-xs font-bold text-slate-200 block mb-1">
+                Social Connection & Community (Blue Zone Moai)
+              </label>
+              <div className="grid grid-cols-3 gap-2 mt-2">
+                {[
+                  { value: 'strong_connected', label: 'Strong & Connected', desc: 'Close circle & purpose' },
+                  { value: 'moderate', label: 'Moderate Network', desc: 'Occasional social' },
+                  { value: 'isolated', label: 'Isolated / Lonely', desc: 'Severe isolation' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => update('socialConnection', opt.value as any)}
+                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                      profile.socialConnection === opt.value
+                        ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40 font-bold'
+                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    <div>{opt.label}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Quick Toggles: Sunscreen, Seatbelt, Screenings */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {/* Sun Protection */}
+              <div
+                onClick={() => update('sunProtection', !profile.sunProtection)}
+                className={`p-3 rounded-xl border cursor-pointer select-none transition-all flex items-center justify-between ${
+                  profile.sunProtection
+                    ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
+                    : 'bg-slate-900 border-slate-800 text-slate-400'
+                }`}
+              >
+                <div>
+                  <div className="text-xs font-bold">Daily Sunscreen (SPF 30+)</div>
+                  <div className="text-[10px] text-slate-400">Skin cancer prevention</div>
+                </div>
+                <CheckCircle2 className={`w-5 h-5 ${profile.sunProtection ? 'text-emerald-400' : 'text-slate-600'}`} />
+              </div>
+
+              {/* Seatbelt Safety */}
+              <div
+                onClick={() => update('seatbeltSafety', !profile.seatbeltSafety)}
+                className={`p-3 rounded-xl border cursor-pointer select-none transition-all flex items-center justify-between ${
+                  profile.seatbeltSafety
+                    ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
+                    : 'bg-slate-900 border-slate-800 text-slate-400'
+                }`}
+              >
+                <div>
+                  <div className="text-xs font-bold">Always Wear Seatbelt</div>
+                  <div className="text-[10px] text-slate-400">Zero phone texting</div>
+                </div>
+                <CheckCircle2 className={`w-5 h-5 ${profile.seatbeltSafety ? 'text-emerald-400' : 'text-slate-600'}`} />
+              </div>
+
+              {/* Preventative Screenings */}
+              <div
+                onClick={() => update('screenings', profile.screenings === 'up_to_date' ? 'neglected' : 'up_to_date')}
+                className={`p-3 rounded-xl border cursor-pointer select-none transition-all flex items-center justify-between ${
+                  profile.screenings === 'up_to_date'
+                    ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
+                    : 'bg-slate-900 border-slate-800 text-slate-400'
+                }`}
+              >
+                <div>
+                  <div className="text-xs font-bold">Up-to-Date Screenings</div>
+                  <div className="text-[10px] text-slate-400">Annual blood / colonoscopy</div>
+                </div>
+                <CheckCircle2 className={`w-5 h-5 ${profile.screenings === 'up_to_date' ? 'text-emerald-400' : 'text-slate-600'}`} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ==================================================== */}
+        {/* 5. DEMOGRAPHICS & GENETICS */}
+        {/* ==================================================== */}
+        {activeTab === 'demographics' && (
+          <div className="space-y-5">
+            {/* Age Slider */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <label className="text-xs font-bold text-slate-200">Current Chronological Age</label>
+                  <p className="text-[11px] text-slate-400">Actuarial survival tables adjust baseline dynamically</p>
+                </div>
+                <div className="px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-cyan-300 border border-slate-700">
+                  {profile.age} years old
+                </div>
+              </div>
+              <input
+                type="range"
+                min="18"
+                max="95"
+                step="1"
+                value={profile.age}
+                onChange={(e) => update('age', Number(e.target.value))}
+                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+              />
+            </div>
+
+            {/* Biological Sex */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <label className="text-xs font-bold text-slate-200 block mb-1">Biological Sex</label>
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                {[
+                  { value: 'male', label: 'Male', desc: 'Actuarial base ~78y' },
+                  { value: 'female', label: 'Female', desc: 'Actuarial base ~83y' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => update('sex', opt.value as any)}
+                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                      profile.sex === opt.value
+                        ? 'bg-cyan-500/15 text-cyan-300 border-cyan-500/40 font-bold'
+                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    <div>{opt.label}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Relationship Status */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <label className="text-xs font-bold text-slate-200 block mb-1">Relationship Status</label>
+              <div className="grid grid-cols-3 gap-2 mt-2">
+                {[
+                  { value: 'partnered_married', label: 'Married / Partnered', desc: '+2.5 yrs emotional buffer' },
+                  { value: 'single', label: 'Single', desc: 'Neutral baseline' },
+                  { value: 'separated_divorced_widowed', label: 'Divorced / Widowed', desc: 'Bereavement risk' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => update('relationshipStatus', opt.value as any)}
+                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                      profile.relationshipStatus === opt.value
+                        ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40 font-bold'
+                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    <div>{opt.label}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Family Longevity */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <label className="text-xs font-bold text-slate-200 block mb-1">
+                Family History & Longevity Genetics
+              </label>
+              <p className="text-[11px] text-slate-400 mb-3">Relatives longevity & early CVD/cancer</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                {[
+                  { value: 'early_disease', label: 'Early CVD / Cancer (<60)', desc: '-3.0 yrs genetic risk' },
+                  { value: 'average', label: 'Average (~75-80)', desc: 'Population baseline' },
+                  { value: 'parents_90plus', label: 'Parents lived 90+', desc: '+3.5 yrs protective' },
+                  { value: 'centenarian_family', label: 'Centenarian Family (100+)', desc: '+5.0 yrs rare genetics' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => update('familyLongevity', opt.value as any)}
+                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                      profile.familyLongevity === opt.value
+                        ? 'bg-purple-500/15 text-purple-300 border-purple-500/40 font-bold'
+                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    <div>{opt.label}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Air Quality */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <label className="text-xs font-bold text-slate-200 block mb-1">Air Quality & Environment</label>
+              <div className="grid grid-cols-3 gap-2 mt-2">
+                {[
+                  { value: 'clean_rural', label: 'Clean Rural / Mountain', desc: '+1.0 yr clean air' },
+                  { value: 'moderate_suburban', label: 'Moderate Suburban', desc: 'Standard air' },
+                  { value: 'polluted_urban', label: 'High Urban PM2.5', desc: '-1.8 yrs particulate' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => update('airQuality', opt.value as any)}
+                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                      profile.airQuality === opt.value
+                        ? 'bg-cyan-500/15 text-cyan-300 border-cyan-500/40 font-bold'
+                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    <div>{opt.label}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
