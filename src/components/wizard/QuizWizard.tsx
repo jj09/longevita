@@ -592,10 +592,10 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
             {/* Render Question Input: Slider */}
             {currentQ.type === 'slider' && currentQ.sliderConfig && (
               <div className="py-6 space-y-6">
-                {/* Dynamic Value & Category Card with Mobile Steppers */}
+                {/* Dynamic Value & Category Card with Prominent Steppers */}
                 <div className="flex flex-col items-center justify-center">
-                  <div className="px-6 py-4 rounded-2xl bg-slate-900 border border-slate-700 text-center shadow-lg min-w-[240px]">
-                    <div className="flex items-center justify-center gap-4">
+                  <div className="px-6 py-5 rounded-2xl bg-slate-900 border border-slate-700 text-center shadow-xl min-w-[260px]">
+                    <div className="flex items-center justify-center gap-4 sm:gap-6">
                       {/* Stepper Decrement */}
                       <button
                         type="button"
@@ -606,13 +606,13 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
                           const next = Math.max(min, Number((current - step).toFixed(step < 1 ? 1 : 0)));
                           setAnswers((prev) => ({ ...prev, [currentQ.field]: next }));
                         }}
-                        className="w-10 h-10 rounded-xl bg-slate-950 border border-slate-700/80 text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 flex items-center justify-center text-xl font-bold transition-all select-none shadow-sm"
+                        className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-950 border border-slate-700/80 text-slate-100 hover:text-white hover:bg-slate-800 hover:border-slate-600 active:scale-90 flex items-center justify-center text-2xl sm:text-3xl font-black transition-all select-none shadow-md"
                         title="Decrease value"
                       >
                         −
                       </button>
 
-                      <div className="flex items-baseline justify-center gap-1.5 min-w-[110px]">
+                      <div className="flex items-baseline justify-center gap-1.5 min-w-[120px]">
                         <span className="text-4xl sm:text-5xl font-black text-cyan-300">
                           {currentQ.id === 'bmi'
                             ? ((answers.bmi ?? initialProfile.bmi) as number).toFixed(1)
@@ -633,7 +633,7 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
                           const next = Math.min(max, Number((current + step).toFixed(step < 1 ? 1 : 0)));
                           setAnswers((prev) => ({ ...prev, [currentQ.field]: next }));
                         }}
-                        className="w-10 h-10 rounded-xl bg-slate-950 border border-slate-700/80 text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 flex items-center justify-center text-xl font-bold transition-all select-none shadow-sm"
+                        className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-950 border border-slate-700/80 text-slate-100 hover:text-white hover:bg-slate-800 hover:border-slate-600 active:scale-90 flex items-center justify-center text-2xl sm:text-3xl font-black transition-all select-none shadow-md"
                         title="Increase value"
                       >
                         +

@@ -84,34 +84,34 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
           <div className="space-y-5">
             {/* Blood Pressure Slider */}
             <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
                 <div>
-                  <label className="text-sm font-bold text-slate-200 flex items-center gap-1.5">
+                  <label className="text-sm sm:text-base font-bold text-slate-200 flex items-center gap-1.5">
                     <span>Systolic Blood Pressure</span>
                   </label>
                   <p className="text-xs text-slate-400">Target: &lt;120 mmHg optimal</p>
                 </div>
-                <div className="flex items-center gap-2 self-start sm:self-auto">
-                  <div className="flex items-center bg-slate-950 border border-slate-700/80 rounded-lg p-0.5 shadow-inner">
+                <div className="flex items-center gap-2.5 self-start sm:self-auto">
+                  <div className="flex items-center bg-slate-950 border border-slate-700 rounded-xl p-1 shadow-md">
                     <button
                       type="button"
                       onClick={() => update('systolicBP', Math.max(95, profile.systolicBP - 1))}
-                      className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-base font-bold select-none"
+                      className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-lg text-slate-100 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-xl sm:text-2xl font-black select-none border border-slate-800/80 hover:border-slate-700"
                       title="Decrease Systolic BP"
                     >
                       −
                     </button>
-                    <span className="w-px h-4 bg-slate-800" />
+                    <span className="w-px h-6 bg-slate-800 mx-1" />
                     <button
                       type="button"
                       onClick={() => update('systolicBP', Math.min(180, profile.systolicBP + 1))}
-                      className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-base font-bold select-none"
+                      className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-lg text-slate-100 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-xl sm:text-2xl font-black select-none border border-slate-800/80 hover:border-slate-700"
                       title="Increase Systolic BP"
                     >
                       +
                     </button>
                   </div>
-                  <div className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold border transition-colors ${sysInfo.badgeClass}`}>
+                  <div className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold border transition-colors ${sysInfo.badgeClass}`}>
                     {profile.systolicBP} mmHg • {sysInfo.category}
                   </div>
                 </div>
@@ -146,32 +146,32 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
 
             {/* Diastolic BP Slider */}
             <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
                 <div>
-                  <label className="text-sm font-bold text-slate-200">Diastolic Blood Pressure</label>
+                  <label className="text-sm sm:text-base font-bold text-slate-200">Diastolic Blood Pressure</label>
                   <p className="text-xs text-slate-400">Target: &lt;80 mmHg optimal</p>
                 </div>
-                <div className="flex items-center gap-2 self-start sm:self-auto">
-                  <div className="flex items-center bg-slate-950 border border-slate-700/80 rounded-lg p-0.5 shadow-inner">
+                <div className="flex items-center gap-2.5 self-start sm:self-auto">
+                  <div className="flex items-center bg-slate-950 border border-slate-700 rounded-xl p-1 shadow-md">
                     <button
                       type="button"
                       onClick={() => update('diastolicBP', Math.max(60, profile.diastolicBP - 1))}
-                      className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-base font-bold select-none"
+                      className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-lg text-slate-100 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-xl sm:text-2xl font-black select-none border border-slate-800/80 hover:border-slate-700"
                       title="Decrease Diastolic BP"
                     >
                       −
                     </button>
-                    <span className="w-px h-4 bg-slate-800" />
+                    <span className="w-px h-6 bg-slate-800 mx-1" />
                     <button
                       type="button"
                       onClick={() => update('diastolicBP', Math.min(115, profile.diastolicBP + 1))}
-                      className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-base font-bold select-none"
+                      className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-lg text-slate-100 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-xl sm:text-2xl font-black select-none border border-slate-800/80 hover:border-slate-700"
                       title="Increase Diastolic BP"
                     >
                       +
                     </button>
                   </div>
-                  <div className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold border transition-colors ${diaInfo.badgeClass}`}>
+                  <div className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold border transition-colors ${diaInfo.badgeClass}`}>
                     {profile.diastolicBP} mmHg • {diaInfo.category}
                   </div>
                 </div>
@@ -262,32 +262,32 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
 
             {/* BMI Slider */}
             <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
                 <div>
-                  <label className="text-sm font-bold text-slate-200">Body Mass Index (BMI)</label>
+                  <label className="text-sm sm:text-base font-bold text-slate-200">Body Mass Index (BMI)</label>
                   <p className="text-xs text-slate-400">Healthy longevity range: 18.5 – 24.9</p>
                 </div>
-                <div className="flex items-center gap-2 self-start sm:self-auto">
-                  <div className="flex items-center bg-slate-950 border border-slate-700/80 rounded-lg p-0.5 shadow-inner">
+                <div className="flex items-center gap-2.5 self-start sm:self-auto">
+                  <div className="flex items-center bg-slate-950 border border-slate-700 rounded-xl p-1 shadow-md">
                     <button
                       type="button"
                       onClick={() => update('bmi', Math.max(16.0, Number((profile.bmi - 0.1).toFixed(1))))}
-                      className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-base font-bold select-none"
+                      className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-lg text-slate-100 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-xl sm:text-2xl font-black select-none border border-slate-800/80 hover:border-slate-700"
                       title="Decrease BMI by 0.1"
                     >
                       −
                     </button>
-                    <span className="w-px h-4 bg-slate-800" />
+                    <span className="w-px h-6 bg-slate-800 mx-1" />
                     <button
                       type="button"
                       onClick={() => update('bmi', Math.min(42.0, Number((profile.bmi + 0.1).toFixed(1))))}
-                      className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-base font-bold select-none"
+                      className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-lg text-slate-100 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-xl sm:text-2xl font-black select-none border border-slate-800/80 hover:border-slate-700"
                       title="Increase BMI by 0.1"
                     >
                       +
                     </button>
                   </div>
-                  <div className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold border transition-colors ${bmiInfo.badgeClass}`}>
+                  <div className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold border transition-colors ${bmiInfo.badgeClass}`}>
                     BMI {profile.bmi.toFixed(1)} • {bmiInfo.category}
                   </div>
                 </div>
@@ -329,32 +329,32 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
 
             {/* Resting Heart Rate Slider */}
             <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
                 <div>
-                  <label className="text-sm font-bold text-slate-200">Resting Heart Rate</label>
+                  <label className="text-sm sm:text-base font-bold text-slate-200">Resting Heart Rate</label>
                   <p className="text-xs text-slate-400">Cardiovascular fitness & vagal tone</p>
                 </div>
-                <div className="flex items-center gap-2 self-start sm:self-auto">
-                  <div className="flex items-center bg-slate-950 border border-slate-700/80 rounded-lg p-0.5 shadow-inner">
+                <div className="flex items-center gap-2.5 self-start sm:self-auto">
+                  <div className="flex items-center bg-slate-950 border border-slate-700 rounded-xl p-1 shadow-md">
                     <button
                       type="button"
                       onClick={() => update('restingHeartRate', Math.max(45, profile.restingHeartRate - 1))}
-                      className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-base font-bold select-none"
+                      className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-lg text-slate-100 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-xl sm:text-2xl font-black select-none border border-slate-800/80 hover:border-slate-700"
                       title="Decrease Resting HR"
                     >
                       −
                     </button>
-                    <span className="w-px h-4 bg-slate-800" />
+                    <span className="w-px h-6 bg-slate-800 mx-1" />
                     <button
                       type="button"
                       onClick={() => update('restingHeartRate', Math.min(105, profile.restingHeartRate + 1))}
-                      className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-base font-bold select-none"
+                      className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-lg text-slate-100 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-xl sm:text-2xl font-black select-none border border-slate-800/80 hover:border-slate-700"
                       title="Increase Resting HR"
                     >
                       +
                     </button>
                   </div>
-                  <div className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold border transition-colors ${hrInfo.badgeClass}`}>
+                  <div className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold border transition-colors ${hrInfo.badgeClass}`}>
                     {profile.restingHeartRate} bpm • {hrInfo.category}
                   </div>
                 </div>
@@ -653,32 +653,32 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
 
             {/* Water Glasses */}
             <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
                 <div>
-                  <label className="text-sm font-bold text-slate-200">Daily Water Hydration</label>
+                  <label className="text-sm sm:text-base font-bold text-slate-200">Daily Water Hydration</label>
                   <p className="text-xs text-slate-400">Optimal: 6 - 8+ glasses</p>
                 </div>
-                <div className="flex items-center gap-2 self-start sm:self-auto">
-                  <div className="flex items-center bg-slate-950 border border-slate-700/80 rounded-lg p-0.5 shadow-inner">
+                <div className="flex items-center gap-2.5 self-start sm:self-auto">
+                  <div className="flex items-center bg-slate-950 border border-slate-700 rounded-xl p-1 shadow-md">
                     <button
                       type="button"
                       onClick={() => update('dailyWaterGlasses', Math.max(2, profile.dailyWaterGlasses - 1))}
-                      className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-base font-bold select-none"
+                      className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-lg text-slate-100 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-xl sm:text-2xl font-black select-none border border-slate-800/80 hover:border-slate-700"
                       title="Decrease Glasses"
                     >
                       −
                     </button>
-                    <span className="w-px h-4 bg-slate-800" />
+                    <span className="w-px h-6 bg-slate-800 mx-1" />
                     <button
                       type="button"
                       onClick={() => update('dailyWaterGlasses', Math.min(14, profile.dailyWaterGlasses + 1))}
-                      className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-base font-bold select-none"
+                      className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-lg text-slate-100 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-xl sm:text-2xl font-black select-none border border-slate-800/80 hover:border-slate-700"
                       title="Increase Glasses"
                     >
                       +
                     </button>
                   </div>
-                  <div className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold border transition-colors ${waterInfo.badgeClass}`}>
+                  <div className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold border transition-colors ${waterInfo.badgeClass}`}>
                     {profile.dailyWaterGlasses} glasses/day • {waterInfo.category}
                   </div>
                 </div>
@@ -921,32 +921,32 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
           <div className="space-y-5">
             {/* Age Slider */}
             <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
                 <div>
-                  <label className="text-sm font-bold text-slate-200">Current Chronological Age</label>
+                  <label className="text-sm sm:text-base font-bold text-slate-200">Current Chronological Age</label>
                   <p className="text-xs text-slate-400">Actuarial survival tables adjust baseline dynamically</p>
                 </div>
-                <div className="flex items-center gap-2 self-start sm:self-auto">
-                  <div className="flex items-center bg-slate-950 border border-slate-700/80 rounded-lg p-0.5 shadow-inner">
+                <div className="flex items-center gap-2.5 self-start sm:self-auto">
+                  <div className="flex items-center bg-slate-950 border border-slate-700 rounded-xl p-1 shadow-md">
                     <button
                       type="button"
                       onClick={() => update('age', Math.max(18, profile.age - 1))}
-                      className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-base font-bold select-none"
+                      className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-lg text-slate-100 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-xl sm:text-2xl font-black select-none border border-slate-800/80 hover:border-slate-700"
                       title="Decrease Age"
                     >
                       −
                     </button>
-                    <span className="w-px h-4 bg-slate-800" />
+                    <span className="w-px h-6 bg-slate-800 mx-1" />
                     <button
                       type="button"
                       onClick={() => update('age', Math.min(95, profile.age + 1))}
-                      className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-base font-bold select-none"
+                      className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-lg text-slate-100 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-xl sm:text-2xl font-black select-none border border-slate-800/80 hover:border-slate-700"
                       title="Increase Age"
                     >
                       +
                     </button>
                   </div>
-                  <div className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold border transition-colors ${ageInfo.badgeClass}`}>
+                  <div className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold border transition-colors ${ageInfo.badgeClass}`}>
                     {profile.age} years old • {ageInfo.category}
                   </div>
                 </div>
