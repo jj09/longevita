@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { UserProfile, PresetArchetype, LongevityRecommendation } from './engine/types';
 import { DEFAULT_PROFILE } from './engine/presets';
 import { calculateLongevity } from './engine/longevityEngine';
@@ -13,6 +13,7 @@ import { EffortGainMatrix } from './components/recommendations/EffortGainMatrix'
 import { LiveParameterControls } from './components/calculator/LiveParameterControls';
 import { ComparisonDrawer } from './components/dashboard/ComparisonDrawer';
 import { ActionPlanModal } from './components/recommendations/ActionPlanModal';
+import { TableOfContents, SECTIONS } from './components/navigation/TableOfContents';
 import { Dna, Zap } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -26,6 +27,9 @@ export const App: React.FC = () => {
   const [currentPresetId, setCurrentPresetId] = useState<string>('average_us');
   const [isCompareMode, setIsCompareMode] = useState<boolean>(false);
   const [isActionPlanOpen, setIsActionPlanOpen] = useState<boolean>(false);
+
+  // Active section for table of contents outline navigation
+  const [activeSectionId, setActiveSectionId] = useState<string>('section-gauge');
 
   // Simulation state for testing individual recommendations
   const [simulatedProfile, setSimulatedProfile] = useState<UserProfile | null>(null);
@@ -43,6 +47,41 @@ export const App: React.FC = () => {
   const recommendations = useMemo(() => {
     return getRecommendations(profile);
   }, [profile]);
+
+  // Track active section on scroll using IntersectionObserver
+  useEffect(() => {
+    if (viewMode !== 'dashboard') return;
+
+    const observerCallback: IntersectionObserverCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSectionId(entry.target.id);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, {
+      rootMargin: '-20% 0px -60% 0px',
+      threshold: 0.1,
+    });
+
+    SECTIONS.forEach((s) => {
+      const el = document.getElementById(s.id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [viewMode]);
+
+  const handleScrollToSection = (sectionId: string) => {
+    setActiveSectionId(sectionId);
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const yOffset = -80; // Navbar offset
+      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  };
 
   // Handlers
   const handleStartQuiz = () => {
@@ -161,7 +200,7 @@ export const App: React.FC = () => {
     );
   }
 
-  // 3. Main Dashboard View (Reorganized layout: Questions Left, Grade/Impact Right, Recommendations Bottom)
+  // 3. Main Dashboard View with Left Outline Navigation and Single-Column Content Flow
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-black">
       {/* Top Navbar */}
@@ -176,60 +215,83 @@ export const App: React.FC = () => {
         onRetakeQuiz={() => setViewMode('quiz')}
       />
 
-      {/* Main Dashboard Layout */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-        {/* Simulation Banner Notice if active */}
-        {activeSimulationId && (
-          <div className="p-3 rounded-xl bg-gradient-to-r from-cyan-950/80 to-emerald-950/80 border border-cyan-500/50 flex items-center justify-between shadow-lg shadow-cyan-500/10">
-            <div className="flex items-center gap-2 text-xs text-cyan-200">
-              <Zap className="w-4 h-4 text-cyan-400 animate-pulse" />
-              <span>
-                <strong>Live Simulation Active:</strong> Testing intervention effect on projected lifespan.
-              </span>
-            </div>
+      {/* Mobile Horizontal Quick Navigation Strip */}
+      <div className="lg:hidden sticky top-16 z-30 bg-slate-950/95 border-b border-slate-800/80 px-4 py-2 flex items-center gap-1.5 overflow-x-auto scrollbar-none backdrop-blur-md">
+        {SECTIONS.map((section) => {
+          const isActive = activeSectionId === section.id;
+          return (
             <button
-              onClick={() => {
-                setSimulatedProfile(null);
-                setActiveSimulationId(null);
-              }}
-              className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-900 text-slate-300 hover:text-white border border-slate-700 transition-colors"
+              key={section.id}
+              onClick={() => handleScrollToSection(section.id)}
+              className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-colors flex items-center gap-1 ${
+                isActive
+                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                  : 'bg-slate-900 text-slate-400 border border-slate-800'
+              }`}
             >
-              Exit Simulation
+              <span>{section.shortLabel}</span>
             </button>
-          </div>
-        )}
+          );
+        })}
+      </div>
 
-        {/* Side-by-Side Comparison Drawer if Compare Mode active */}
-        {isCompareMode && (
-          <ComparisonDrawer
-            baselineProfile={baselineProfile}
-            currentProfile={profile}
-            currentResult={calculationResult}
-            onSetAsBaseline={handleSetAsBaseline}
-            onRevertToBaseline={handleRevertToBaseline}
-            onClose={() => setIsCompareMode(false)}
+      {/* Main Dashboard Container with Left Navigation Outline + Single Column Flow */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex gap-8 items-start">
+          {/* Google-Docs-Style Left Outline Menu */}
+          <TableOfContents
+            activeSectionId={activeSectionId}
+            onScrollTo={handleScrollToSection}
           />
-        )}
 
-        {/* ========================================================= */}
-        {/* UPPER ROW: Questions on LEFT, Grade & Impact on RIGHT */}
-        {/* ========================================================= */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Left Column: Questions & Live Parameter Controls (7 Cols) */}
-          <div className="lg:col-span-7 space-y-6">
-            <LiveParameterControls
-              profile={activeProfile}
-              onChange={handleParameterChange}
-            />
-          </div>
+          {/* Main Single-Column Vertical Content Flow */}
+          <div className="flex-1 min-w-0 space-y-8 max-w-4xl">
+            {/* Simulation Banner Notice if active */}
+            {activeSimulationId && (
+              <div className="p-3.5 rounded-xl bg-gradient-to-r from-cyan-950/80 to-emerald-950/80 border border-cyan-500/50 flex items-center justify-between shadow-lg shadow-cyan-500/10">
+                <div className="flex items-center gap-2 text-xs text-cyan-200">
+                  <Zap className="w-4 h-4 text-cyan-400 animate-pulse" />
+                  <span>
+                    <strong>Live Simulation Active:</strong> Testing intervention effect on projected lifespan.
+                  </span>
+                </div>
+                <button
+                  onClick={() => {
+                    setSimulatedProfile(null);
+                    setActiveSimulationId(null);
+                  }}
+                  className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-900 text-slate-300 hover:text-white border border-slate-700 transition-colors"
+                >
+                  Exit Simulation
+                </button>
+              </div>
+            )}
 
-          {/* Right Column: Grade, Lifespan Gauge, Impact Breakdown & Evidence (5 Cols) */}
-          <div className="lg:col-span-5 space-y-6">
-            {/* Lifespan Gauge with Longevity Grade */}
-            <LifespanGauge result={calculationResult} />
+            {/* Side-by-Side Comparison Drawer if Compare Mode active */}
+            {isCompareMode && (
+              <ComparisonDrawer
+                baselineProfile={baselineProfile}
+                currentProfile={profile}
+                currentResult={calculationResult}
+                onSetAsBaseline={handleSetAsBaseline}
+                onRevertToBaseline={handleRevertToBaseline}
+                onClose={() => setIsCompareMode(false)}
+              />
+            )}
 
-            {/* Pillar Impact Waterfall & Breakdown */}
-            <ImpactWaterfall categorySummaries={calculationResult.categorySummaries} />
+            {/* ========================================================= */}
+            {/* 1. GRADE & LIFESPAN GAUGE */}
+            {/* ========================================================= */}
+            <section id="section-gauge" className="scroll-mt-24">
+              <LifespanGauge result={calculationResult} />
+            </section>
+
+            {/* ========================================================= */}
+            {/* 2. LIFESPAN IMPACT BY PILLAR */}
+            {/* ========================================================= */}
+            <section id="section-impact" className="scroll-mt-24">
+              <ImpactWaterfall categorySummaries={calculationResult.categorySummaries} />
+            </section>
 
             {/* Scientific Grounding Badge */}
             <div className="p-4 rounded-xl bg-slate-900/40 border border-slate-800/80 text-xs text-slate-400 flex items-start gap-2.5">
@@ -239,27 +301,40 @@ export const App: React.FC = () => {
                 Model synthesizes actuarial cohort tables (CDC/SSA), hazard ratios from the New England Centenarian Study (Dr. Thomas Perls), Framingham cardiovascular algorithms, and Blue Zone demographic analyses.
               </div>
             </div>
+
+            {/* ========================================================= */}
+            {/* 3. BANG FOR YOUR BUCK LONGEVITY OPTIMIZER */}
+            {/* ========================================================= */}
+            <section id="section-recommendations" className="scroll-mt-24">
+              <BangForBuckLeaderboard
+                recommendations={recommendations}
+                onApplyRecommendation={handleApplyRecommendation}
+                onSimulateRecommendation={handleSimulateRecommendation}
+                activeSimulationId={activeSimulationId}
+              />
+            </section>
+
+            {/* ========================================================= */}
+            {/* 4. EFFORT VS. LIFESPAN GAIN MATRIX */}
+            {/* ========================================================= */}
+            <section id="section-matrix" className="scroll-mt-24">
+              <EffortGainMatrix
+                recommendations={recommendations}
+                onSimulateRecommendation={handleSimulateRecommendation}
+                activeSimulationId={activeSimulationId}
+              />
+            </section>
+
+            {/* ========================================================= */}
+            {/* 5. LIVE LONGEVITY PARAMETER CONTROLS */}
+            {/* ========================================================= */}
+            <section id="section-controls" className="scroll-mt-24">
+              <LiveParameterControls
+                profile={activeProfile}
+                onChange={handleParameterChange}
+              />
+            </section>
           </div>
-        </div>
-
-        {/* ========================================================= */}
-        {/* LOWER ROW (Middle Column): Recommendations & Optimization */}
-        {/* ========================================================= */}
-        <div className="space-y-6 pt-2">
-          {/* Bang for Your Buck Longevity Optimizer Leaderboard */}
-          <BangForBuckLeaderboard
-            recommendations={recommendations}
-            onApplyRecommendation={handleApplyRecommendation}
-            onSimulateRecommendation={handleSimulateRecommendation}
-            activeSimulationId={activeSimulationId}
-          />
-
-          {/* Effort vs Lifespan Gain 2x2 Matrix */}
-          <EffortGainMatrix
-            recommendations={recommendations}
-            onSimulateRecommendation={handleSimulateRecommendation}
-            activeSimulationId={activeSimulationId}
-          />
         </div>
       </main>
 
