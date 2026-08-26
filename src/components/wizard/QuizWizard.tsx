@@ -44,7 +44,13 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
   onComplete,
   onExit,
 }) => {
-  const [profile, setProfile] = useState<UserProfile>({ ...initialProfile });
+  const [answers, setAnswers] = useState<Partial<UserProfile>>({
+    age: initialProfile.age,
+    systolicBP: initialProfile.systolicBP,
+    bmi: initialProfile.bmi,
+    restingHeartRate: initialProfile.restingHeartRate,
+  });
+  const [completedProfile, setCompletedProfile] = useState<UserProfile | null>(null);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
 
@@ -445,6 +451,11 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
   const currentQ = questions[currentIndex];
   const progressPercent = Math.round(((currentIndex + 1) / questions.length) * 100);
 
+  const isCurrentAnswered =
+    currentQ.type === 'slider'
+      ? true
+      : answers[currentQ.field] !== undefined;
+
   const getPillarIcon = (pillar: string) => {
     switch (pillar) {
       case 'demographics': return <Dna className="w-4 h-4 text-purple-400" />;
@@ -457,24 +468,21 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
   };
 
   const handleSelectOption = (value: any) => {
-    const updated = { ...profile, [currentQ.field]: value };
-    setProfile(updated);
-
-    // Auto advance after slight delay for smooth visual feedback
-    if (currentIndex < questions.length - 1) {
-      setTimeout(() => {
-        setCurrentIndex(currentIndex + 1);
-      }, 200);
-    } else {
-      triggerCompletion(updated);
-    }
+    setAnswers((prev) => ({ ...prev, [currentQ.field]: value }));
   };
 
   const handleNext = () => {
+    if (!isCurrentAnswered) return;
+
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
-      triggerCompletion(profile);
+      const finalProfile: UserProfile = {
+        ...initialProfile,
+        ...answers,
+      };
+      setCompletedProfile(finalProfile);
+      triggerCompletion(finalProfile);
     }
   };
 
@@ -546,7 +554,7 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
             {currentQ.type === 'options' && (
               <div className="space-y-3">
                 {currentQ.options?.map((opt) => {
-                  const isSelected = profile[currentQ.field] === opt.value;
+                  const isSelected = answers[currentQ.field] === opt.value;
                   return (
                     <button
                       key={String(opt.value)}
@@ -590,17 +598,17 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
                     <div className="flex items-baseline justify-center gap-1.5">
                       <span className="text-4xl sm:text-5xl font-black text-cyan-300">
                         {currentQ.id === 'bmi'
-                          ? (profile.bmi).toFixed(1)
-                          : (profile[currentQ.field] as number)}
+                          ? ((answers.bmi ?? initialProfile.bmi) as number).toFixed(1)
+                          : ((answers[currentQ.field] ?? initialProfile[currentQ.field]) as number)}
                       </span>
                       <span className="text-slate-400 text-sm font-semibold">
                         {currentQ.sliderConfig.unit}
                       </span>
                     </div>
 
-                    {/* Dynamic Category Pill for BMI, Systolic BP, Resting HR */}
+                    {/* Dynamic Category Pill for BMI, Systolic BP, Resting HR, Age */}
                     {currentQ.id === 'bmi' && (() => {
-                      const info = getBMICategoryInfo(profile.bmi);
+                      const info = getBMICategoryInfo(answers.bmi ?? initialProfile.bmi);
                       return (
                         <div className={`mt-2.5 px-3 py-1 rounded-full text-xs font-bold border ${info.badgeClass}`}>
                           {info.category} ({info.label})
@@ -609,7 +617,7 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
                     })()}
 
                     {currentQ.id === 'systolicBP' && (() => {
-                      const info = getSystolicBPInfo(profile.systolicBP);
+                      const info = getSystolicBPInfo(answers.systolicBP ?? initialProfile.systolicBP);
                       return (
                         <div className={`mt-2.5 px-3 py-1 rounded-full text-xs font-bold border ${info.badgeClass}`}>
                           {info.category} ({info.label})
@@ -618,7 +626,7 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
                     })()}
 
                     {currentQ.id === 'restingHeartRate' && (() => {
-                      const info = getRestingHRInfo(profile.restingHeartRate);
+                      const info = getRestingHRInfo(answers.restingHeartRate ?? initialProfile.restingHeartRate);
                       return (
                         <div className={`mt-2.5 px-3 py-1 rounded-full text-xs font-bold border ${info.badgeClass}`}>
                           {info.category} ({info.label})
@@ -627,7 +635,7 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
                     })()}
 
                     {currentQ.id === 'age' && (() => {
-                      const info = getAgeCategoryInfo(profile.age);
+                      const info = getAgeCategoryInfo(answers.age ?? initialProfile.age);
                       return (
                         <div className={`mt-2.5 px-3 py-1 rounded-full text-xs font-bold border ${info.badgeClass}`}>
                           {info.category} ({info.label})
@@ -642,9 +650,9 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
                   min={currentQ.sliderConfig.min}
                   max={currentQ.sliderConfig.max}
                   step={currentQ.sliderConfig.step}
-                  value={profile[currentQ.field] as number}
+                  value={((answers[currentQ.field] ?? initialProfile[currentQ.field]) as number)}
                   onChange={(e) =>
-                    setProfile({ ...profile, [currentQ.field]: Number(e.target.value) })
+                    setAnswers((prev) => ({ ...prev, [currentQ.field]: Number(e.target.value) }))
                   }
                   className="w-full h-3 bg-slate-800 rounded-lg appearance-none cursor-pointer"
                 />
@@ -669,10 +677,10 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
 
                     {/* Integrated Height, Weight & Gender BMI Calculator */}
                     <BMICalculator
-                      currentBMI={profile.bmi}
-                      currentSex={profile.sex}
-                      onUpdateBMI={(bmi) => setProfile({ ...profile, bmi })}
-                      onUpdateSex={(sex) => setProfile({ ...profile, sex })}
+                      currentBMI={answers.bmi ?? initialProfile.bmi}
+                      currentSex={answers.sex ?? initialProfile.sex}
+                      onUpdateBMI={(bmi) => setAnswers((prev) => ({ ...prev, bmi }))}
+                      onUpdateSex={(sex) => setAnswers((prev) => ({ ...prev, sex }))}
                       isOpenDefault={false}
                     />
                   </>
@@ -752,7 +760,12 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
 
               <button
                 onClick={handleNext}
-                className="px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/20"
+                disabled={!isCurrentAnswered}
+                className={`px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 shadow-lg ${
+                  isCurrentAnswered
+                    ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-emerald-500/20 cursor-pointer'
+                    : 'bg-slate-800/80 text-slate-500 border border-slate-700/60 cursor-not-allowed shadow-none opacity-60'
+                }`}
               >
                 <span>{currentIndex === questions.length - 1 ? 'Finish & Calculate' : 'Next Question'}</span>
                 <ArrowRight className="w-4 h-4" />
@@ -776,7 +789,7 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
 
             <div className="mt-8 flex flex-col items-center">
               <button
-                onClick={() => onComplete(profile)}
+                onClick={() => onComplete(completedProfile || initialProfile)}
                 className="px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 text-slate-950 font-extrabold text-lg transition-all hover:scale-105 hover:shadow-2xl hover:shadow-emerald-500/40 flex items-center gap-3"
               >
                 <span>View My Longevity Report & Live Optimizer</span>
