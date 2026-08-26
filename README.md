@@ -2,6 +2,8 @@
 
 > **Live Lifespan Calculator & Bang-for-the-Buck Longevity ROI Optimizer**
 
+🔗 **Live Web App:** [https://jj09.net/longevita/](https://jj09.net/longevita/) *(also at [https://jj09.github.io/longevita/](https://jj09.github.io/longevita/))*
+
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg?logo=typescript)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.3-61dafb.svg?logo=react)](https://reactjs.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38b2ac.svg?logo=tailwind-css)](https://tailwindcss.com/)
