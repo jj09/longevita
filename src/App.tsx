@@ -4,6 +4,8 @@ import { DEFAULT_PROFILE } from './engine/presets';
 import { calculateLongevity } from './engine/longevityEngine';
 import { getRecommendations } from './engine/recommendationEngine';
 import { Header } from './components/Header';
+import { LandingPage } from './components/landing/LandingPage';
+import { QuizWizard } from './components/wizard/QuizWizard';
 import { LifespanGauge } from './components/dashboard/LifespanGauge';
 import { ImpactWaterfall } from './components/dashboard/ImpactWaterfall';
 import { BangForBuckLeaderboard } from './components/recommendations/BangForBuckLeaderboard';
@@ -14,6 +16,9 @@ import { ActionPlanModal } from './components/recommendations/ActionPlanModal';
 import { Dna, Zap } from 'lucide-react';
 
 export const App: React.FC = () => {
+  // Navigation view state: 'landing' | 'quiz' | 'dashboard'
+  const [viewMode, setViewMode] = useState<'landing' | 'quiz' | 'dashboard'>('landing');
+
   // Active user profile state
   const [profile, setProfile] = useState<UserProfile>(() => ({ ...DEFAULT_PROFILE }));
   // Baseline profile for comparison mode
@@ -40,6 +45,28 @@ export const App: React.FC = () => {
   }, [profile]);
 
   // Handlers
+  const handleStartQuiz = () => {
+    setViewMode('quiz');
+  };
+
+  const handleSelectArchetypeFromLanding = (archetype: PresetArchetype) => {
+    setCurrentPresetId(archetype.id);
+    setProfile({ ...archetype.profile });
+    setBaselineProfile({ ...archetype.profile });
+    setSimulatedProfile(null);
+    setActiveSimulationId(null);
+    setViewMode('dashboard');
+  };
+
+  const handleQuizComplete = (completedProfile: UserProfile) => {
+    setProfile(completedProfile);
+    setBaselineProfile(completedProfile);
+    setCurrentPresetId('custom');
+    setSimulatedProfile(null);
+    setActiveSimulationId(null);
+    setViewMode('dashboard');
+  };
+
   const handleParameterChange = (updated: UserProfile) => {
     setProfile(updated);
     // Clear any active temporary simulation when user manually tweaks
@@ -113,6 +140,28 @@ export const App: React.FC = () => {
     setActiveSimulationId(null);
   };
 
+  // 1. Landing Page View
+  if (viewMode === 'landing') {
+    return (
+      <LandingPage
+        onStartQuiz={handleStartQuiz}
+        onSelectArchetype={handleSelectArchetypeFromLanding}
+      />
+    );
+  }
+
+  // 2. Quiz Wizard View
+  if (viewMode === 'quiz') {
+    return (
+      <QuizWizard
+        initialProfile={profile}
+        onComplete={handleQuizComplete}
+        onExit={() => setViewMode('dashboard')}
+      />
+    );
+  }
+
+  // 3. Main Dashboard View (Reorganized layout: Questions Left, Grade/Impact Right, Recommendations Bottom)
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-black">
       {/* Top Navbar */}
@@ -123,17 +172,19 @@ export const App: React.FC = () => {
         isCompareMode={isCompareMode}
         onToggleCompareMode={() => setIsCompareMode(!isCompareMode)}
         onOpenActionPlan={() => setIsActionPlanOpen(true)}
+        onGoHome={() => setViewMode('landing')}
+        onRetakeQuiz={() => setViewMode('quiz')}
       />
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      {/* Main Dashboard Layout */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         {/* Simulation Banner Notice if active */}
         {activeSimulationId && (
-          <div className="mb-5 p-3 rounded-xl bg-gradient-to-r from-cyan-950/80 to-emerald-950/80 border border-cyan-500/50 flex items-center justify-between shadow-lg shadow-cyan-500/10">
+          <div className="p-3 rounded-xl bg-gradient-to-r from-cyan-950/80 to-emerald-950/80 border border-cyan-500/50 flex items-center justify-between shadow-lg shadow-cyan-500/10">
             <div className="flex items-center gap-2 text-xs text-cyan-200">
               <Zap className="w-4 h-4 text-cyan-400 animate-pulse" />
               <span>
-                <strong>Live Simulation Active:</strong> Testing intervention effect.
+                <strong>Live Simulation Active:</strong> Testing intervention effect on projected lifespan.
               </span>
             </div>
             <button
@@ -141,7 +192,7 @@ export const App: React.FC = () => {
                 setSimulatedProfile(null);
                 setActiveSimulationId(null);
               }}
-              className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-850 bg-slate-900 text-slate-300 hover:text-white border border-slate-700 transition-colors"
+              className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-900 text-slate-300 hover:text-white border border-slate-700 transition-colors"
             >
               Exit Simulation
             </button>
@@ -160,11 +211,21 @@ export const App: React.FC = () => {
           />
         )}
 
-        {/* Dashboard 2-Column Responsive Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left Column: Gauge, Impact Breakdown & Quick Info (5 Cols on large) */}
+        {/* ========================================================= */}
+        {/* UPPER ROW: Questions on LEFT, Grade & Impact on RIGHT */}
+        {/* ========================================================= */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Left Column: Questions & Live Parameter Controls (7 Cols) */}
+          <div className="lg:col-span-7 space-y-6">
+            <LiveParameterControls
+              profile={activeProfile}
+              onChange={handleParameterChange}
+            />
+          </div>
+
+          {/* Right Column: Grade, Lifespan Gauge, Impact Breakdown & Evidence (5 Cols) */}
           <div className="lg:col-span-5 space-y-6">
-            {/* Lifespan Radial Dial & Biological Age */}
+            {/* Lifespan Gauge with Longevity Grade */}
             <LifespanGauge result={calculationResult} />
 
             {/* Pillar Impact Waterfall & Breakdown */}
@@ -179,30 +240,26 @@ export const App: React.FC = () => {
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Right Column: ROI Optimizer, Effort Matrix & Live Parameter Controls (7 Cols on large) */}
-          <div className="lg:col-span-7 space-y-6">
-            {/* Bang for Your Buck Longevity Optimizer Leaderboard (Primary Requirement #2) */}
-            <BangForBuckLeaderboard
-              recommendations={recommendations}
-              onApplyRecommendation={handleApplyRecommendation}
-              onSimulateRecommendation={handleSimulateRecommendation}
-              activeSimulationId={activeSimulationId}
-            />
+        {/* ========================================================= */}
+        {/* LOWER ROW (Middle Column): Recommendations & Optimization */}
+        {/* ========================================================= */}
+        <div className="space-y-6 pt-2">
+          {/* Bang for Your Buck Longevity Optimizer Leaderboard */}
+          <BangForBuckLeaderboard
+            recommendations={recommendations}
+            onApplyRecommendation={handleApplyRecommendation}
+            onSimulateRecommendation={handleSimulateRecommendation}
+            activeSimulationId={activeSimulationId}
+          />
 
-            {/* Effort vs Lifespan Gain 2x2 Matrix */}
-            <EffortGainMatrix
-              recommendations={recommendations}
-              onSimulateRecommendation={handleSimulateRecommendation}
-              activeSimulationId={activeSimulationId}
-            />
-
-            {/* Live Parameter Controls (Primary Requirement #1) */}
-            <LiveParameterControls
-              profile={activeProfile}
-              onChange={handleParameterChange}
-            />
-          </div>
+          {/* Effort vs Lifespan Gain 2x2 Matrix */}
+          <EffortGainMatrix
+            recommendations={recommendations}
+            onSimulateRecommendation={handleSimulateRecommendation}
+            activeSimulationId={activeSimulationId}
+          />
         </div>
       </main>
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, RotateCcw, GitCompare, FileText, HeartPulse } from 'lucide-react';
+import { Sparkles, RotateCcw, GitCompare, FileText, HeartPulse, HelpCircle } from 'lucide-react';
 import { PRESET_ARCHETYPES } from '../engine/presets';
 import { PresetArchetype } from '../engine/types';
 
@@ -10,6 +10,8 @@ interface HeaderProps {
   isCompareMode: boolean;
   onToggleCompareMode: () => void;
   onOpenActionPlan: () => void;
+  onGoHome: () => void;
+  onRetakeQuiz: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -19,32 +21,50 @@ export const Header: React.FC<HeaderProps> = ({
   isCompareMode,
   onToggleCompareMode,
   onOpenActionPlan,
+  onGoHome,
+  onRetakeQuiz,
 }) => {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Brand */}
+        {/* Brand & Home */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 ring-1 ring-emerald-400/30">
-            <HeartPulse className="w-6 h-6 text-slate-950 stroke-[2.5]" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-lg tracking-tight bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
-                LongevityOS
-              </span>
-              <span className="px-2 py-0.5 text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full">
-                LIVE 2.0
-              </span>
+          <button
+            onClick={onGoHome}
+            className="flex items-center gap-3 group text-left"
+            title="Return to Landing Page"
+          >
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 ring-1 ring-emerald-400/30 group-hover:scale-105 transition-transform">
+              <HeartPulse className="w-6 h-6 text-slate-950 stroke-[2.5]" />
             </div>
-            <p className="text-xs text-slate-400 hidden sm:block">
-              Actuarial Lifespan & ROI Optimizer
-            </p>
-          </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-lg tracking-tight bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent group-hover:opacity-90 transition-opacity">
+                  LongevityOS
+                </span>
+                <span className="px-2 py-0.5 text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full">
+                  LIVE 2.0
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 hidden sm:block">
+                Actuarial Lifespan & ROI Optimizer
+              </p>
+            </div>
+          </button>
         </div>
 
         {/* Action Controls */}
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Retake Quiz Button */}
+          <button
+            onClick={onRetakeQuiz}
+            className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-slate-300 border border-slate-800 hover:text-white hover:border-slate-700 transition-colors flex items-center gap-1.5"
+            title="Retake step-by-step quiz"
+          >
+            <HelpCircle className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="hidden sm:inline">Retake Quiz</span>
+          </button>
+
           {/* Preset Selector */}
           <div className="relative flex items-center">
             <label className="text-xs text-slate-400 mr-2 hidden md:inline-flex items-center gap-1">
