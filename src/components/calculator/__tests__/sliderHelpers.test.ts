@@ -53,4 +53,15 @@ describe('sliderHelpers', () => {
     expect(getAgeCategoryInfo(62).category).toBe('Mature Adult');
     expect(getAgeCategoryInfo(80).category).toBe('Senior Horizon');
   });
+
+  it('supports 0.1 increment precision across all threshold boundaries', () => {
+    expect(getBMICategoryInfo(18.4).category).toBe('Underweight');
+    expect(getBMICategoryInfo(18.5).category).toBe('Optimal');
+    expect(getBMICategoryInfo(24.9).category).toBe('Optimal');
+    expect(getBMICategoryInfo(25.0).category).toBe('Overweight');
+    expect(getBMICategoryInfo(29.9).category).toBe('Overweight');
+    expect(getBMICategoryInfo(30.0).category).toBe('Obesity Class I');
+    expect(getBMICategoryInfo(34.9).category).toBe('Obesity Class I');
+    expect(getBMICategoryInfo(35.0).category).toBe('Severe Obesity');
+  });
 });

@@ -9,6 +9,7 @@ import {
   getHydrationInfo,
   getAgeCategoryInfo,
 } from './sliderHelpers';
+import { BMICalculator } from './BMICalculator';
 
 interface LiveParameterControlsProps {
   profile: UserProfile;
@@ -232,7 +233,7 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
                 type="range"
                 min="16.0"
                 max="42.0"
-                step="0.2"
+                step="0.1"
                 value={profile.bmi}
                 onChange={(e) => update('bmi', Number(e.target.value))}
                 className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer"
@@ -252,6 +253,15 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
                   <span style={{ width: '46.2%' }} className="text-rose-400 truncate text-right">30.0+ Obese</span>
                 </div>
               </div>
+
+              {/* Integrated Height, Weight & Gender BMI Calculator */}
+              <BMICalculator
+                currentBMI={profile.bmi}
+                currentSex={profile.sex}
+                onUpdateBMI={(bmi) => update('bmi', bmi)}
+                onUpdateSex={(sex) => update('sex', sex)}
+                isOpenDefault={false}
+              />
             </div>
 
             {/* Resting Heart Rate Slider */}

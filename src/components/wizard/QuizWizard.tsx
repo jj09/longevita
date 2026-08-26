@@ -8,6 +8,7 @@ import {
   getRestingHRInfo,
   getAgeCategoryInfo,
 } from '../calculator/sliderHelpers';
+import { BMICalculator } from '../calculator/BMICalculator';
 
 interface QuizWizardProps {
   initialProfile: UserProfile;
@@ -181,15 +182,15 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
       pillar: 'biometrics',
       pillarLabel: 'Biometrics & Clinical',
       title: 'What is your Body Mass Index (BMI)?',
-      subtitle: 'Healthy longevity range is typically 20.0 to 24.5.',
+      subtitle: 'Healthy longevity range is typically 18.5 to 24.9.',
       type: 'slider',
       field: 'bmi',
       sliderConfig: {
-        min: 17.0,
-        max: 40.0,
-        step: 0.5,
+        min: 16.0,
+        max: 42.0,
+        step: 0.1,
         unit: 'BMI',
-        labels: { 18.5: '18.5 Normal', 22.0: '22 Optimal', 27.5: '27.5 Overweight', 32.0: '32 Obese' },
+        labels: { 18.5: '18.5 Normal', 22.0: '22 Optimal', 25.0: '25.0 Overweight', 30.0: '30.0 Obese' },
       },
     },
     // 10. Resting Heart Rate
@@ -650,20 +651,31 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
 
                 {/* Accurate Segmented Scales for Specific Sliders */}
                 {currentQ.id === 'bmi' && (
-                  <div className="space-y-1">
-                    <div className="h-2 w-full rounded-full flex overflow-hidden bg-slate-800">
-                      <div style={{ width: '6.5%' }} className="bg-amber-500/60" title="Underweight: <18.5" />
-                      <div style={{ width: '27.8%' }} className="bg-emerald-500/70" title="Optimal: 18.5 - 24.9" />
-                      <div style={{ width: '21.7%' }} className="bg-amber-500/60" title="Overweight: 25.0 - 29.9" />
-                      <div style={{ width: '44.0%' }} className="bg-rose-500/60" title="Obese: 30.0+" />
+                  <>
+                    <div className="space-y-1">
+                      <div className="h-2 w-full rounded-full flex overflow-hidden bg-slate-800">
+                        <div style={{ width: '9.6%' }} className="bg-amber-500/60" title="Underweight: <18.5" />
+                        <div style={{ width: '25.0%' }} className="bg-emerald-500/70" title="Optimal: 18.5 - 24.9" />
+                        <div style={{ width: '19.2%' }} className="bg-amber-500/60" title="Overweight: 25.0 - 29.9" />
+                        <div style={{ width: '46.2%' }} className="bg-rose-500/60" title="Obese: 30.0+" />
+                      </div>
+                      <div className="flex text-xs text-slate-400 font-medium">
+                        <span style={{ width: '9.6%' }} className="text-amber-400 truncate">&lt;18.5</span>
+                        <span style={{ width: '25.0%' }} className="text-emerald-400 truncate pl-1">18.5-24.9 Optimal</span>
+                        <span style={{ width: '19.2%' }} className="text-amber-400 truncate pl-1">25-29.9 Overweight</span>
+                        <span style={{ width: '46.2%' }} className="text-rose-400 truncate text-right">30.0+ Obese</span>
+                      </div>
                     </div>
-                    <div className="flex text-xs text-slate-400 font-medium">
-                      <span style={{ width: '6.5%' }} className="text-amber-400 truncate">&lt;18.5</span>
-                      <span style={{ width: '27.8%' }} className="text-emerald-400 truncate pl-1">18.5-24.9 Optimal</span>
-                      <span style={{ width: '21.7%' }} className="text-amber-400 truncate pl-1">25-29.9 Overweight</span>
-                      <span style={{ width: '44.0%' }} className="text-rose-400 truncate text-right">30.0+ Obese</span>
-                    </div>
-                  </div>
+
+                    {/* Integrated Height, Weight & Gender BMI Calculator */}
+                    <BMICalculator
+                      currentBMI={profile.bmi}
+                      currentSex={profile.sex}
+                      onUpdateBMI={(bmi) => setProfile({ ...profile, bmi })}
+                      onUpdateSex={(sex) => setProfile({ ...profile, sex })}
+                      isOpenDefault={false}
+                    />
+                  </>
                 )}
 
                 {currentQ.id === 'systolicBP' && (
