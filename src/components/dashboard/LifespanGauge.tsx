@@ -61,7 +61,7 @@ export const LifespanGauge: React.FC<LifespanGaugeProps> = ({ result }) => {
   const bioAgeDelta = Number((chronologicalAge - biologicalAge).toFixed(1));
 
   return (
-    <div className="glass-panel rounded-2xl p-6 relative overflow-hidden border border-slate-800/80 shadow-2xl">
+    <div className="glass-panel rounded-2xl p-4 sm:p-6 relative overflow-hidden border border-slate-800/80 shadow-2xl">
       {/* Background ambient glow */}
       <div
         className="absolute -top-24 -right-24 w-64 h-64 rounded-full blur-3xl pointer-events-none opacity-20"
@@ -72,16 +72,16 @@ export const LifespanGauge: React.FC<LifespanGaugeProps> = ({ result }) => {
 
       <div className="flex flex-col items-center text-center">
         {/* Top Header Badge */}
-        <div className="flex items-center justify-between w-full mb-3">
+        <div className="flex items-center justify-between w-full mb-3 flex-wrap gap-2">
           <div className="flex items-center gap-2">
-            <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${currentGrade.bg} ${currentGrade.text} ${currentGrade.border} flex items-center gap-1.5`}>
-              <Award className="w-3.5 h-3.5" />
+            <span className={`px-3 py-1 rounded-full text-xs sm:text-sm font-bold border ${currentGrade.bg} ${currentGrade.text} ${currentGrade.border} flex items-center gap-1.5`}>
+              <Award className="w-4 h-4" />
               Grade {riskGrade}: {currentGrade.label}
             </span>
           </div>
 
           {projectedLifespan >= 100 && (
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1 animate-pulse">
+            <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1 animate-pulse">
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
               100+ Club!
             </span>
@@ -131,14 +131,14 @@ export const LifespanGauge: React.FC<LifespanGaugeProps> = ({ result }) => {
             />
 
             {/* Tick Markers */}
-            <text x="12" y="122" fill="#64748b" fontSize="10" fontWeight="600">60y</text>
-            <text x="94" y="24" fill="#64748b" fontSize="10" fontWeight="600">85y</text>
-            <text x="168" y="122" fill="#64748b" fontSize="10" fontWeight="600">105y+</text>
+            <text x="12" y="122" fill="#64748b" fontSize="11" fontWeight="600">60y</text>
+            <text x="94" y="24" fill="#64748b" fontSize="11" fontWeight="600">85y</text>
+            <text x="168" y="122" fill="#64748b" fontSize="11" fontWeight="600">105y+</text>
           </svg>
 
           {/* Central Lifespan Number */}
           <div className="absolute top-14 flex flex-col items-center">
-            <span className="text-xs uppercase tracking-wider text-slate-400 font-semibold">
+            <span className="text-xs sm:text-sm uppercase tracking-wider text-slate-400 font-semibold">
               Projected Lifespan
             </span>
             <div className="flex items-baseline gap-1 mt-0.5">
@@ -151,15 +151,15 @@ export const LifespanGauge: React.FC<LifespanGaugeProps> = ({ result }) => {
         </div>
 
         {/* Delta vs Actuarial Baseline */}
-        <div className="mt-4 flex items-center justify-center gap-2">
+        <div className="mt-4 flex items-center justify-center text-center">
           {netDelta >= 0 ? (
-            <div className="flex items-center gap-1 text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full text-xs font-semibold border border-emerald-500/20">
-              <TrendingUp className="w-3.5 h-3.5" />
+            <div className="flex items-center justify-center gap-1.5 text-emerald-400 bg-emerald-500/10 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold border border-emerald-500/20 text-center flex-wrap">
+              <TrendingUp className="w-4 h-4 flex-shrink-0" />
               <span>+{netDelta} years vs actuarial baseline ({actuarialBaseline} yrs)</span>
             </div>
           ) : (
-            <div className="flex items-center gap-1 text-rose-400 bg-rose-500/10 px-3 py-1 rounded-full text-xs font-semibold border border-rose-500/20">
-              <TrendingDown className="w-3.5 h-3.5" />
+            <div className="flex items-center justify-center gap-1.5 text-rose-400 bg-rose-500/10 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold border border-rose-500/20 text-center flex-wrap">
+              <TrendingDown className="w-4 h-4 flex-shrink-0" />
               <span>{netDelta} years vs actuarial baseline ({actuarialBaseline} yrs)</span>
             </div>
           )}
@@ -168,15 +168,15 @@ export const LifespanGauge: React.FC<LifespanGaugeProps> = ({ result }) => {
         {/* Biological Age & Confidence Grid */}
         <div className="grid grid-cols-2 gap-3 w-full mt-5 pt-4 border-t border-slate-800/80">
           {/* Biological Age Box */}
-          <div className="bg-slate-900/70 rounded-xl p-3 border border-slate-800 flex flex-col items-center">
-            <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
+          <div className="bg-slate-900/70 rounded-xl p-3 sm:p-4 border border-slate-800 flex flex-col items-center">
+            <div className="flex items-center gap-1.5 text-xs sm:text-sm text-slate-400 font-medium">
               <Clock className="w-3.5 h-3.5 text-cyan-400" />
               <span>Biological Age</span>
             </div>
-            <div className="text-xl font-bold text-cyan-300 mt-1">
+            <div className="text-xl sm:text-2xl font-bold text-cyan-300 mt-1">
               {biologicalAge} <span className="text-xs text-slate-400 font-normal">yrs</span>
             </div>
-            <div className="text-[11px] mt-1 font-medium">
+            <div className="text-xs sm:text-sm mt-1 font-medium text-center">
               {bioAgeDelta > 0 ? (
                 <span className="text-emerald-400">{bioAgeDelta} yrs younger</span>
               ) : bioAgeDelta < 0 ? (
@@ -188,29 +188,29 @@ export const LifespanGauge: React.FC<LifespanGaugeProps> = ({ result }) => {
           </div>
 
           {/* 90% Confidence Interval Box */}
-          <div className="bg-slate-900/70 rounded-xl p-3 border border-slate-800 flex flex-col items-center">
-            <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
+          <div className="bg-slate-900/70 rounded-xl p-3 sm:p-4 border border-slate-800 flex flex-col items-center">
+            <div className="flex items-center gap-1.5 text-xs sm:text-sm text-slate-400 font-medium">
               <ShieldAlert className="w-3.5 h-3.5 text-amber-400" />
               <span>Likely Range (90% CI)</span>
             </div>
-            <div className="text-xl font-bold text-amber-300 mt-1">
+            <div className="text-xl sm:text-2xl font-bold text-amber-300 mt-1">
               {confidenceRange[0]} - {confidenceRange[1]}
             </div>
-            <div className="text-[11px] text-slate-400 mt-1">
-              Statistical variance window
+            <div className="text-xs text-slate-400 mt-1 text-center">
+              Statistical variance
             </div>
           </div>
         </div>
 
         {/* Positive Gains vs Deductions breakdown pill */}
-        <div className="w-full mt-3 flex items-center justify-between text-xs bg-slate-900/40 px-3 py-2 rounded-lg border border-slate-800/50">
+        <div className="w-full mt-3 flex items-center justify-between text-xs sm:text-sm bg-slate-900/40 px-3 py-2 rounded-lg border border-slate-800/50 flex-wrap gap-2">
           <div className="flex items-center gap-1.5 text-emerald-400">
-            <span className="w-2 h-2 rounded-full bg-emerald-400" />
-            <span>Bonus factors: <strong>+{totalGainedYears}y</strong></span>
+            <span className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" />
+            <span>Bonus: <strong>+{totalGainedYears}y</strong></span>
           </div>
           <div className="flex items-center gap-1.5 text-rose-400">
-            <span className="w-2 h-2 rounded-full bg-rose-400" />
-            <span>Risk factors: <strong>-{totalLostYears}y</strong></span>
+            <span className="w-2 h-2 rounded-full bg-rose-400 flex-shrink-0" />
+            <span>Risk: <strong>-{totalLostYears}y</strong></span>
           </div>
         </div>
       </div>

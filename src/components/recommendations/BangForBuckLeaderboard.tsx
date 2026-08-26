@@ -89,57 +89,57 @@ export const BangForBuckLeaderboard: React.FC<BangForBuckLeaderboardProps> = ({
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 scrollbar-none flex-shrink-0">
           <button
             onClick={() => setFilter('all')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+            className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex items-center gap-1.5 min-h-[40px] ${
               filter === 'all'
                 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm shadow-amber-500/10'
                 : 'bg-slate-900/80 text-slate-400 border border-slate-800 hover:text-slate-200 hover:border-slate-700'
             }`}
           >
-            <Flame className="w-3.5 h-3.5" />
+            <Flame className="w-4 h-4" />
             Top ROI
           </button>
           <button
             onClick={() => setFilter('quick_win')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+            className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex items-center gap-1.5 min-h-[40px] ${
               filter === 'quick_win'
                 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm shadow-emerald-500/10'
                 : 'bg-slate-900/80 text-slate-400 border border-slate-800 hover:text-slate-200 hover:border-slate-700'
             }`}
           >
-            <Zap className="w-3.5 h-3.5" />
+            <Zap className="w-4 h-4" />
             Micro-Wins
           </button>
           <button
             onClick={() => setFilter('high_gain')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+            className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex items-center gap-1.5 min-h-[40px] ${
               filter === 'high_gain'
                 ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm shadow-cyan-500/10'
                 : 'bg-slate-900/80 text-slate-400 border border-slate-800 hover:text-slate-200 hover:border-slate-700'
             }`}
           >
-            <Trophy className="w-3.5 h-3.5" />
+            <Trophy className="w-4 h-4" />
             Max Years
           </button>
           <button
             onClick={() => setFilter('fitness')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+            className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex items-center gap-1.5 min-h-[40px] ${
               filter === 'fitness'
                 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm shadow-emerald-500/10'
                 : 'bg-slate-900/80 text-slate-400 border border-slate-800 hover:text-slate-200 hover:border-slate-700'
             }`}
           >
-            <Activity className="w-3.5 h-3.5" />
+            <Activity className="w-4 h-4" />
             Fitness
           </button>
           <button
             onClick={() => setFilter('nutrition')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+            className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex items-center gap-1.5 min-h-[40px] ${
               filter === 'nutrition'
                 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm shadow-emerald-500/10'
                 : 'bg-slate-900/80 text-slate-400 border border-slate-800 hover:text-slate-200 hover:border-slate-700'
             }`}
           >
-            <Apple className="w-3.5 h-3.5" />
+            <Apple className="w-4 h-4" />
             Diet
           </button>
         </div>
@@ -182,35 +182,35 @@ export const BangForBuckLeaderboard: React.FC<BangForBuckLeaderboardProps> = ({
 
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h4 className="text-sm font-bold text-slate-100">
+                        <h4 className="text-sm sm:text-base font-bold text-slate-100">
                           {rec.title}
                         </h4>
 
                         {/* ROI Score Badge */}
-                        <span className="px-2 py-0.5 text-[11px] font-extrabold bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-300 border border-amber-500/30 rounded-md flex items-center gap-1 shadow-sm">
-                          <Flame className="w-3 h-3 text-amber-400" />
+                        <span className="px-2.5 py-0.5 text-xs font-extrabold bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-300 border border-amber-500/30 rounded-md flex items-center gap-1 shadow-sm">
+                          <Flame className="w-3.5 h-3.5 text-amber-400" />
                           ROI {rec.bangForBuckIndex}
                         </span>
 
                         {/* Lifespan Potential Gain */}
-                        <span className="px-2 py-0.5 text-[11px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 rounded-md">
+                        <span className="px-2.5 py-0.5 text-xs font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 rounded-md">
                           +{rec.potentialGainYears} Years
                         </span>
                       </div>
 
-                      <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                      <p className="text-xs sm:text-sm text-slate-400 mt-1 leading-relaxed">
                         {rec.description}
                       </p>
 
                       {/* Current vs Target Value & Effort Meter */}
-                      <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs">
+                      <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs sm:text-sm">
                         <div className="flex items-center gap-1.5">
                           <span className="text-slate-400">Current:</span>
-                          <span className="text-rose-300 font-medium bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/20 text-[11px]">
+                          <span className="text-rose-300 font-semibold bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20 text-xs">
                             {rec.currentValueDisplay}
                           </span>
                           <span className="text-slate-500">→</span>
-                          <span className="text-emerald-300 font-medium bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20 text-[11px]">
+                          <span className="text-emerald-300 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 text-xs">
                             {rec.targetValueDisplay}
                           </span>
                         </div>
@@ -224,39 +224,39 @@ export const BangForBuckLeaderboard: React.FC<BangForBuckLeaderboardProps> = ({
                   </div>
 
                   {/* Right: Action Buttons */}
-                  <div className="flex items-center gap-2 self-end md:self-center flex-shrink-0">
+                  <div className="flex items-center gap-2 self-stretch sm:self-end md:self-center flex-shrink-0 justify-end">
                     {/* Expand Evidence Button */}
                     <button
                       onClick={() => toggleExpand(rec.id)}
-                      className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition-colors flex items-center gap-1"
+                      className="px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition-colors flex items-center gap-1.5 min-h-[40px]"
                       title="View scientific evidence and step-by-step instructions"
                     >
-                      <BookOpen className="w-3.5 h-3.5 text-slate-400" />
-                      <span className="hidden sm:inline">Guide</span>
-                      {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                      <BookOpen className="w-4 h-4 text-slate-400" />
+                      <span>Guide</span>
+                      {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                     </button>
 
                     {/* Simulate Button */}
                     <button
                       onClick={() => onSimulateRecommendation(rec)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all flex items-center gap-1.5 ${
+                      className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold border transition-all flex items-center gap-1.5 min-h-[40px] ${
                         isSimulating
-                          ? 'bg-cyan-500 text-slate-950 border-cyan-400 shadow-md shadow-cyan-500/30'
-                          : 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30 hover:bg-cyan-500/25'
+                          ? 'bg-cyan-500 text-slate-950 border-cyan-400 shadow-md shadow-cyan-500/30 active:scale-95'
+                          : 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30 hover:bg-cyan-500/25 active:scale-95'
                       }`}
                       title="Live-test this recommendation to see the projected lifespan update immediately"
                     >
-                      <Play className="w-3 h-3 fill-current" />
-                      {isSimulating ? 'Simulating...' : 'Simulate'}
+                      <Play className="w-3.5 h-3.5 fill-current" />
+                      <span>{isSimulating ? 'Simulating...' : 'Simulate'}</span>
                     </button>
 
                     {/* Apply Permanently Button */}
                     <button
                       onClick={() => onApplyRecommendation(rec)}
-                      className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-colors shadow-sm flex items-center gap-1"
+                      className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-all shadow-sm flex items-center gap-1.5 min-h-[40px] active:scale-95"
                       title="Apply this recommendation into your current active parameters"
                     >
-                      <Check className="w-3.5 h-3.5 stroke-[3]" />
+                      <Check className="w-4 h-4 stroke-[3]" />
                       <span>Apply</span>
                     </button>
                   </div>

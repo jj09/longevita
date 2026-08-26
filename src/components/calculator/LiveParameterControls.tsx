@@ -84,15 +84,36 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
           <div className="space-y-5">
             {/* Blood Pressure Slider */}
             <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                 <div>
-                  <label className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                  <label className="text-sm font-bold text-slate-200 flex items-center gap-1.5">
                     <span>Systolic Blood Pressure</span>
                   </label>
-                  <p className="text-[11px] text-slate-400">Target: &lt;120 mmHg optimal</p>
+                  <p className="text-xs text-slate-400">Target: &lt;120 mmHg optimal</p>
                 </div>
-                <div className={`px-2.5 py-1 rounded-md text-xs font-bold border transition-colors ${sysInfo.badgeClass}`}>
-                  {profile.systolicBP} mmHg • {sysInfo.category}
+                <div className="flex items-center gap-2 self-start sm:self-auto">
+                  <div className="flex items-center bg-slate-950 border border-slate-700/80 rounded-lg p-0.5 shadow-inner">
+                    <button
+                      type="button"
+                      onClick={() => update('systolicBP', Math.max(95, profile.systolicBP - 1))}
+                      className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-base font-bold select-none"
+                      title="Decrease Systolic BP"
+                    >
+                      −
+                    </button>
+                    <span className="w-px h-4 bg-slate-800" />
+                    <button
+                      type="button"
+                      onClick={() => update('systolicBP', Math.min(180, profile.systolicBP + 1))}
+                      className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-base font-bold select-none"
+                      title="Increase Systolic BP"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <div className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold border transition-colors ${sysInfo.badgeClass}`}>
+                    {profile.systolicBP} mmHg • {sysInfo.category}
+                  </div>
                 </div>
               </div>
               <input
@@ -102,18 +123,18 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
                 step="1"
                 value={profile.systolicBP}
                 onChange={(e) => update('systolicBP', Number(e.target.value))}
-                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+                className="w-full"
               />
               {/* Mathematically Accurate Segmented Visual Scale */}
               <div className="mt-2 space-y-1">
-                <div className="h-1.5 w-full rounded-full flex overflow-hidden bg-slate-800">
+                <div className="h-2 w-full rounded-full flex overflow-hidden bg-slate-800">
                   <div style={{ width: '29.4%' }} className="bg-emerald-500/70" title="Optimal: <120" />
                   <div style={{ width: '11.8%' }} className="bg-cyan-500/60" title="Elevated: 120-129" />
                   <div style={{ width: '11.8%' }} className="bg-amber-500/60" title="Stage 1: 130-139" />
                   <div style={{ width: '23.5%' }} className="bg-orange-500/60" title="Stage 2: 140-159" />
                   <div style={{ width: '23.5%' }} className="bg-rose-500/60" title="Severe: 160+" />
                 </div>
-                <div className="flex text-[10px] text-slate-400 font-medium">
+                <div className="flex text-xs text-slate-400 font-medium">
                   <span style={{ width: '29.4%' }} className="text-emerald-400 truncate">Optimal (&lt;120)</span>
                   <span style={{ width: '11.8%' }} className="text-cyan-400 truncate pl-0.5">120-129</span>
                   <span style={{ width: '11.8%' }} className="text-amber-400 truncate pl-0.5">130-139</span>
@@ -125,13 +146,34 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
 
             {/* Diastolic BP Slider */}
             <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                 <div>
-                  <label className="text-xs font-bold text-slate-200">Diastolic Blood Pressure</label>
-                  <p className="text-[11px] text-slate-400">Target: &lt;80 mmHg optimal</p>
+                  <label className="text-sm font-bold text-slate-200">Diastolic Blood Pressure</label>
+                  <p className="text-xs text-slate-400">Target: &lt;80 mmHg optimal</p>
                 </div>
-                <div className={`px-2.5 py-1 rounded-md text-xs font-bold border transition-colors ${diaInfo.badgeClass}`}>
-                  {profile.diastolicBP} mmHg • {diaInfo.category}
+                <div className="flex items-center gap-2 self-start sm:self-auto">
+                  <div className="flex items-center bg-slate-950 border border-slate-700/80 rounded-lg p-0.5 shadow-inner">
+                    <button
+                      type="button"
+                      onClick={() => update('diastolicBP', Math.max(60, profile.diastolicBP - 1))}
+                      className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-base font-bold select-none"
+                      title="Decrease Diastolic BP"
+                    >
+                      −
+                    </button>
+                    <span className="w-px h-4 bg-slate-800" />
+                    <button
+                      type="button"
+                      onClick={() => update('diastolicBP', Math.min(115, profile.diastolicBP + 1))}
+                      className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-base font-bold select-none"
+                      title="Increase Diastolic BP"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <div className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold border transition-colors ${diaInfo.badgeClass}`}>
+                    {profile.diastolicBP} mmHg • {diaInfo.category}
+                  </div>
                 </div>
               </div>
               <input
@@ -141,17 +183,17 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
                 step="1"
                 value={profile.diastolicBP}
                 onChange={(e) => update('diastolicBP', Number(e.target.value))}
-                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+                className="w-full"
               />
               {/* Mathematically Accurate Segmented Visual Scale */}
               <div className="mt-2 space-y-1">
-                <div className="h-1.5 w-full rounded-full flex overflow-hidden bg-slate-800">
+                <div className="h-2 w-full rounded-full flex overflow-hidden bg-slate-800">
                   <div style={{ width: '36.4%' }} className="bg-emerald-500/70" title="Optimal: <80" />
                   <div style={{ width: '18.2%' }} className="bg-amber-500/60" title="Stage 1: 80-89" />
                   <div style={{ width: '18.2%' }} className="bg-orange-500/60" title="Stage 2: 90-99" />
                   <div style={{ width: '27.2%' }} className="bg-rose-500/60" title="Severe: 100+" />
                 </div>
-                <div className="flex text-[10px] text-slate-400 font-medium">
+                <div className="flex text-xs text-slate-400 font-medium">
                   <span style={{ width: '36.4%' }} className="text-emerald-400 truncate">Optimal (&lt;80)</span>
                   <span style={{ width: '18.2%' }} className="text-amber-400 truncate pl-0.5">80-89</span>
                   <span style={{ width: '18.2%' }} className="text-orange-400 truncate pl-0.5">90-99</span>
@@ -162,10 +204,10 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
 
             {/* Blood Sugar / Metabolic Status */}
             <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-              <label className="text-xs font-bold text-slate-200 block mb-1">
+              <label className="text-sm font-bold text-slate-200 block mb-1">
                 Fasting Blood Sugar & Metabolic Health
               </label>
-              <p className="text-[11px] text-slate-400 mb-3">Fasting glucose & HbA1c control</p>
+              <p className="text-xs text-slate-400 mb-3">Fasting glucose & HbA1c control</p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {[
                   { value: 'normal', label: 'Normal (<100 mg/dL)', desc: 'Optimal' },
@@ -176,14 +218,14 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
                   <button
                     key={opt.value}
                     onClick={() => update('bloodSugar', opt.value as any)}
-                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                    className={`p-3 rounded-xl text-left text-xs sm:text-sm transition-all border min-h-[48px] ${
                       profile.bloodSugar === opt.value
                         ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40 font-bold'
                         : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
                     }`}
                   >
                     <div>{opt.label}</div>
-                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                    <div className="text-xs text-slate-500 mt-0.5">{opt.desc}</div>
                   </button>
                 ))}
               </div>
@@ -191,10 +233,10 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
 
             {/* Lipid / Cholesterol Profile */}
             <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-              <label className="text-xs font-bold text-slate-200 block mb-1">
+              <label className="text-sm font-bold text-slate-200 block mb-1">
                 Lipids & Cholesterol (ApoB / LDL / Triglycerides)
               </label>
-              <p className="text-[11px] text-slate-400 mb-3">Cardiovascular atheroma plaque risk</p>
+              <p className="text-xs text-slate-400 mb-3">Cardiovascular atheroma plaque risk</p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {[
                   { value: 'optimal', label: 'Optimal Lipids', desc: 'ApoB < 70 mg/dL' },
@@ -205,14 +247,14 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
                   <button
                     key={opt.value}
                     onClick={() => update('lipidStatus', opt.value as any)}
-                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                    className={`p-3 rounded-xl text-left text-xs sm:text-sm transition-all border min-h-[48px] ${
                       profile.lipidStatus === opt.value
                         ? 'bg-cyan-500/15 text-cyan-300 border-cyan-500/40 font-bold'
                         : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
                     }`}
                   >
                     <div>{opt.label}</div>
-                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                    <div className="text-xs text-slate-500 mt-0.5">{opt.desc}</div>
                   </button>
                 ))}
               </div>
@@ -220,13 +262,34 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
 
             {/* BMI Slider */}
             <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                 <div>
-                  <label className="text-xs font-bold text-slate-200">Body Mass Index (BMI)</label>
-                  <p className="text-[11px] text-slate-400">Healthy longevity range: 18.5 – 24.9</p>
+                  <label className="text-sm font-bold text-slate-200">Body Mass Index (BMI)</label>
+                  <p className="text-xs text-slate-400">Healthy longevity range: 18.5 – 24.9</p>
                 </div>
-                <div className={`px-2.5 py-1 rounded-md text-xs font-bold border transition-colors ${bmiInfo.badgeClass}`}>
-                  BMI {profile.bmi.toFixed(1)} • {bmiInfo.category}
+                <div className="flex items-center gap-2 self-start sm:self-auto">
+                  <div className="flex items-center bg-slate-950 border border-slate-700/80 rounded-lg p-0.5 shadow-inner">
+                    <button
+                      type="button"
+                      onClick={() => update('bmi', Math.max(16.0, Number((profile.bmi - 0.1).toFixed(1))))}
+                      className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-base font-bold select-none"
+                      title="Decrease BMI by 0.1"
+                    >
+                      −
+                    </button>
+                    <span className="w-px h-4 bg-slate-800" />
+                    <button
+                      type="button"
+                      onClick={() => update('bmi', Math.min(42.0, Number((profile.bmi + 0.1).toFixed(1))))}
+                      className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-base font-bold select-none"
+                      title="Increase BMI by 0.1"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <div className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold border transition-colors ${bmiInfo.badgeClass}`}>
+                    BMI {profile.bmi.toFixed(1)} • {bmiInfo.category}
+                  </div>
                 </div>
               </div>
               <input
@@ -236,17 +299,17 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
                 step="0.1"
                 value={profile.bmi}
                 onChange={(e) => update('bmi', Number(e.target.value))}
-                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+                className="w-full"
               />
               {/* Mathematically Accurate Segmented Visual Scale */}
               <div className="mt-2 space-y-1">
-                <div className="h-1.5 w-full rounded-full flex overflow-hidden bg-slate-800">
+                <div className="h-2 w-full rounded-full flex overflow-hidden bg-slate-800">
                   <div style={{ width: '9.6%' }} className="bg-amber-500/60" title="Underweight: <18.5" />
                   <div style={{ width: '25.0%' }} className="bg-emerald-500/70" title="Optimal: 18.5 - 24.9" />
                   <div style={{ width: '19.2%' }} className="bg-amber-500/60" title="Overweight: 25.0 - 29.9" />
                   <div style={{ width: '46.2%' }} className="bg-rose-500/60" title="Obese: 30.0+" />
                 </div>
-                <div className="flex text-[10px] text-slate-400 font-medium">
+                <div className="flex text-xs text-slate-400 font-medium">
                   <span style={{ width: '9.6%' }} className="text-amber-400 truncate">&lt;18.5</span>
                   <span style={{ width: '25.0%' }} className="text-emerald-400 truncate pl-0.5">18.5-24.9 Optimal</span>
                   <span style={{ width: '19.2%' }} className="text-amber-400 truncate pl-0.5">25-29.9 Overweight</span>
@@ -266,13 +329,34 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
 
             {/* Resting Heart Rate Slider */}
             <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                 <div>
-                  <label className="text-xs font-bold text-slate-200">Resting Heart Rate</label>
-                  <p className="text-[11px] text-slate-400">Cardiovascular fitness & vagal tone</p>
+                  <label className="text-sm font-bold text-slate-200">Resting Heart Rate</label>
+                  <p className="text-xs text-slate-400">Cardiovascular fitness & vagal tone</p>
                 </div>
-                <div className={`px-2.5 py-1 rounded-md text-xs font-bold border transition-colors ${hrInfo.badgeClass}`}>
-                  {profile.restingHeartRate} bpm • {hrInfo.category}
+                <div className="flex items-center gap-2 self-start sm:self-auto">
+                  <div className="flex items-center bg-slate-950 border border-slate-700/80 rounded-lg p-0.5 shadow-inner">
+                    <button
+                      type="button"
+                      onClick={() => update('restingHeartRate', Math.max(45, profile.restingHeartRate - 1))}
+                      className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-base font-bold select-none"
+                      title="Decrease Resting HR"
+                    >
+                      −
+                    </button>
+                    <span className="w-px h-4 bg-slate-800" />
+                    <button
+                      type="button"
+                      onClick={() => update('restingHeartRate', Math.min(105, profile.restingHeartRate + 1))}
+                      className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-base font-bold select-none"
+                      title="Increase Resting HR"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <div className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold border transition-colors ${hrInfo.badgeClass}`}>
+                    {profile.restingHeartRate} bpm • {hrInfo.category}
+                  </div>
                 </div>
               </div>
               <input
@@ -282,18 +366,18 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
                 step="1"
                 value={profile.restingHeartRate}
                 onChange={(e) => update('restingHeartRate', Number(e.target.value))}
-                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+                className="w-full"
               />
               {/* Mathematically Accurate Segmented Visual Scale */}
               <div className="mt-2 space-y-1">
-                <div className="h-1.5 w-full rounded-full flex overflow-hidden bg-slate-800">
+                <div className="h-2 w-full rounded-full flex overflow-hidden bg-slate-800">
                   <div style={{ width: '25.0%' }} className="bg-emerald-500/70" title="Athletic: <60 bpm" />
                   <div style={{ width: '16.7%' }} className="bg-teal-500/60" title="Good: 60-70 bpm" />
                   <div style={{ width: '16.7%' }} className="bg-cyan-500/60" title="Normal: 71-80 bpm" />
                   <div style={{ width: '16.7%' }} className="bg-amber-500/60" title="Elevated: 81-90 bpm" />
                   <div style={{ width: '24.9%' }} className="bg-rose-500/60" title="High: >90 bpm" />
                 </div>
-                <div className="flex text-[10px] text-slate-400 font-medium">
+                <div className="flex text-xs text-slate-400 font-medium">
                   <span style={{ width: '25.0%' }} className="text-emerald-400 truncate">&lt;60 Athletic</span>
                   <span style={{ width: '16.7%' }} className="text-teal-400 truncate pl-0.5">60-70</span>
                   <span style={{ width: '16.7%' }} className="text-cyan-400 truncate pl-0.5">71-80</span>
@@ -569,13 +653,34 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
 
             {/* Water Glasses */}
             <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                 <div>
-                  <label className="text-xs font-bold text-slate-200">Daily Water Hydration</label>
-                  <p className="text-[11px] text-slate-400">Optimal: 6 - 8+ glasses</p>
+                  <label className="text-sm font-bold text-slate-200">Daily Water Hydration</label>
+                  <p className="text-xs text-slate-400">Optimal: 6 - 8+ glasses</p>
                 </div>
-                <div className={`px-2.5 py-1 rounded-md text-xs font-bold border transition-colors ${waterInfo.badgeClass}`}>
-                  {profile.dailyWaterGlasses} glasses/day • {waterInfo.category}
+                <div className="flex items-center gap-2 self-start sm:self-auto">
+                  <div className="flex items-center bg-slate-950 border border-slate-700/80 rounded-lg p-0.5 shadow-inner">
+                    <button
+                      type="button"
+                      onClick={() => update('dailyWaterGlasses', Math.max(2, profile.dailyWaterGlasses - 1))}
+                      className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-base font-bold select-none"
+                      title="Decrease Glasses"
+                    >
+                      −
+                    </button>
+                    <span className="w-px h-4 bg-slate-800" />
+                    <button
+                      type="button"
+                      onClick={() => update('dailyWaterGlasses', Math.min(14, profile.dailyWaterGlasses + 1))}
+                      className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-base font-bold select-none"
+                      title="Increase Glasses"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <div className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold border transition-colors ${waterInfo.badgeClass}`}>
+                    {profile.dailyWaterGlasses} glasses/day • {waterInfo.category}
+                  </div>
                 </div>
               </div>
               <input
@@ -585,15 +690,15 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
                 step="1"
                 value={profile.dailyWaterGlasses}
                 onChange={(e) => update('dailyWaterGlasses', Number(e.target.value))}
-                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+                className="w-full"
               />
               {/* Mathematically Accurate Segmented Visual Scale */}
               <div className="mt-2 space-y-1">
-                <div className="h-1.5 w-full rounded-full flex overflow-hidden bg-slate-800">
+                <div className="h-2 w-full rounded-full flex overflow-hidden bg-slate-800">
                   <div style={{ width: '33.3%' }} className="bg-amber-500/60" title="Suboptimal: 2-5 glasses" />
                   <div style={{ width: '66.7%' }} className="bg-cyan-500/70" title="Optimal: 6-14 glasses" />
                 </div>
-                <div className="flex text-[10px] text-slate-400 font-medium">
+                <div className="flex text-xs text-slate-400 font-medium">
                   <span style={{ width: '33.3%' }} className="text-amber-400 truncate">2-5 Suboptimal</span>
                   <span style={{ width: '66.7%' }} className="text-cyan-400 truncate pl-1">6-14 Optimal (6-8+ Recommended)</span>
                 </div>
@@ -816,13 +921,34 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
           <div className="space-y-5">
             {/* Age Slider */}
             <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                 <div>
-                  <label className="text-xs font-bold text-slate-200">Current Chronological Age</label>
-                  <p className="text-[11px] text-slate-400">Actuarial survival tables adjust baseline dynamically</p>
+                  <label className="text-sm font-bold text-slate-200">Current Chronological Age</label>
+                  <p className="text-xs text-slate-400">Actuarial survival tables adjust baseline dynamically</p>
                 </div>
-                <div className={`px-2.5 py-1 rounded-md text-xs font-bold border transition-colors ${ageInfo.badgeClass}`}>
-                  {profile.age} years old • {ageInfo.category}
+                <div className="flex items-center gap-2 self-start sm:self-auto">
+                  <div className="flex items-center bg-slate-950 border border-slate-700/80 rounded-lg p-0.5 shadow-inner">
+                    <button
+                      type="button"
+                      onClick={() => update('age', Math.max(18, profile.age - 1))}
+                      className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-base font-bold select-none"
+                      title="Decrease Age"
+                    >
+                      −
+                    </button>
+                    <span className="w-px h-4 bg-slate-800" />
+                    <button
+                      type="button"
+                      onClick={() => update('age', Math.min(95, profile.age + 1))}
+                      className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 transition-all text-base font-bold select-none"
+                      title="Increase Age"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <div className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold border transition-colors ${ageInfo.badgeClass}`}>
+                    {profile.age} years old • {ageInfo.category}
+                  </div>
                 </div>
               </div>
               <input
@@ -832,17 +958,17 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
                 step="1"
                 value={profile.age}
                 onChange={(e) => update('age', Number(e.target.value))}
-                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+                className="w-full"
               />
               {/* Mathematically Accurate Segmented Visual Scale */}
               <div className="mt-2 space-y-1">
-                <div className="h-1.5 w-full rounded-full flex overflow-hidden bg-slate-800">
+                <div className="h-2 w-full rounded-full flex overflow-hidden bg-slate-800">
                   <div style={{ width: '22.1%' }} className="bg-cyan-500/60" title="Young Adult: 18–34" />
                   <div style={{ width: '26.0%' }} className="bg-emerald-500/70" title="Prime Midlife: 35–54" />
                   <div style={{ width: '26.0%' }} className="bg-amber-500/60" title="Mature Adult: 55–74" />
                   <div style={{ width: '25.9%' }} className="bg-purple-500/60" title="Senior Horizon: 75–95" />
                 </div>
-                <div className="flex text-[10px] text-slate-400 font-medium">
+                <div className="flex text-xs text-slate-400 font-medium">
                   <span style={{ width: '22.1%' }} className="text-cyan-400 truncate">18 Min</span>
                   <span style={{ width: '26.0%' }} className="text-emerald-400 truncate pl-0.5">35y Prime</span>
                   <span style={{ width: '26.0%' }} className="text-amber-400 truncate pl-0.5">55y Mature</span>

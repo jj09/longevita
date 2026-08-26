@@ -592,18 +592,52 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
             {/* Render Question Input: Slider */}
             {currentQ.type === 'slider' && currentQ.sliderConfig && (
               <div className="py-6 space-y-6">
-                {/* Dynamic Value & Category Card */}
+                {/* Dynamic Value & Category Card with Mobile Steppers */}
                 <div className="flex flex-col items-center justify-center">
-                  <div className="px-6 py-4 rounded-2xl bg-slate-900 border border-slate-700 text-center shadow-lg min-w-[200px]">
-                    <div className="flex items-baseline justify-center gap-1.5">
-                      <span className="text-4xl sm:text-5xl font-black text-cyan-300">
-                        {currentQ.id === 'bmi'
-                          ? ((answers.bmi ?? initialProfile.bmi) as number).toFixed(1)
-                          : ((answers[currentQ.field] ?? initialProfile[currentQ.field]) as number)}
-                      </span>
-                      <span className="text-slate-400 text-sm font-semibold">
-                        {currentQ.sliderConfig.unit}
-                      </span>
+                  <div className="px-6 py-4 rounded-2xl bg-slate-900 border border-slate-700 text-center shadow-lg min-w-[240px]">
+                    <div className="flex items-center justify-center gap-4">
+                      {/* Stepper Decrement */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const current = (answers[currentQ.field] ?? initialProfile[currentQ.field]) as number;
+                          const step = currentQ.sliderConfig!.step;
+                          const min = currentQ.sliderConfig!.min;
+                          const next = Math.max(min, Number((current - step).toFixed(step < 1 ? 1 : 0)));
+                          setAnswers((prev) => ({ ...prev, [currentQ.field]: next }));
+                        }}
+                        className="w-10 h-10 rounded-xl bg-slate-950 border border-slate-700/80 text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 flex items-center justify-center text-xl font-bold transition-all select-none shadow-sm"
+                        title="Decrease value"
+                      >
+                        −
+                      </button>
+
+                      <div className="flex items-baseline justify-center gap-1.5 min-w-[110px]">
+                        <span className="text-4xl sm:text-5xl font-black text-cyan-300">
+                          {currentQ.id === 'bmi'
+                            ? ((answers.bmi ?? initialProfile.bmi) as number).toFixed(1)
+                            : ((answers[currentQ.field] ?? initialProfile[currentQ.field]) as number)}
+                        </span>
+                        <span className="text-slate-400 text-sm font-semibold">
+                          {currentQ.sliderConfig.unit}
+                        </span>
+                      </div>
+
+                      {/* Stepper Increment */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const current = (answers[currentQ.field] ?? initialProfile[currentQ.field]) as number;
+                          const step = currentQ.sliderConfig!.step;
+                          const max = currentQ.sliderConfig!.max;
+                          const next = Math.min(max, Number((current + step).toFixed(step < 1 ? 1 : 0)));
+                          setAnswers((prev) => ({ ...prev, [currentQ.field]: next }));
+                        }}
+                        className="w-10 h-10 rounded-xl bg-slate-950 border border-slate-700/80 text-slate-300 hover:text-white hover:bg-slate-800 active:scale-90 flex items-center justify-center text-xl font-bold transition-all select-none shadow-sm"
+                        title="Increase value"
+                      >
+                        +
+                      </button>
                     </div>
 
                     {/* Dynamic Category Pill for BMI, Systolic BP, Resting HR, Age */}
@@ -654,7 +688,7 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
                   onChange={(e) =>
                     setAnswers((prev) => ({ ...prev, [currentQ.field]: Number(e.target.value) }))
                   }
-                  className="w-full h-3 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+                  className="w-full"
                 />
 
                 {/* Accurate Segmented Scales for Specific Sliders */}
@@ -744,14 +778,14 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
             )}
 
             {/* Bottom Step Navigation Buttons */}
-            <div className="mt-10 pt-6 border-t border-slate-800/80 flex items-center justify-between">
+            <div className="mt-8 sm:mt-10 pt-6 border-t border-slate-800/80 flex items-center justify-between gap-3">
               <button
                 onClick={handleBack}
                 disabled={currentIndex === 0}
-                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition-colors ${
+                className={`px-4 py-3 sm:px-5 sm:py-3.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all min-h-[48px] ${
                   currentIndex === 0
-                    ? 'text-slate-600 cursor-not-allowed'
-                    : 'text-slate-300 hover:text-white bg-slate-900 border border-slate-800 hover:border-slate-700'
+                    ? 'text-slate-600 cursor-not-allowed opacity-50'
+                    : 'text-slate-200 hover:text-white bg-slate-900 border border-slate-800 hover:border-slate-700 active:scale-95'
                 }`}
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -761,9 +795,9 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
               <button
                 onClick={handleNext}
                 disabled={!isCurrentAnswered}
-                className={`px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 shadow-lg ${
+                className={`px-5 py-3 sm:px-7 sm:py-3.5 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center gap-2 shadow-lg min-h-[48px] ${
                   isCurrentAnswered
-                    ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-emerald-500/20 cursor-pointer'
+                    ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-emerald-500/20 active:scale-95 cursor-pointer'
                     : 'bg-slate-800/80 text-slate-500 border border-slate-700/60 cursor-not-allowed shadow-none opacity-60'
                 }`}
               >
@@ -774,15 +808,15 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
           </div>
         ) : (
           /* Completion Screen */
-          <div className="glass-panel rounded-3xl p-8 sm:p-12 border border-emerald-500/40 text-center shadow-2xl relative overflow-hidden">
+          <div className="glass-panel rounded-3xl p-6 sm:p-12 border border-emerald-500/40 text-center shadow-2xl relative overflow-hidden">
             <div className="w-16 h-16 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center mx-auto mb-6">
               <Trophy className="w-8 h-8" />
             </div>
 
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
               Assessment Complete!
             </h2>
-            <p className="text-base text-slate-300 max-w-md mx-auto mt-3 leading-relaxed">
+            <p className="text-sm sm:text-base text-slate-300 max-w-md mx-auto mt-3 leading-relaxed">
               Your personalized longevity analysis is ready with real-time live parameter controls and 
               Bang-for-the-Buck recommendations.
             </p>
@@ -790,7 +824,7 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
             <div className="mt-8 flex flex-col items-center">
               <button
                 onClick={() => onComplete(completedProfile || initialProfile)}
-                className="px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 text-slate-950 font-extrabold text-lg transition-all hover:scale-105 hover:shadow-2xl hover:shadow-emerald-500/40 flex items-center gap-3"
+                className="w-full sm:w-auto px-6 py-4 sm:px-8 sm:py-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 text-slate-950 font-extrabold text-base sm:text-lg transition-all hover:scale-105 active:scale-95 hover:shadow-2xl hover:shadow-emerald-500/40 flex items-center justify-center gap-3 min-h-[52px]"
               >
                 <span>View My Longevity Report & Live Optimizer</span>
                 <ArrowRight className="w-5 h-5" />

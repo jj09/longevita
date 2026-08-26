@@ -130,22 +130,22 @@ export const BMICalculator: React.FC<BMICalculatorProps> = ({
   return (
     <div className="mt-3 rounded-2xl bg-slate-900/90 border border-slate-800 p-4 transition-all">
       {/* Toggle Button */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-2 text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors"
+          className="flex items-center gap-2 text-xs sm:text-sm font-bold text-emerald-400 hover:text-emerald-300 transition-colors py-1"
         >
           <Calculator className="w-4 h-4" />
           <span>{isOpen ? 'Hide Height & Weight Calculator' : "Don't know your BMI? Calculate from Height & Weight"}</span>
         </button>
 
         {isOpen && (
-          <div className="flex items-center bg-slate-950 p-0.5 rounded-lg border border-slate-800 text-[11px] font-semibold">
+          <div className="flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs font-semibold self-start sm:self-auto">
             <button
               type="button"
               onClick={() => handleUnitChange('imperial')}
-              className={`px-2.5 py-0.5 rounded-md transition-all ${
+              className={`px-3 py-1.5 rounded-lg transition-all ${
                 unit === 'imperial'
                   ? 'bg-emerald-500/20 text-emerald-300 font-bold'
                   : 'text-slate-400 hover:text-slate-200'
@@ -156,7 +156,7 @@ export const BMICalculator: React.FC<BMICalculatorProps> = ({
             <button
               type="button"
               onClick={() => handleUnitChange('metric')}
-              className={`px-2.5 py-0.5 rounded-md transition-all ${
+              className={`px-3 py-1.5 rounded-lg transition-all ${
                 unit === 'metric'
                   ? 'bg-emerald-500/20 text-emerald-300 font-bold'
                   : 'text-slate-400 hover:text-slate-200'
@@ -173,7 +173,7 @@ export const BMICalculator: React.FC<BMICalculatorProps> = ({
         <div className="mt-4 pt-4 border-t border-slate-800/80 space-y-4">
           {/* Row 1: Gender Selection */}
           <div>
-            <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5 flex items-center gap-1.5">
+            <label className="text-xs font-bold text-slate-300 uppercase tracking-wider block mb-1.5 flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5 text-cyan-400" />
               <span>Biological Sex</span>
             </label>
@@ -181,7 +181,7 @@ export const BMICalculator: React.FC<BMICalculatorProps> = ({
               <button
                 type="button"
                 onClick={() => handleSexChange('male')}
-                className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border ${
+                className={`py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all border min-h-[44px] ${
                   sex === 'male'
                     ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-sm shadow-cyan-500/10'
                     : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-slate-200'
@@ -192,7 +192,7 @@ export const BMICalculator: React.FC<BMICalculatorProps> = ({
               <button
                 type="button"
                 onClick={() => handleSexChange('female')}
-                className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border ${
+                className={`py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all border min-h-[44px] ${
                   sex === 'female'
                     ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-sm shadow-cyan-500/10'
                     : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-slate-200'
@@ -207,7 +207,7 @@ export const BMICalculator: React.FC<BMICalculatorProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {/* Height Input */}
             <div>
-              <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5 flex items-center gap-1.5">
+              <label className="text-xs font-bold text-slate-300 uppercase tracking-wider block mb-1.5 flex items-center gap-1.5">
                 <Ruler className="w-3.5 h-3.5 text-emerald-400" />
                 <span>Height</span>
               </label>
@@ -223,9 +223,9 @@ export const BMICalculator: React.FC<BMICalculatorProps> = ({
                       onChange={(e) =>
                         handleImperialChange(Number(e.target.value) || 0, inches, weightLbs)
                       }
-                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-bold focus:outline-none focus:border-emerald-500 pr-8"
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-base text-white font-bold focus:outline-none focus:border-emerald-500 pr-8 h-11"
                     />
-                    <span className="absolute right-2.5 top-2.5 text-xs text-slate-500 font-semibold">
+                    <span className="absolute right-3 top-3 text-xs text-slate-400 font-semibold pointer-events-none">
                       ft
                     </span>
                   </div>
@@ -238,9 +238,9 @@ export const BMICalculator: React.FC<BMICalculatorProps> = ({
                       onChange={(e) =>
                         handleImperialChange(feet, Number(e.target.value) || 0, weightLbs)
                       }
-                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-bold focus:outline-none focus:border-emerald-500 pr-8"
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-base text-white font-bold focus:outline-none focus:border-emerald-500 pr-8 h-11"
                     />
-                    <span className="absolute right-2.5 top-2.5 text-xs text-slate-500 font-semibold">
+                    <span className="absolute right-3 top-3 text-xs text-slate-400 font-semibold pointer-events-none">
                       in
                     </span>
                   </div>
@@ -253,9 +253,9 @@ export const BMICalculator: React.FC<BMICalculatorProps> = ({
                     max={240}
                     value={heightCm}
                     onChange={(e) => handleMetricChange(Number(e.target.value) || 0, weightKg)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-bold focus:outline-none focus:border-emerald-500 pr-10"
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-base text-white font-bold focus:outline-none focus:border-emerald-500 pr-10 h-11"
                   />
-                  <span className="absolute right-3 top-2.5 text-xs text-slate-500 font-semibold">
+                  <span className="absolute right-3 top-3 text-xs text-slate-400 font-semibold pointer-events-none">
                     cm
                   </span>
                 </div>
@@ -264,7 +264,7 @@ export const BMICalculator: React.FC<BMICalculatorProps> = ({
 
             {/* Weight Input */}
             <div>
-              <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5 flex items-center gap-1.5">
+              <label className="text-xs font-bold text-slate-300 uppercase tracking-wider block mb-1.5 flex items-center gap-1.5">
                 <Scale className="w-3.5 h-3.5 text-emerald-400" />
                 <span>Weight</span>
               </label>
@@ -280,9 +280,9 @@ export const BMICalculator: React.FC<BMICalculatorProps> = ({
                     onChange={(e) =>
                       handleImperialChange(feet, inches, Number(e.target.value) || 0)
                     }
-                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-bold focus:outline-none focus:border-emerald-500 pr-10"
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-base text-white font-bold focus:outline-none focus:border-emerald-500 pr-10 h-11"
                   />
-                  <span className="absolute right-3 top-2.5 text-xs text-slate-500 font-semibold">
+                  <span className="absolute right-3 top-3 text-xs text-slate-400 font-semibold pointer-events-none">
                     lbs
                   </span>
                 </div>
@@ -295,9 +295,9 @@ export const BMICalculator: React.FC<BMICalculatorProps> = ({
                     step={0.5}
                     value={weightKg}
                     onChange={(e) => handleMetricChange(heightCm, Number(e.target.value) || 0)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-bold focus:outline-none focus:border-emerald-500 pr-10"
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-base text-white font-bold focus:outline-none focus:border-emerald-500 pr-10 h-11"
                   />
-                  <span className="absolute right-3 top-2.5 text-xs text-slate-500 font-semibold">
+                  <span className="absolute right-3 top-3 text-xs text-slate-400 font-semibold pointer-events-none">
                     kg
                   </span>
                 </div>
@@ -306,25 +306,25 @@ export const BMICalculator: React.FC<BMICalculatorProps> = ({
           </div>
 
           {/* Real-time Calculation Result Banner */}
-          <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between">
+          <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-3">
               <div className="text-left">
-                <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400">
+                <div className="text-xs uppercase font-bold tracking-wider text-slate-400">
                   Calculated BMI
                 </div>
-                <div className="text-xl font-black text-emerald-400">
+                <div className="text-2xl font-black text-emerald-400">
                   {currentBMI.toFixed(1)}
                 </div>
               </div>
-              <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${categoryInfo.badgeClass}`}>
+              <span className={`px-2.5 py-1 rounded-full text-xs sm:text-sm font-bold border ${categoryInfo.badgeClass}`}>
                 {categoryInfo.category}
               </span>
             </div>
 
             {healthyWeight && (
-              <div className="text-right text-[11px] text-slate-400 hidden sm:block">
+              <div className="text-left sm:text-right text-xs text-slate-300">
                 <span>Healthy weight range: </span>
-                <strong className="text-emerald-300">{healthyWeight}</strong>
+                <strong className="text-emerald-300 font-bold">{healthyWeight}</strong>
               </div>
             )}
           </div>

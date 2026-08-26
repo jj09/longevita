@@ -89,22 +89,22 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
 
         {/* Primary CTA Button: Take the Quiz */}
-        <div className="mt-10 flex flex-col items-center">
+        <div className="mt-8 sm:mt-10 flex flex-col items-center w-full px-4">
           <button
             onClick={onStartQuiz}
-            className="group relative px-8 py-4 sm:px-10 sm:py-5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 text-slate-950 font-extrabold text-lg sm:text-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-emerald-500/40 active:scale-95 flex items-center gap-3 ring-4 ring-emerald-500/20"
+            className="w-full sm:w-auto group relative px-8 py-4 sm:px-10 sm:py-5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 text-slate-950 font-extrabold text-lg sm:text-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-emerald-500/40 active:scale-95 flex items-center justify-center gap-3 ring-4 ring-emerald-500/20 min-h-[52px]"
           >
             <span>Take the Quiz</span>
             <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
           </button>
-          <span className="text-xs text-slate-400 mt-2 font-medium">
+          <span className="text-xs sm:text-sm text-slate-400 mt-2.5 font-medium text-center">
             Takes ~2 minutes • 1 question at a time • 100% Private & Client-side
           </span>
         </div>
 
         {/* Divider */}
-        <div className="w-full max-w-3xl my-16 border-t border-slate-800/80 relative flex items-center justify-center">
-          <span className="bg-slate-950 px-4 text-xs font-bold uppercase tracking-widest text-slate-500">
+        <div className="w-full max-w-3xl my-12 sm:my-16 border-t border-slate-800/80 relative flex items-center justify-center">
+          <span className="bg-slate-950 px-4 text-xs sm:text-sm font-bold uppercase tracking-widest text-slate-400">
             Or Explore an Archetype Directly
           </span>
         </div>
@@ -112,11 +112,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         {/* Archetype Cards Section */}
         <div className="w-full max-w-5xl text-left">
           <div className="mb-6 text-center">
-            <h2 className="text-xl font-bold text-slate-100 flex items-center justify-center gap-2">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-100 flex items-center justify-center gap-2">
               <Trophy className="w-5 h-5 text-amber-400" />
               <span>Explore Pre-Configured Lifestyle Archetypes</span>
             </h2>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs sm:text-sm text-slate-400 mt-1">
               Select any profile below to jump straight to the live simulator and test recommendations
             </p>
           </div>
@@ -126,28 +126,28 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               <div
                 key={archetype.id}
                 onClick={() => onSelectArchetype(archetype)}
-                className="group p-5 rounded-2xl bg-slate-900/60 border border-slate-800/90 hover:border-emerald-500/50 hover:bg-slate-900/90 transition-all duration-300 cursor-pointer flex flex-col justify-between hover:shadow-xl hover:shadow-emerald-500/10 hover:-translate-y-1"
+                className="group p-5 rounded-2xl bg-slate-900/60 border border-slate-800/90 hover:border-emerald-500/50 hover:bg-slate-900/90 transition-all duration-300 cursor-pointer flex flex-col justify-between hover:shadow-xl hover:shadow-emerald-500/10 hover:-translate-y-1 active:scale-[0.99]"
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <div className="text-3xl p-2.5 rounded-xl bg-slate-800/80 border border-slate-700/60 group-hover:scale-110 transition-transform">
                       {archetype.icon}
                     </div>
-                    <span className="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20 group-hover:bg-emerald-500 group-hover:text-slate-950 transition-colors">
+                    <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 group-hover:bg-emerald-500 group-hover:text-slate-950 transition-colors">
                       Explore Profile →
                     </span>
                   </div>
 
-                  <h3 className="text-base font-bold text-slate-100 group-hover:text-emerald-300 transition-colors">
+                  <h3 className="text-base sm:text-lg font-bold text-slate-100 group-hover:text-emerald-300 transition-colors">
                     {archetype.name}
                   </h3>
 
-                  <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+                  <p className="text-xs sm:text-sm text-slate-400 mt-2 leading-relaxed">
                     {archetype.shortDesc}
                   </p>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-slate-400">
+                <div className="mt-4 pt-3 border-t border-slate-800/60 flex items-center justify-between text-xs text-slate-400">
                   <span>Age: {archetype.profile.age}</span>
                   <span>BP: {archetype.profile.systolicBP}/{archetype.profile.diastolicBP}</span>
                   <span className="font-semibold text-slate-300 capitalize">{archetype.profile.cardio} cardio</span>

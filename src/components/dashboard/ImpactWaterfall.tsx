@@ -67,13 +67,13 @@ export const ImpactWaterfall: React.FC<ImpactWaterfallProps> = ({ categorySummar
                     {getCategoryIcon(cat.category)}
                   </div>
                   <div className="truncate">
-                    <div className="text-xs font-semibold text-slate-200 truncate">
+                    <div className="text-sm font-bold text-slate-100 truncate">
                       {cat.label}
                     </div>
-                    <div className="text-[11px] text-slate-400 flex items-center gap-2">
-                      <span className="text-emerald-400 font-medium">+{cat.positiveYears}y</span>
+                    <div className="text-xs text-slate-400 flex items-center gap-2 mt-0.5">
+                      <span className="text-emerald-400 font-semibold">+{cat.positiveYears}y</span>
                       <span>•</span>
-                      <span className="text-rose-400 font-medium">-{cat.negativeYears}y</span>
+                      <span className="text-rose-400 font-semibold">-{cat.negativeYears}y</span>
                       <span>•</span>
                       <span className="text-slate-400">{cat.items.length} factors</span>
                     </div>
