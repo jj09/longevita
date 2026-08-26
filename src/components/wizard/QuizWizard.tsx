@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import { UserProfile } from '../../engine/types';
 import { ArrowLeft, ArrowRight, CheckCircle2, HeartPulse, Dna, Activity, Dumbbell, Apple, Brain, Trophy } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import {
+  getBMICategoryInfo,
+  getSystolicBPInfo,
+  getRestingHRInfo,
+} from '../calculator/sliderHelpers';
 
 interface QuizWizardProps {
   initialProfile: UserProfile;
@@ -577,14 +582,47 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
             {/* Render Question Input: Slider */}
             {currentQ.type === 'slider' && currentQ.sliderConfig && (
               <div className="py-6 space-y-6">
-                <div className="flex items-center justify-center">
-                  <div className="px-6 py-3 rounded-2xl bg-slate-900 border border-slate-700 text-center shadow-lg">
-                    <span className="text-4xl sm:text-5xl font-black text-cyan-300">
-                      {profile[currentQ.field] as number}
-                    </span>
-                    <span className="text-slate-400 ml-2 text-sm font-semibold">
-                      {currentQ.sliderConfig.unit}
-                    </span>
+                {/* Dynamic Value & Category Card */}
+                <div className="flex flex-col items-center justify-center">
+                  <div className="px-6 py-4 rounded-2xl bg-slate-900 border border-slate-700 text-center shadow-lg min-w-[200px]">
+                    <div className="flex items-baseline justify-center gap-1.5">
+                      <span className="text-4xl sm:text-5xl font-black text-cyan-300">
+                        {currentQ.id === 'bmi'
+                          ? (profile.bmi).toFixed(1)
+                          : (profile[currentQ.field] as number)}
+                      </span>
+                      <span className="text-slate-400 text-sm font-semibold">
+                        {currentQ.sliderConfig.unit}
+                      </span>
+                    </div>
+
+                    {/* Dynamic Category Pill for BMI, Systolic BP, Resting HR */}
+                    {currentQ.id === 'bmi' && (() => {
+                      const info = getBMICategoryInfo(profile.bmi);
+                      return (
+                        <div className={`mt-2.5 px-3 py-1 rounded-full text-xs font-bold border ${info.badgeClass}`}>
+                          {info.category} ({info.label})
+                        </div>
+                      );
+                    })()}
+
+                    {currentQ.id === 'systolicBP' && (() => {
+                      const info = getSystolicBPInfo(profile.systolicBP);
+                      return (
+                        <div className={`mt-2.5 px-3 py-1 rounded-full text-xs font-bold border ${info.badgeClass}`}>
+                          {info.category} ({info.label})
+                        </div>
+                      );
+                    })()}
+
+                    {currentQ.id === 'restingHeartRate' && (() => {
+                      const info = getRestingHRInfo(profile.restingHeartRate);
+                      return (
+                        <div className={`mt-2.5 px-3 py-1 rounded-full text-xs font-bold border ${info.badgeClass}`}>
+                          {info.category} ({info.label})
+                        </div>
+                      );
+                    })()}
                   </div>
                 </div>
 
@@ -600,11 +638,70 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
                   className="w-full h-3 bg-slate-800 rounded-lg appearance-none cursor-pointer"
                 />
 
-                <div className="flex justify-between text-xs text-slate-500 font-medium">
-                  {Object.entries(currentQ.sliderConfig.labels).map(([val, label]) => (
-                    <span key={val}>{label}</span>
-                  ))}
-                </div>
+                {/* Accurate Segmented Scales for Specific Sliders */}
+                {currentQ.id === 'bmi' && (
+                  <div className="space-y-1">
+                    <div className="h-2 w-full rounded-full flex overflow-hidden bg-slate-800">
+                      <div style={{ width: '6.5%' }} className="bg-amber-500/60" title="Underweight: <18.5" />
+                      <div style={{ width: '27.8%' }} className="bg-emerald-500/70" title="Optimal: 18.5 - 24.9" />
+                      <div style={{ width: '21.7%' }} className="bg-amber-500/60" title="Overweight: 25.0 - 29.9" />
+                      <div style={{ width: '44.0%' }} className="bg-rose-500/60" title="Obese: 30.0+" />
+                    </div>
+                    <div className="flex text-xs text-slate-400 font-medium">
+                      <span style={{ width: '6.5%' }} className="text-amber-400 truncate">&lt;18.5</span>
+                      <span style={{ width: '27.8%' }} className="text-emerald-400 truncate pl-1">18.5-24.9 Optimal</span>
+                      <span style={{ width: '21.7%' }} className="text-amber-400 truncate pl-1">25-29.9 Overweight</span>
+                      <span style={{ width: '44.0%' }} className="text-rose-400 truncate text-right">30.0+ Obese</span>
+                    </div>
+                  </div>
+                )}
+
+                {currentQ.id === 'systolicBP' && (
+                  <div className="space-y-1">
+                    <div className="h-2 w-full rounded-full flex overflow-hidden bg-slate-800">
+                      <div style={{ width: '26.7%' }} className="bg-emerald-500/70" title="Optimal: <120" />
+                      <div style={{ width: '13.3%' }} className="bg-cyan-500/60" title="Elevated: 120-129" />
+                      <div style={{ width: '13.3%' }} className="bg-amber-500/60" title="Stage 1: 130-139" />
+                      <div style={{ width: '26.7%' }} className="bg-orange-500/60" title="Stage 2: 140-159" />
+                      <div style={{ width: '20.0%' }} className="bg-rose-500/60" title="Severe: 160+" />
+                    </div>
+                    <div className="flex text-xs text-slate-400 font-medium">
+                      <span style={{ width: '26.7%' }} className="text-emerald-400 truncate">&lt;120 Optimal</span>
+                      <span style={{ width: '13.3%' }} className="text-cyan-400 truncate pl-0.5">120-129</span>
+                      <span style={{ width: '13.3%' }} className="text-amber-400 truncate pl-0.5">130-139</span>
+                      <span style={{ width: '26.7%' }} className="text-orange-400 truncate pl-0.5">140-159</span>
+                      <span style={{ width: '20.0%' }} className="text-rose-400 truncate text-right">160+</span>
+                    </div>
+                  </div>
+                )}
+
+                {currentQ.id === 'restingHeartRate' && (
+                  <div className="space-y-1">
+                    <div className="h-2 w-full rounded-full flex overflow-hidden bg-slate-800">
+                      <div style={{ width: '27.3%' }} className="bg-emerald-500/70" title="Athletic: <60 bpm" />
+                      <div style={{ width: '18.2%' }} className="bg-teal-500/60" title="Good: 60-70 bpm" />
+                      <div style={{ width: '18.2%' }} className="bg-cyan-500/60" title="Normal: 71-80 bpm" />
+                      <div style={{ width: '18.2%' }} className="bg-amber-500/60" title="Elevated: 81-90 bpm" />
+                      <div style={{ width: '18.1%' }} className="bg-rose-500/60" title="High: >90 bpm" />
+                    </div>
+                    <div className="flex text-xs text-slate-400 font-medium">
+                      <span style={{ width: '27.3%' }} className="text-emerald-400 truncate">&lt;60 Athletic</span>
+                      <span style={{ width: '18.2%' }} className="text-teal-400 truncate pl-0.5">60-70</span>
+                      <span style={{ width: '18.2%' }} className="text-cyan-400 truncate pl-0.5">71-80</span>
+                      <span style={{ width: '18.2%' }} className="text-amber-400 truncate pl-0.5">81-90</span>
+                      <span style={{ width: '18.1%' }} className="text-rose-400 truncate text-right">&gt;90 High</span>
+                    </div>
+                  </div>
+                )}
+
+                {currentQ.id === 'age' && (
+                  <div className="flex justify-between text-xs text-slate-500 font-medium">
+                    <span>18 years (Min)</span>
+                    <span className="text-slate-400">40y</span>
+                    <span className="text-slate-400">65y</span>
+                    <span>95 years (Max)</span>
+                  </div>
+                )}
               </div>
             )}
 
