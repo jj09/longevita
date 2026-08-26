@@ -7,6 +7,7 @@ import {
   getDiastolicBPInfo,
   getRestingHRInfo,
   getHydrationInfo,
+  getAgeCategoryInfo,
 } from './sliderHelpers';
 
 interface LiveParameterControlsProps {
@@ -22,6 +23,7 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
   const diaInfo = getDiastolicBPInfo(profile.diastolicBP);
   const hrInfo = getRestingHRInfo(profile.restingHeartRate);
   const waterInfo = getHydrationInfo(profile.dailyWaterGlasses);
+  const ageInfo = getAgeCategoryInfo(profile.age);
 
   const update = <K extends keyof UserProfile>(key: K, value: UserProfile[K]) => {
     onChange({ ...profile, [key]: value });
@@ -809,8 +811,8 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
                   <label className="text-xs font-bold text-slate-200">Current Chronological Age</label>
                   <p className="text-[11px] text-slate-400">Actuarial survival tables adjust baseline dynamically</p>
                 </div>
-                <div className="px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-cyan-300 border border-slate-700">
-                  {profile.age} years old
+                <div className={`px-2.5 py-1 rounded-md text-xs font-bold border transition-colors ${ageInfo.badgeClass}`}>
+                  {profile.age} years old • {ageInfo.category}
                 </div>
               </div>
               <input
@@ -822,6 +824,21 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
                 onChange={(e) => update('age', Number(e.target.value))}
                 className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer"
               />
+              {/* Mathematically Accurate Segmented Visual Scale */}
+              <div className="mt-2 space-y-1">
+                <div className="h-1.5 w-full rounded-full flex overflow-hidden bg-slate-800">
+                  <div style={{ width: '22.1%' }} className="bg-cyan-500/60" title="Young Adult: 18–34" />
+                  <div style={{ width: '26.0%' }} className="bg-emerald-500/70" title="Prime Midlife: 35–54" />
+                  <div style={{ width: '26.0%' }} className="bg-amber-500/60" title="Mature Adult: 55–74" />
+                  <div style={{ width: '25.9%' }} className="bg-purple-500/60" title="Senior Horizon: 75–95" />
+                </div>
+                <div className="flex text-[10px] text-slate-400 font-medium">
+                  <span style={{ width: '22.1%' }} className="text-cyan-400 truncate">18 Min</span>
+                  <span style={{ width: '26.0%' }} className="text-emerald-400 truncate pl-0.5">35y Prime</span>
+                  <span style={{ width: '26.0%' }} className="text-amber-400 truncate pl-0.5">55y Mature</span>
+                  <span style={{ width: '25.9%' }} className="text-purple-400 truncate text-right">75-95y Senior</span>
+                </div>
+              </div>
             </div>
 
             {/* Biological Sex */}

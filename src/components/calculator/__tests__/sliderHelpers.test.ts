@@ -5,6 +5,7 @@ import {
   getDiastolicBPInfo,
   getRestingHRInfo,
   getHydrationInfo,
+  getAgeCategoryInfo,
 } from '../sliderHelpers';
 
 describe('sliderHelpers', () => {
@@ -44,5 +45,12 @@ describe('sliderHelpers', () => {
   it('correctly classifies Daily Hydration', () => {
     expect(getHydrationInfo(8).category).toBe('Optimal');
     expect(getHydrationInfo(4).category).toBe('Suboptimal');
+  });
+
+  it('correctly classifies Chronological Age Stages', () => {
+    expect(getAgeCategoryInfo(25).category).toBe('Young Adult');
+    expect(getAgeCategoryInfo(46).category).toBe('Prime Midlife');
+    expect(getAgeCategoryInfo(62).category).toBe('Mature Adult');
+    expect(getAgeCategoryInfo(80).category).toBe('Senior Horizon');
   });
 });

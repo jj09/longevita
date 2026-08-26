@@ -155,3 +155,32 @@ export function getHydrationInfo(glasses: number): CategoryInfo {
     badgeClass: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
   };
 }
+
+export function getAgeCategoryInfo(age: number): CategoryInfo {
+  if (age < 35) {
+    return {
+      label: 'Young Adult (18–34)',
+      category: 'Young Adult',
+      badgeClass: 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30',
+    };
+  }
+  if (age < 55) {
+    return {
+      label: 'Prime Midlife (35–54)',
+      category: 'Prime Midlife',
+      badgeClass: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
+    };
+  }
+  if (age < 75) {
+    return {
+      label: 'Mature Adult (55–74)',
+      category: 'Mature Adult',
+      badgeClass: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+    };
+  }
+  return {
+    label: 'Senior Horizon (75+)',
+    category: 'Senior Horizon',
+    badgeClass: 'bg-purple-500/15 text-purple-300 border-purple-500/30',
+  };
+}
