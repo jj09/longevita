@@ -27,9 +27,9 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
   onScrollTo,
 }) => {
   return (
-    <aside className="w-64 flex-shrink-0 hidden lg:block">
-      <div className="sticky top-24 space-y-4">
-        <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-md shadow-xl">
+    <aside className="w-64 flex-shrink-0 hidden lg:block sticky top-20 self-start z-30">
+      <div className="space-y-4">
+        <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 backdrop-blur-md shadow-2xl">
           <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3 px-2 flex items-center justify-between">
             <span>Navigation Outline</span>
             <span className="text-[10px] text-slate-500 font-medium">Jump to</span>
