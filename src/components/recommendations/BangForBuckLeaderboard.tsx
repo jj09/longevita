@@ -64,34 +64,35 @@ export const BangForBuckLeaderboard: React.FC<BangForBuckLeaderboardProps> = ({
   return (
     <div className="glass-panel rounded-2xl p-5 border border-slate-800/80">
       {/* Header & Subtitle */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-lg bg-amber-500/20 border border-amber-500/30 text-amber-400">
-              <Flame className="w-5 h-5" />
-            </div>
-            <div>
-              <h2 className="text-base font-bold text-slate-100 flex items-center gap-2">
-                <span>Bang for Your Buck Longevity Optimizer</span>
-                <span className="px-2 py-0.5 text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded-full">
-                  ROI Engine
-                </span>
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-5 pb-4 border-b border-slate-800/80">
+        <div className="flex items-start sm:items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex-shrink-0 shadow-sm shadow-amber-500/10 mt-0.5 sm:mt-0">
+            <Flame className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <h2 className="text-base sm:text-lg font-extrabold text-slate-100 tracking-tight">
+                Bang for Your Buck Longevity Optimizer
               </h2>
-              <p className="text-xs text-slate-400">
-                Interventions ranked by highest lifespan yield per unit of behavioral effort
-              </p>
+              <span className="px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider bg-amber-500/15 text-amber-300 border border-amber-500/30 rounded-full whitespace-nowrap flex-shrink-0 inline-flex items-center gap-1.5 shadow-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                ROI Engine
+              </span>
             </div>
+            <p className="text-xs text-slate-400 mt-0.5 leading-relaxed">
+              Interventions ranked by highest lifespan yield per unit of behavioral effort
+            </p>
           </div>
         </div>
 
         {/* Filter Pills */}
-        <div className="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 scrollbar-none flex-shrink-0">
           <button
             onClick={() => setFilter('all')}
-            className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors whitespace-nowrap flex items-center gap-1 ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
               filter === 'all'
-                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
-                : 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200'
+                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm shadow-amber-500/10'
+                : 'bg-slate-900/80 text-slate-400 border border-slate-800 hover:text-slate-200 hover:border-slate-700'
             }`}
           >
             <Flame className="w-3.5 h-3.5" />
@@ -99,10 +100,10 @@ export const BangForBuckLeaderboard: React.FC<BangForBuckLeaderboardProps> = ({
           </button>
           <button
             onClick={() => setFilter('quick_win')}
-            className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors whitespace-nowrap flex items-center gap-1 ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
               filter === 'quick_win'
-                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                : 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200'
+                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm shadow-emerald-500/10'
+                : 'bg-slate-900/80 text-slate-400 border border-slate-800 hover:text-slate-200 hover:border-slate-700'
             }`}
           >
             <Zap className="w-3.5 h-3.5" />
@@ -110,10 +111,10 @@ export const BangForBuckLeaderboard: React.FC<BangForBuckLeaderboardProps> = ({
           </button>
           <button
             onClick={() => setFilter('high_gain')}
-            className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors whitespace-nowrap flex items-center gap-1 ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
               filter === 'high_gain'
-                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
-                : 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200'
+                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm shadow-cyan-500/10'
+                : 'bg-slate-900/80 text-slate-400 border border-slate-800 hover:text-slate-200 hover:border-slate-700'
             }`}
           >
             <Trophy className="w-3.5 h-3.5" />
@@ -121,10 +122,10 @@ export const BangForBuckLeaderboard: React.FC<BangForBuckLeaderboardProps> = ({
           </button>
           <button
             onClick={() => setFilter('fitness')}
-            className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors whitespace-nowrap flex items-center gap-1 ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
               filter === 'fitness'
-                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                : 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200'
+                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm shadow-emerald-500/10'
+                : 'bg-slate-900/80 text-slate-400 border border-slate-800 hover:text-slate-200 hover:border-slate-700'
             }`}
           >
             <Activity className="w-3.5 h-3.5" />
@@ -132,10 +133,10 @@ export const BangForBuckLeaderboard: React.FC<BangForBuckLeaderboardProps> = ({
           </button>
           <button
             onClick={() => setFilter('nutrition')}
-            className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors whitespace-nowrap flex items-center gap-1 ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
               filter === 'nutrition'
-                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                : 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200'
+                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm shadow-emerald-500/10'
+                : 'bg-slate-900/80 text-slate-400 border border-slate-800 hover:text-slate-200 hover:border-slate-700'
             }`}
           >
             <Apple className="w-3.5 h-3.5" />
