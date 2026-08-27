@@ -193,22 +193,22 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
       options: [
         {
           value: 'optimal',
-          label: 'Optimal (LDL < 100 mg/dL or ApoB < 70 mg/dL)',
-          description: 'Normal annual exam target, Triglycerides < 100 mg/dL (+1.2 yrs)',
+          label: 'Optimal',
+          description: 'LDL < 100 mg/dL or ApoB < 70 mg/dL (+1.2 yrs)',
         },
         {
           value: 'moderate_high',
-          label: 'Borderline / Moderate (LDL 100–159 mg/dL or ApoB 70–100)',
-          description: 'Mildly elevated cholesterol without prescription medication (-1.0 yr)',
+          label: 'Borderline / Moderate',
+          description: 'LDL 100–159 mg/dL or ApoB 70–100 (-1.0 yr)',
         },
         {
           value: 'high_uncontrolled',
-          label: 'High Unmanaged (LDL ≥ 160 mg/dL or ApoB > 100)',
-          description: 'High untreated cholesterol or Triglycerides ≥ 200 mg/dL (-3.0 yrs)',
+          label: 'High Unmanaged',
+          description: 'LDL ≥ 160 mg/dL or ApoB > 100 (-3.0 yrs)',
         },
         {
           value: 'high_managed_statin',
-          label: 'Medication Managed (On Statin / Ezetimibe / Rx)',
+          label: 'Medication Managed',
           description: 'Elevated baseline but actively controlled on lipid-lowering medication (+0.2 yrs)',
         },
       ],
