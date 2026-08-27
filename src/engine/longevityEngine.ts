@@ -193,22 +193,22 @@ export function calculateLongevity(profile: UserProfile): LongevityCalculationRe
 
   // Lipid / Cholesterol Status
   let lipidDelta = 0;
-  let lipidDisplay = 'Optimal Lipids';
-  let lipidExpl = 'Optimal lipid particle count and HDL:Triglyceride ratio minimizes plaque accumulation (+1.2 yrs).';
+  let lipidDisplay = 'Optimal (LDL < 100 / ApoB < 70)';
+  let lipidExpl = 'Optimal lipid particle count (LDL-C < 100 mg/dL, ApoB < 70 mg/dL, Triglycerides < 100 mg/dL) minimizes coronary atheroma plaque accumulation (+1.2 yrs).';
   if (profile.lipidStatus === 'optimal') {
     lipidDelta = 1.2;
   } else if (profile.lipidStatus === 'moderate_high') {
     lipidDelta = -1.0;
-    lipidDisplay = 'Moderately Elevated';
-    lipidExpl = 'Elevated ApoB/LDL cholesterol gradually contributes to atheroma formation in arterial walls (-1.0 yr).';
+    lipidDisplay = 'Borderline / Moderate (LDL 100–159)';
+    lipidExpl = 'Borderline elevated cholesterol (LDL 100–159 mg/dL, ApoB 70–100 mg/dL) gradually contributes to arterial plaque formation (-1.0 yr).';
   } else if (profile.lipidStatus === 'high_uncontrolled') {
     lipidDelta = -3.0;
-    lipidDisplay = 'High Uncontrolled Lipids';
-    lipidExpl = 'High untreated LDL-C / dyslipidemia drives accelerated plaque calcification and coronary events (-3.0 yrs).';
+    lipidDisplay = 'High Unmanaged (LDL 160+ / ApoB > 100)';
+    lipidExpl = 'High untreated LDL-C (≥160 mg/dL) or ApoB (>100 mg/dL) drives accelerated plaque calcification and coronary events (-3.0 yrs).';
   } else if (profile.lipidStatus === 'high_managed_statin') {
     lipidDelta = 0.2;
-    lipidDisplay = 'High but Statin Managed';
-    lipidExpl = 'Lipid-lowering statin therapy stabilizes plaques and brings vascular event risk close to baseline (+0.2 yrs).';
+    lipidDisplay = 'Medication Managed (On Statin / Rx)';
+    lipidExpl = 'Lipid-lowering statin/Ezetimibe therapy stabilizes coronary plaques and brings vascular event risk close to baseline (+0.2 yrs).';
   }
   impacts.push({
     key: 'lipidStatus',

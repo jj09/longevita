@@ -234,15 +234,15 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
             {/* Lipid / Cholesterol Profile */}
             <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
               <label className="text-sm font-bold text-slate-200 block mb-1">
-                Lipids & Cholesterol (ApoB / LDL / Triglycerides)
+                Lipids & Cholesterol (LDL-C / ApoB / Triglycerides)
               </label>
-              <p className="text-xs text-slate-400 mb-3">Cardiovascular atheroma plaque risk</p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <p className="text-xs text-slate-400 mb-3">Cardiovascular atheroma plaque risk from annual lab panels</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
                 {[
-                  { value: 'optimal', label: 'Optimal Lipids', desc: 'ApoB < 70 mg/dL' },
-                  { value: 'moderate_high', label: 'Moderate High', desc: 'Mild elevation' },
-                  { value: 'high_uncontrolled', label: 'High Unmanaged', desc: 'Untreated high LDL' },
-                  { value: 'high_managed_statin', label: 'Statin Managed', desc: 'Controlled on med' },
+                  { value: 'optimal', label: 'Optimal (<100 LDL)', desc: 'LDL < 100 or ApoB < 70 (+1.2y)' },
+                  { value: 'moderate_high', label: 'Borderline (100–159)', desc: 'ApoB 70–100 unmedicated (-1.0y)' },
+                  { value: 'high_uncontrolled', label: 'High Unmanaged (160+)', desc: 'LDL ≥ 160 or ApoB > 100 (-3.0y)' },
+                  { value: 'high_managed_statin', label: 'Statin / Rx Managed', desc: 'Controlled on medication (+0.2y)' },
                 ].map((opt) => (
                   <button
                     key={opt.value}
