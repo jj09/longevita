@@ -396,28 +396,28 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
           <div className="space-y-5">
             {/* Aerobic Cardio */}
             <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-              <label className="text-xs font-bold text-slate-200 block mb-1">
-                Aerobic Cardio & Zone 2 Training
+              <label className="text-sm font-bold text-slate-200 block mb-1">
+                Aerobic Cardio & Brisk Exercise (Zone 2)
               </label>
-              <p className="text-[11px] text-slate-400 mb-3">Mitochondrial conditioning and VO2 max</p>
+              <p className="text-xs text-slate-400 mb-3">Brisk walking (3+ mph), cycling, jogging, swimming, or elliptical</p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {[
-                  { value: 'sedentary', label: 'Sedentary', desc: '0 min/week' },
-                  { value: 'light', label: 'Light', desc: '< 60 min/week' },
-                  { value: 'moderate', label: 'Moderate', desc: '150 min/week' },
-                  { value: 'high', label: 'Optimal / High', desc: '300+ min/week' },
+                  { value: 'sedentary', label: 'Sedentary', desc: '0 min/wk (-3.5y)' },
+                  { value: 'light', label: 'Light', desc: '< 60 min/wk' },
+                  { value: 'moderate', label: 'Moderate (150m)', desc: '~30m/day, 5d/wk (+2.5y)' },
+                  { value: 'high', label: 'Optimal (300m+)', desc: '~45-60m/day (+4.0y)' },
                 ].map((opt) => (
                   <button
                     key={opt.value}
                     onClick={() => update('cardio', opt.value as any)}
-                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                    className={`p-3 rounded-xl text-left text-xs sm:text-sm transition-all border min-h-[48px] ${
                       profile.cardio === opt.value
                         ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40 font-bold'
                         : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
                     }`}
                   >
                     <div>{opt.label}</div>
-                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                    <div className="text-xs text-slate-500 mt-0.5">{opt.desc}</div>
                   </button>
                 ))}
               </div>
