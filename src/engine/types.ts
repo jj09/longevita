@@ -1,6 +1,7 @@
 export type BiologicalSex = 'male' | 'female';
 export type RelationshipStatus = 'single' | 'partnered_married' | 'separated_divorced_widowed';
-export type FamilyLongevity = 'early_disease' | 'average' | 'grandparents_90plus' | 'parents_90plus' | 'centenarian_family';
+export type EarlyFamilyDisease = 'none' | 'early_cvd' | 'early_cancer' | 'multiple_early';
+export type FamilyLongevity = 'average' | 'relative_85_89' | 'relative_90_99' | 'centenarian_100plus';
 export type AirQuality = 'polluted_urban' | 'moderate_suburban' | 'clean_rural';
 
 export type BloodPressureCategory = 'optimal' | 'elevated' | 'stage1' | 'stage2' | 'severe_untreated';
@@ -31,6 +32,7 @@ export interface UserProfile {
   age: number;
   sex: BiologicalSex;
   relationshipStatus: RelationshipStatus;
+  earlyFamilyDisease: EarlyFamilyDisease;
   familyLongevity: FamilyLongevity;
   airQuality: AirQuality;
 

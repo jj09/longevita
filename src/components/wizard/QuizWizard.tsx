@@ -101,21 +101,36 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
         { value: 'separated_divorced_widowed', label: 'Divorced / Widowed', description: 'Associated with elevated bereavement stress' },
       ],
     },
-    // 4. Family Longevity History
+    // 4. Early Family Disease History
+    {
+      id: 'earlyFamilyDisease',
+      pillar: 'demographics',
+      pillarLabel: 'Demographics & Genetics',
+      title: 'Early Family Disease History',
+      subtitle: 'Did any biological parent or sibling pass away from cardiovascular disease or cancer before age 60?',
+      type: 'options',
+      field: 'earlyFamilyDisease',
+      options: [
+        { value: 'none', label: 'No Early CVD or Cancer (<60)', description: 'No biological parents or siblings passed away from premature illness' },
+        { value: 'early_cvd', label: 'Early Heart Disease or Stroke (<60)', description: 'A biological parent or sibling had fatal heart disease or stroke before 60 (-2.5 yrs)' },
+        { value: 'early_cancer', label: 'Early Cancer (<60)', description: 'A biological parent or sibling passed away from cancer before 60 (-2.5 yrs)' },
+        { value: 'multiple_early', label: 'Multiple Early Relatives (<60)', description: 'Two or more first-degree relatives passed away before 60 (-4.0 yrs)' },
+      ],
+    },
+    // 5. Exceptional Family Longevity History
     {
       id: 'familyLongevity',
       pillar: 'demographics',
       pillarLabel: 'Demographics & Genetics',
-      title: 'How long did your parents and grandparents live?',
-      subtitle: 'Genetics play an increasing role for survival past age 85-90.',
+      title: 'Exceptional Family Longevity Genetics',
+      subtitle: 'What is the oldest age reached (or currently reached) by any biological parent or grandparent?',
       type: 'options',
       field: 'familyLongevity',
       options: [
-        { value: 'centenarian_family', label: 'Centenarian Family (100+)', description: 'Parents/grandparents reached 100+ (+5.0 yrs bonus)' },
-        { value: 'parents_90plus', label: 'Parents lived 90+', description: 'First-degree relatives reached 90+ (+3.5 yrs bonus)' },
-        { value: 'grandparents_90plus', label: 'Grandparents lived 90+', description: 'Grandparents reached 90+ (+2.0 yrs bonus)' },
-        { value: 'average', label: 'Average Longevity (~75-82)', description: 'Typical population baseline' },
-        { value: 'early_disease', label: 'Early Disease (<60)', description: 'Family history of premature heart attack or stroke' },
+        { value: 'centenarian_100plus', label: 'Centenarian (100+)', description: 'At least one parent or grandparent reached 100 or beyond (+5.0 yrs)' },
+        { value: 'relative_90_99', label: 'At Least One Reached 90–99', description: 'At least one parent or grandparent reached 90–99 (+3.5 yrs)' },
+        { value: 'relative_85_89', label: 'At Least One Reached 85–89', description: 'At least one parent or grandparent reached 85–89 (+1.5 yrs)' },
+        { value: 'average', label: 'Typical Lifespans (Under 85)', description: 'Parents and grandparents lived average lifespans under 85 (0 yrs baseline)' },
       ],
     },
     // 5. Air Quality

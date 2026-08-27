@@ -1026,30 +1026,59 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
               </div>
             </div>
 
-            {/* Family Longevity */}
+            {/* Early Family Disease History */}
             <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-              <label className="text-xs font-bold text-slate-200 block mb-1">
-                Family History & Longevity Genetics
+              <label className="text-sm font-bold text-slate-200 block mb-1">
+                Early Family Disease History (<span className="text-rose-400">&lt;60 yrs</span>)
               </label>
-              <p className="text-[11px] text-slate-400 mb-3">Relatives longevity & early CVD/cancer</p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <p className="text-xs text-slate-400 mb-3">Premature heart disease, stroke, or cancer in parents or siblings</p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {[
-                  { value: 'early_disease', label: 'Early CVD / Cancer (<60)', desc: '-3.0 yrs genetic risk' },
-                  { value: 'average', label: 'Average (~75-80)', desc: 'Population baseline' },
-                  { value: 'parents_90plus', label: 'Parents lived 90+', desc: '+3.5 yrs protective' },
-                  { value: 'centenarian_family', label: 'Centenarian Family (100+)', desc: '+5.0 yrs rare genetics' },
+                  { value: 'none', label: 'None (<60)', desc: 'No premature fatal disease' },
+                  { value: 'early_cvd', label: 'Early Heart/Stroke', desc: 'Parent/sibling <60 (-2.5y)' },
+                  { value: 'early_cancer', label: 'Early Cancer', desc: 'Parent/sibling <60 (-2.5y)' },
+                  { value: 'multiple_early', label: 'Multiple Relatives', desc: '2+ relatives <60 (-4.0y)' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => update('earlyFamilyDisease', opt.value as any)}
+                    className={`p-3 rounded-xl text-left text-xs sm:text-sm transition-all border min-h-[48px] ${
+                      profile.earlyFamilyDisease === opt.value
+                        ? 'bg-rose-500/15 text-rose-300 border-rose-500/40 font-bold'
+                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    <div>{opt.label}</div>
+                    <div className="text-xs text-slate-500 mt-0.5">{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Exceptional Family Longevity Genetics */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <label className="text-sm font-bold text-slate-200 block mb-1">
+                Exceptional Family Longevity Genetics
+              </label>
+              <p className="text-xs text-slate-400 mb-3">Oldest age reached by any biological parent or grandparent</p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {[
+                  { value: 'average', label: 'Typical (<85)', desc: 'Average lifespans (0y)' },
+                  { value: 'relative_85_89', label: 'Reached 85 – 89', desc: 'At least 1 relative (+1.5y)' },
+                  { value: 'relative_90_99', label: 'Reached 90 – 99', desc: 'At least 1 relative (+3.5y)' },
+                  { value: 'centenarian_100plus', label: 'Centenarian (100+)', desc: 'At least 1 relative (+5.0y)' },
                 ].map((opt) => (
                   <button
                     key={opt.value}
                     onClick={() => update('familyLongevity', opt.value as any)}
-                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                    className={`p-3 rounded-xl text-left text-xs sm:text-sm transition-all border min-h-[48px] ${
                       profile.familyLongevity === opt.value
                         ? 'bg-purple-500/15 text-purple-300 border-purple-500/40 font-bold'
                         : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
                     }`}
                   >
                     <div>{opt.label}</div>
-                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                    <div className="text-xs text-slate-500 mt-0.5">{opt.desc}</div>
                   </button>
                 ))}
               </div>
@@ -1057,8 +1086,9 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
 
             {/* Air Quality */}
             <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-              <label className="text-xs font-bold text-slate-200 block mb-1">Air Quality & Environment</label>
-              <div className="grid grid-cols-3 gap-2 mt-2">
+              <label className="text-sm font-bold text-slate-200 block mb-1">Air Quality & Environment</label>
+              <p className="text-xs text-slate-400 mb-3">PM2.5 particulate and living environment</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 {[
                   { value: 'clean_rural', label: 'Clean Rural / Mountain', desc: '+1.0 yr clean air' },
                   { value: 'moderate_suburban', label: 'Moderate Suburban', desc: 'Standard air' },
@@ -1067,14 +1097,14 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
                   <button
                     key={opt.value}
                     onClick={() => update('airQuality', opt.value as any)}
-                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                    className={`p-3 rounded-xl text-left text-xs sm:text-sm transition-all border min-h-[48px] ${
                       profile.airQuality === opt.value
                         ? 'bg-cyan-500/15 text-cyan-300 border-cyan-500/40 font-bold'
                         : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
                     }`}
                   >
                     <div>{opt.label}</div>
-                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                    <div className="text-xs text-slate-500 mt-0.5">{opt.desc}</div>
                   </button>
                 ))}
               </div>

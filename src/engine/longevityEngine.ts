@@ -51,30 +51,53 @@ export function calculateLongevity(profile: UserProfile): LongevityCalculationRe
     isPositive: relDelta >= 0,
   });
 
-  // Family Longevity
+  // 1. Early Family Disease History (First-degree relatives <60)
+  let disDelta = 0;
+  let disDisplay = 'No Early CVD / Cancer (<60)';
+  let disExpl = 'No history of premature fatal cardiovascular disease or cancer in parents or siblings.';
+  if (profile.earlyFamilyDisease === 'early_cvd') {
+    disDelta = -2.5;
+    disDisplay = 'Early Heart Disease / Stroke (<60)';
+    disExpl = 'First-degree relative with premature cardiovascular disease or stroke before 60 indicates elevated genetic vascular risk (-2.5 yrs).';
+  } else if (profile.earlyFamilyDisease === 'early_cancer') {
+    disDelta = -2.5;
+    disDisplay = 'Early Cancer (<60)';
+    disExpl = 'First-degree relative with cancer before age 60 indicates hereditary cancer predisposition pathways (-2.5 yrs).';
+  } else if (profile.earlyFamilyDisease === 'multiple_early') {
+    disDelta = -4.0;
+    disDisplay = 'Multiple Early CVD / Cancers (<60)';
+    disExpl = 'Two or more first-degree relatives with premature disease before age 60 confers compounded hereditary risk (-4.0 yrs).';
+  }
+  impacts.push({
+    key: 'earlyFamilyDisease',
+    label: 'Early Family Disease Risk',
+    category: 'demographics',
+    yearsDelta: disDelta,
+    currentValueDisplay: disDisplay,
+    scientificExplanation: disExpl,
+    isPositive: disDelta >= 0,
+  });
+
+  // 2. Exceptional Family Longevity Genetics
   let famDelta = 0;
-  let famDisplay = 'Average Longevity (~75-80)';
+  let famDisplay = 'Typical Lifespans (Under 85)';
   let famExpl = 'Average family longevity reflects standard population genetic baseline.';
-  if (profile.familyLongevity === 'early_disease') {
-    famDelta = -3.0;
-    famDisplay = 'Early CVD / Cancer (<60)';
-    famExpl = 'Family history of premature cardiovascular disease or cancer before age 60 elevates genetic risk (-3.0 yrs).';
-  } else if (profile.familyLongevity === 'grandparents_90plus') {
-    famDelta = 2.0;
-    famDisplay = 'Grandparents lived 90+';
-    famExpl = 'Grandparents reaching age 90+ indicates favorable longevity genetics and protective alleles (+2.0 yrs).';
-  } else if (profile.familyLongevity === 'parents_90plus') {
+  if (profile.familyLongevity === 'relative_85_89') {
+    famDelta = 1.5;
+    famDisplay = 'At Least One Reached 85–89';
+    famExpl = 'At least one parent or grandparent living past 85 indicates favorable baseline metabolic and vascular resilience (+1.5 yrs).';
+  } else if (profile.familyLongevity === 'relative_90_99') {
     famDelta = 3.5;
-    famDisplay = 'Parents lived 90+';
-    famExpl = 'First-degree relatives surviving past 90 strongly correlates with exceptional longevity genes (+3.5 yrs).';
-  } else if (profile.familyLongevity === 'centenarian_family') {
+    famDisplay = 'At Least One Reached 90–99';
+    famExpl = 'At least one parent or grandparent surviving past 90 strongly correlates with exceptional longevity protective alleles (+3.5 yrs).';
+  } else if (profile.familyLongevity === 'centenarian_100plus') {
     famDelta = 5.0;
-    famDisplay = 'Centenarian Family (100+)';
-    famExpl = 'Centenarian family history is associated with rare longevity variants like FOXO3a and optimal lipid profiles (+5.0 yrs).';
+    famDisplay = 'Centenarian Relative (100+)';
+    famExpl = 'New England Centenarian Study shows 100+ relatives confer marked genetic protection against age-related degeneration (+5.0 yrs).';
   }
   impacts.push({
     key: 'familyLongevity',
-    label: 'Family Longevity & Genetics',
+    label: 'Exceptional Family Longevity',
     category: 'demographics',
     yearsDelta: famDelta,
     currentValueDisplay: famDisplay,

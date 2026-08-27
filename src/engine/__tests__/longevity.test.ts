@@ -60,6 +60,24 @@ describe('Longevity Engine Calculation', () => {
     expect(res2.projectedLifespan).toBeGreaterThan(res1.projectedLifespan);
     expect(res2.projectedLifespan - res1.projectedLifespan).toBeCloseTo(7.5, 1);
   });
+
+  it('accurately balances coexisting early family cancer with exceptional 90+ relative genetics', () => {
+    const mixedProfile: UserProfile = {
+      ...DEFAULT_PROFILE,
+      earlyFamilyDisease: 'early_cancer', // -2.5 yrs
+      familyLongevity: 'relative_90_99',  // +3.5 yrs
+    };
+    const res = calculateLongevity(mixedProfile);
+    const earlyCancerImpact = res.categorySummaries
+      .flatMap((c) => c.items)
+      .find((i) => i.key === 'earlyFamilyDisease');
+    const longevityImpact = res.categorySummaries
+      .flatMap((c) => c.items)
+      .find((i) => i.key === 'familyLongevity');
+
+    expect(earlyCancerImpact?.yearsDelta).toBe(-2.5);
+    expect(longevityImpact?.yearsDelta).toBe(3.5);
+  });
 });
 
 describe('Recommendation Engine (Bang for the Buck ROI)', () => {
