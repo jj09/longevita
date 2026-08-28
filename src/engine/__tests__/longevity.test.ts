@@ -4,6 +4,7 @@ import { getRecommendations } from '../recommendationEngine';
 import { getActuarialBaseline } from '../actuarial';
 import { DEFAULT_PROFILE, PRESET_ARCHETYPES } from '../presets';
 import { UserProfile } from '../types';
+import { QUIZ_QUESTIONS, TOTAL_QUIZ_QUESTIONS } from '../quizQuestions';
 
 describe('Actuarial Baseline Calculation', () => {
   it('correctly returns baseline life expectancies for standard age brackets', () => {
@@ -132,6 +133,20 @@ describe('Category Aggregation & Biological Age', () => {
     const res = calculateLongevity(smoker.profile);
     expect(res.biologicalAge).toBeGreaterThan(smoker.profile.age);
     expect(res.totalLostYears).toBeGreaterThan(15);
+  });
+});
+
+describe('Quiz Questions Registry Consistency', () => {
+  it('has consistent unique questions and matches TOTAL_QUIZ_QUESTIONS', () => {
+    const ids = new Set(QUIZ_QUESTIONS.map((q) => q.id));
+    expect(ids.size).toBe(QUIZ_QUESTIONS.length);
+    expect(TOTAL_QUIZ_QUESTIONS).toBe(QUIZ_QUESTIONS.length);
+    expect(TOTAL_QUIZ_QUESTIONS).toBe(27);
+
+    // Ensure every question has a valid mapped field on DEFAULT_PROFILE
+    for (const q of QUIZ_QUESTIONS) {
+      expect(DEFAULT_PROFILE[q.field]).toBeDefined();
+    }
   });
 });
 
