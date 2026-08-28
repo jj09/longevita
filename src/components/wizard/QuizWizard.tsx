@@ -96,9 +96,9 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
       type: 'options',
       field: 'relationshipStatus',
       options: [
-        { value: 'partnered_married', label: 'Married / Partnered', description: 'Strong emotional co-regulation & crisis support (+2.5 yrs)' },
+        { value: 'partnered_married', label: 'Married / Partnered', description: 'Cohabitation support, mutual care & crisis intervention (+2.0 yrs)' },
         { value: 'single', label: 'Single', description: 'Neutral population baseline' },
-        { value: 'separated_divorced_widowed', label: 'Divorced / Widowed', description: 'Associated with elevated bereavement stress' },
+        { value: 'separated_divorced_widowed', label: 'Divorced / Widowed', description: 'Associated with elevated bereavement stress (-1.5 yrs)' },
       ],
     },
     // 4. Early Family Disease History

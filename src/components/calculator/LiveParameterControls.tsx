@@ -1033,24 +1033,25 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
 
             {/* Relationship Status */}
             <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-              <label className="text-xs font-bold text-slate-200 block mb-1">Relationship Status</label>
-              <div className="grid grid-cols-3 gap-2 mt-2">
+              <label className="text-sm font-bold text-slate-200 block mb-1">Relationship Status</label>
+              <p className="text-xs text-slate-400 mb-3">Cohabitation safety, crisis intervention, and social baseline</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 {[
-                  { value: 'partnered_married', label: 'Married / Partnered', desc: '+2.5 yrs emotional buffer' },
+                  { value: 'partnered_married', label: 'Married / Partnered', desc: 'Mutual care (+2.0y)' },
                   { value: 'single', label: 'Single', desc: 'Neutral baseline' },
-                  { value: 'separated_divorced_widowed', label: 'Divorced / Widowed', desc: 'Bereavement risk' },
+                  { value: 'separated_divorced_widowed', label: 'Divorced / Widowed', desc: 'Bereavement stress (-1.5y)' },
                 ].map((opt) => (
                   <button
                     key={opt.value}
                     onClick={() => update('relationshipStatus', opt.value as any)}
-                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                    className={`p-3 rounded-xl text-left text-xs sm:text-sm transition-all border min-h-[48px] ${
                       profile.relationshipStatus === opt.value
                         ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40 font-bold'
                         : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
                     }`}
                   >
                     <div>{opt.label}</div>
-                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                    <div className="text-xs text-slate-500 mt-0.5">{opt.desc}</div>
                   </button>
                 ))}
               </div>
