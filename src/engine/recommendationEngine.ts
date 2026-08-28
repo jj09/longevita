@@ -427,6 +427,31 @@ const MODIFIABLE_CANDIDATES: ModifiableCandidate[] = [
     scientificEvidence:
       'Daily sunscreen application reduces the incidence of melanoma by 50% and squamous cell carcinoma by 40% while preventing ultraviolet collagen matrix degradation.',
   },
+
+  // 17. INTIMATE VITALITY & PHYSICAL CONNECTION
+  {
+    parameterKey: 'intimacyFrequency',
+    title: 'Nurture Regular Intimate Connection (1–2x/week)',
+    description: 'Prioritize physical connection and intimacy to elevate oxytocin and salivary IgA immunity.',
+    pillar: 'lifestyle',
+    effortScore: 2,
+    difficultyLabel: 'Easy',
+    category: 'longevity_habit',
+    isApplicable: (p) => p.intimacyFrequency === 'rare_none' || p.intimacyFrequency === 'monthly_occasional',
+    getTargetProfile: (p) => ({
+      targetProfile: { ...p, intimacyFrequency: 'weekly_optimal' },
+      targetValue: 'weekly_optimal',
+      targetDisplay: '1–2 times / week (Optimal)',
+    }),
+    getCurrentDisplay: (p) => (p.intimacyFrequency === 'rare_none' ? 'Less than 1x / month' : '1–3 times / month'),
+    actionSteps: [
+      'Schedule dedicated tech-free date nights and unwinding rituals with your partner.',
+      'Incorporate daily non-sexual touch (extended 20-second hugs, holding hands) to stimulate baseline oxytocin release.',
+      'Address physical intimacy barriers openly or consult with a specialist if fatigue or hormone balance is a factor.',
+    ],
+    scientificEvidence:
+      'BMJ Caerphilly 10-year prospective study demonstrated a 50% reduction in all-cause mortality in adults with frequent intimate activity (2+ times/week), mediated by oxytocin-cortisol dampening, ~30% higher salivary IgA antibodies, and endothelial nitric oxide release.',
+  },
 ];
 
 /**

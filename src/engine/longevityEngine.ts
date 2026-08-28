@@ -33,9 +33,9 @@ export function calculateLongevity(profile: UserProfile): LongevityCalculationRe
   let relDisplay = 'Single';
   let relExpl = 'Single status represents the baseline standard demographic risk.';
   if (profile.relationshipStatus === 'partnered_married') {
-    relDelta = 2.5;
+    relDelta = 2.0;
     relDisplay = 'Partnered / Married';
-    relExpl = 'Long-term partnership provides emotional support, lower cortisol, and prompt health crisis interventions (+2.5 yrs).';
+    relExpl = 'Long-term partnership provides cohabitation safety, mutual care, and crisis support (+2.0 yrs).';
   } else if (profile.relationshipStatus === 'separated_divorced_widowed') {
     relDelta = -1.5;
     relDisplay = 'Separated / Divorced / Widowed';
@@ -683,6 +683,33 @@ export function calculateLongevity(profile: UserProfile): LongevityCalculationRe
     currentValueDisplay: socDisplay,
     scientificExplanation: socExpl,
     isPositive: socDelta >= 0,
+  });
+
+  // Sexual Intimacy & Physical Connection (Oxytocin / IgA / Cardiovascular Axis)
+  let intimacyDelta = 0;
+  let intimacyDisplay = 'Less than 1x / month';
+  let intimacyExpl = 'Baseline intimacy frequency with standard population immune and oxytocin levels (0.0 yrs).';
+  if (profile.intimacyFrequency === 'weekly_optimal') {
+    intimacyDelta = 1.8;
+    intimacyDisplay = '1–2 times / week (Optimal)';
+    intimacyExpl = 'Regular weekly intimacy boosts salivary IgA antibodies by ~30%, surges oxytocin/DHEA, and lowers all-cause mortality (BMJ Caerphilly study, +1.8 yrs).';
+  } else if (profile.intimacyFrequency === 'frequent_active') {
+    intimacyDelta = 2.0;
+    intimacyDisplay = '3+ times / week (Frequent)';
+    intimacyExpl = 'Frequent intimacy promotes strong vascular endothelial nitric oxide dilation, lower cortisol, and prostate protection in men (+2.0 yrs).';
+  } else if (profile.intimacyFrequency === 'monthly_occasional') {
+    intimacyDelta = 0.6;
+    intimacyDisplay = '1–3 times / month (Occasional)';
+    intimacyExpl = 'Occasional intimate connection provides periodic parasympathetic recovery and emotional bonding (+0.6 yrs).';
+  }
+  impacts.push({
+    key: 'intimacyFrequency',
+    label: 'Sexual Intimacy & Vitality',
+    category: 'lifestyle',
+    yearsDelta: intimacyDelta,
+    currentValueDisplay: intimacyDisplay,
+    scientificExplanation: intimacyExpl,
+    isPositive: intimacyDelta >= 0,
   });
 
   // Dental Flossing / Oral Health (Famous Dr. Perls / Living to 100 Factor!)

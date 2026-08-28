@@ -78,6 +78,18 @@ describe('Longevity Engine Calculation', () => {
     expect(earlyCancerImpact?.yearsDelta).toBe(-2.5);
     expect(longevityImpact?.yearsDelta).toBe(3.5);
   });
+
+  it('accurately computes intimacy frequency impact (+1.8 yrs for weekly sweet spot)', () => {
+    const p1: UserProfile = { ...DEFAULT_PROFILE, intimacyFrequency: 'rare_none' };
+    const p2: UserProfile = { ...DEFAULT_PROFILE, intimacyFrequency: 'weekly_optimal' };
+    const res1 = calculateLongevity(p1);
+    const res2 = calculateLongevity(p2);
+    expect(res2.projectedLifespan).toBeGreaterThan(res1.projectedLifespan);
+    const intimacyItem = res2.categorySummaries
+      .flatMap((c) => c.items)
+      .find((i) => i.key === 'intimacyFrequency');
+    expect(intimacyItem?.yearsDelta).toBe(1.8);
+  });
 });
 
 describe('Recommendation Engine (Bang for the Buck ROI)', () => {

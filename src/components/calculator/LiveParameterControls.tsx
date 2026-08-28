@@ -836,26 +836,56 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
 
             {/* Social Connection */}
             <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-              <label className="text-xs font-bold text-slate-200 block mb-1">
+              <label className="text-sm font-bold text-slate-200 block mb-1">
                 Social Connection & Community (Blue Zone Moai)
               </label>
-              <div className="grid grid-cols-3 gap-2 mt-2">
+              <p className="text-xs text-slate-400 mb-3">Friendship circles, community belonging, and loneliness buffering</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 {[
-                  { value: 'strong_connected', label: 'Strong & Connected', desc: 'Close circle & purpose' },
-                  { value: 'moderate', label: 'Moderate Network', desc: 'Occasional social' },
-                  { value: 'isolated', label: 'Isolated / Lonely', desc: 'Severe isolation' },
+                  { value: 'strong_connected', label: 'Strong & Connected', desc: 'Close circle & purpose (+3.0y)' },
+                  { value: 'moderate', label: 'Moderate Network', desc: 'Occasional social (+0.5y)' },
+                  { value: 'isolated', label: 'Isolated / Lonely', desc: 'High loneliness (-4.0y)' },
                 ].map((opt) => (
                   <button
                     key={opt.value}
                     onClick={() => update('socialConnection', opt.value as any)}
-                    className={`p-2.5 rounded-lg text-left text-xs transition-all border ${
+                    className={`p-3 rounded-xl text-left text-xs sm:text-sm transition-all border min-h-[48px] ${
                       profile.socialConnection === opt.value
                         ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40 font-bold'
                         : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
                     }`}
                   >
                     <div>{opt.label}</div>
-                    <div className="text-[10px] text-slate-500 mt-0.5">{opt.desc}</div>
+                    <div className="text-xs text-slate-500 mt-0.5">{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Sexual Intimacy & Physical Connection */}
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+              <label className="text-sm font-bold text-slate-200 block mb-1">
+                Sexual Intimacy & Physical Connection
+              </label>
+              <p className="text-xs text-slate-400 mb-3">Oxytocin, salivary IgA immune defense, and vascular health</p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {[
+                  { value: 'weekly_optimal', label: '1–2x / week', desc: 'Optimal sweet spot (+1.8y)' },
+                  { value: 'frequent_active', label: '3+ / week', desc: 'Frequent vitality (+2.0y)' },
+                  { value: 'monthly_occasional', label: '1–3x / month', desc: 'Moderate connection (+0.6y)' },
+                  { value: 'rare_none', label: '< 1x / month', desc: 'Baseline (0.0y)' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => update('intimacyFrequency', opt.value as any)}
+                    className={`p-3 rounded-xl text-left text-xs sm:text-sm transition-all border min-h-[48px] ${
+                      profile.intimacyFrequency === opt.value
+                        ? 'bg-rose-500/15 text-rose-300 border-rose-500/40 font-bold'
+                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                    }`}
+                  >
+                    <div>{opt.label}</div>
+                    <div className="text-xs text-slate-500 mt-0.5">{opt.desc}</div>
                   </button>
                 ))}
               </div>

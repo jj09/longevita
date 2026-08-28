@@ -477,6 +477,22 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
         { value: 'isolated', label: 'Isolated / High Loneliness', description: 'Severe social isolation penalty' },
       ],
     },
+    // 26. Sexual Intimacy & Physical Connection
+    {
+      id: 'intimacyFrequency',
+      pillar: 'lifestyle',
+      pillarLabel: 'Lifestyle, Sleep & Mind',
+      title: 'What is your frequency of sexual intimacy & physical connection?',
+      subtitle: 'Regular intimacy triggers oxytocin release, elevates salivary IgA immune defense, and suppresses chronic cortisol.',
+      type: 'options',
+      field: 'intimacyFrequency',
+      options: [
+        { value: 'weekly_optimal', label: 'Weekly Sweet Spot (1–2 times / week)', description: 'Peak IgA antibody defense, oxytocin surge, and cardiovascular benefit (+1.8 yrs)' },
+        { value: 'frequent_active', label: 'Frequent (3+ times / week)', description: 'High intimate connection, lower cortisol, and vascular stimulation (+2.0 yrs)' },
+        { value: 'monthly_occasional', label: 'Monthly / Occasional (1–3 times / month)', description: 'Moderate intimacy and periodic stress relief (+0.6 yrs)' },
+        { value: 'rare_none', label: 'Infrequent / Inactive (< 1 time / month)', description: 'Baseline population level with low regular oxytocin release (0.0 yrs)' },
+      ],
+    },
   ];
 
   const currentQ = questions[currentIndex];
