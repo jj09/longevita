@@ -98,7 +98,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
           </button>
           <span className="text-xs sm:text-sm text-slate-400 mt-2.5 font-medium text-center">
-            Takes ~2 minutes • 1 question at a time • 100% Private & Client-side
+            30 questions • Takes ~2 minutes • 100% Private & Client-side
           </span>
         </div>
 
