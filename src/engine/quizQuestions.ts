@@ -450,19 +450,36 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
       { value: 'severe_unmanaged', label: 'Severe / Chronic Unmanaged', description: 'Constant high cortisol and burnout' },
     ],
   },
-  // 27. Social Connection (Blue Zone Moai)
+  // 27. In-Person Social Connection
   {
     id: 'socialConnection',
     pillar: 'lifestyle',
     pillarLabel: 'Lifestyle, Sleep & Mind',
-    title: 'How strong is your social connection and community (Moai)?',
-    subtitle: 'Loneliness has the mortality equivalence of smoking 15 cigarettes/day.',
+    title: 'How often do you spend time in person with close friends, family, or community?',
+    subtitle: 'Face-to-face connection triggers oxytocin, lowers baseline cortisol, and is a top predictor of centenarian survival.',
     type: 'options',
     field: 'socialConnection',
     options: [
-      { value: 'strong_connected', label: 'Strong & Deeply Connected', description: 'Close confidants & community ritual (+3.0 yrs)' },
-      { value: 'moderate', label: 'Moderate Social Circle', description: 'Regular friends & family (+0.5 yrs)' },
-      { value: 'isolated', label: 'Isolated / High Loneliness', description: 'Severe social isolation penalty' },
+      {
+        value: 'frequent_3plus_weekly',
+        label: 'Frequent (3+ times / week)',
+        description: 'Multiple weekly in-person meetups, shared meals, group activities, or close family visits (+3.0 yrs)',
+      },
+      {
+        value: 'weekly_1_to_2',
+        label: 'Weekly (1–2 times / week)',
+        description: 'Regular weekly get-togethers with friends, clubs, or family dinners (+1.5 yrs)',
+      },
+      {
+        value: 'monthly_occasional',
+        label: 'Occasional (1–3 times / month)',
+        description: 'Periodic social gatherings or monthly dinners with friends (+0.5 yrs)',
+      },
+      {
+        value: 'rare_isolated',
+        label: 'Rare / Isolated (< 1 time / month)',
+        description: 'Rarely see friends or family face-to-face, high social isolation (-3.0 yrs)',
+      },
     ],
   },
   // 28. Sun Protection & Skin Care

@@ -660,24 +660,28 @@ export function calculateLongevity(profile: UserProfile): LongevityCalculationRe
     isPositive: stressDelta >= 0,
   });
 
-  // Social Connection & Community
+  // In-Person Social Connection & Community (Dr. Perls Living to 100 Factor)
   let socDelta = 0;
-  let socDisplay = 'Strong / Close Community';
-  let socExpl = 'Deep social bonds and community belonging are among the strongest predictors of reaching 100 in Blue Zones (+3.0 yrs).';
-  if (profile.socialConnection === 'isolated') {
-    socDelta = -4.0;
-    socDisplay = 'Isolated / High Loneliness';
-    socExpl = 'Loneliness and social isolation trigger sustained neuroendocrine stress responses equivalent to heavy smoking (-4.0 yrs).';
-  } else if (profile.socialConnection === 'moderate') {
+  let socDisplay = 'Weekly (1–2 times / week)';
+  let socExpl = 'Regular weekly face-to-face meetups provide sustained emotional connection and stress buffering (+1.5 yrs).';
+  if (profile.socialConnection === 'rare_isolated') {
+    socDelta = -3.0;
+    socDisplay = '< 1 time / month (Rare / Isolated)';
+    socExpl = 'Lack of in-person social connection triggers chronic neuroendocrine stress responses and cardiovascular strain (-3.0 yrs).';
+  } else if (profile.socialConnection === 'monthly_occasional') {
     socDelta = 0.5;
-    socDisplay = 'Moderate Social Network';
-    socExpl = 'Regular social contact provides emotional grounding (+0.5 yrs).';
-  } else if (profile.socialConnection === 'strong_connected') {
+    socDisplay = '1–3 times / month (Occasional)';
+    socExpl = 'Occasional in-person social contact provides periodic emotional grounding (+0.5 yrs).';
+  } else if (profile.socialConnection === 'weekly_1_to_2') {
+    socDelta = 1.5;
+  } else if (profile.socialConnection === 'frequent_3plus_weekly') {
     socDelta = 3.0;
+    socDisplay = '3+ times / week (Frequent)';
+    socExpl = 'Frequent in-person connection, shared meals, and community rituals strongly mirror Blue Zone longevity (+3.0 yrs).';
   }
   impacts.push({
     key: 'socialConnection',
-    label: 'Social Connection & Community (Blue Zone Moai)',
+    label: 'In-Person Social Connection',
     category: 'lifestyle',
     yearsDelta: socDelta,
     currentValueDisplay: socDisplay,

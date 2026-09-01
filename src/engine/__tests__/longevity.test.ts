@@ -91,6 +91,23 @@ describe('Longevity Engine Calculation', () => {
       .find((i) => i.key === 'relationshipStatus');
     expect(relItem?.yearsDelta).toBe(3.0);
   });
+
+  it('accurately computes in-person social connection frequency across all 4 tiers', () => {
+    const pFrequent: UserProfile = { ...DEFAULT_PROFILE, socialConnection: 'frequent_3plus_weekly' };
+    const pWeekly: UserProfile = { ...DEFAULT_PROFILE, socialConnection: 'weekly_1_to_2' };
+    const pMonthly: UserProfile = { ...DEFAULT_PROFILE, socialConnection: 'monthly_occasional' };
+    const pIsolated: UserProfile = { ...DEFAULT_PROFILE, socialConnection: 'rare_isolated' };
+
+    const getDelta = (profile: UserProfile) =>
+      calculateLongevity(profile).categorySummaries
+        .flatMap((c) => c.items)
+        .find((i) => i.key === 'socialConnection')?.yearsDelta;
+
+    expect(getDelta(pFrequent)).toBe(3.0);
+    expect(getDelta(pWeekly)).toBe(1.5);
+    expect(getDelta(pMonthly)).toBe(0.5);
+    expect(getDelta(pIsolated)).toBe(-3.0);
+  });
 });
 
 describe('Recommendation Engine (Bang for the Buck ROI)', () => {

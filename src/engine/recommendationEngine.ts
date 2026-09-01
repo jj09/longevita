@@ -276,29 +276,29 @@ const MODIFIABLE_CANDIDATES: ModifiableCandidate[] = [
       'During deep slow-wave and REM sleep, the glymphatic system flushes amyloid-beta and tau proteins from brain parenchyma. Consistent 7-8h sleep reduces Alzheimer’s and all-cause cardiovascular risks.',
   },
 
-  // 11. SOCIAL CONNECTION & COMMUNITY
+  // 11. IN-PERSON SOCIAL CONNECTION & COMMUNITY
   {
     parameterKey: 'socialConnection',
-    title: 'Cultivate Close Friendships & Community (Moai)',
-    description: 'Build strong social bonds, join community groups, and foster 3-5 deep confidant relationships.',
+    title: 'Prioritize Weekly In-Person Social Meetups (1–2+ times/week)',
+    description: 'Schedule recurring in-person dinners, group activities, sports, or visits with close friends and family.',
     pillar: 'lifestyle',
     effortScore: 3,
     difficultyLabel: 'Moderate',
     category: 'longevity_habit',
-    isApplicable: (p) => p.socialConnection !== 'strong_connected',
+    isApplicable: (p) => p.socialConnection === 'rare_isolated' || p.socialConnection === 'monthly_occasional',
     getTargetProfile: (p) => ({
-      targetProfile: { ...p, socialConnection: 'strong_connected' },
-      targetValue: 'strong_connected',
-      targetDisplay: 'Strong Connected Community',
+      targetProfile: { ...p, socialConnection: 'weekly_1_to_2' },
+      targetValue: 'weekly_1_to_2',
+      targetDisplay: 'Weekly In-Person (1–2x/week)',
     }),
-    getCurrentDisplay: (p) => (p.socialConnection === 'isolated' ? 'Isolated / High Loneliness' : 'Moderate Social Circle'),
+    getCurrentDisplay: (p) => (p.socialConnection === 'rare_isolated' ? '< 1 time / month (Isolated)' : '1–3 times / month (Occasional)'),
     actionSteps: [
-      'Commit to a recurring weekly social ritual (e.g. group hike, dinner club, book circle, team sport, volunteering).',
-      'Call or message at least one friend or family member daily just to connect deeply.',
-      'Emulate the Okinawan "Moai" tradition: a committed circle of lifelong friends supporting each other.',
+      'Commit to a recurring weekly in-person ritual (e.g. weekly family dinner, running club, book circle, team sport).',
+      'Meet at least one close friend for coffee, lunch, or a walk every week.',
+      'Emulate the Okinawan "Moai" tradition: a committed circle of lifelong friends supporting each other through shared activities.',
     ],
     scientificEvidence:
-      'Dr. Julianne Holt-Lunstad’s landmark Brigham Young meta-analysis of 308,849 individuals found that strong social relationships increase survival odds by 50%, equivalent to quitting a 15-cigarette/day smoking habit.',
+      'Dr. Julianne Holt-Lunstad’s landmark Brigham Young meta-analysis of 308,849 individuals found that regular in-person social connection increases survival odds by 50%, equivalent to quitting a 15-cigarette/day smoking habit.',
   },
 
   // 12. CHRONIC STRESS REGULATION & MINDFULNESS

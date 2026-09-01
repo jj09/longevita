@@ -834,17 +834,18 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
               </div>
             </div>
 
-            {/* Social Connection */}
+            {/* In-Person Social Connection */}
             <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
               <label className="text-sm font-bold text-slate-200 block mb-1">
-                Social Connection & Community (Blue Zone Moai)
+                In-Person Social Connection & Meetups
               </label>
-              <p className="text-xs text-slate-400 mb-3">Friendship circles, community belonging, and loneliness buffering</p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <p className="text-xs text-slate-400 mb-3">Weekly in-person time with close friends, family, or community</p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {[
-                  { value: 'strong_connected', label: 'Strong & Connected', desc: 'Close circle & purpose (+3.0y)' },
-                  { value: 'moderate', label: 'Moderate Network', desc: 'Occasional social (+0.5y)' },
-                  { value: 'isolated', label: 'Isolated / Lonely', desc: 'High loneliness (-4.0y)' },
+                  { value: 'frequent_3plus_weekly', label: '3+ times / week', desc: 'Frequent meetups (+3.0y)' },
+                  { value: 'weekly_1_to_2', label: '1–2x / week', desc: 'Weekly meetups (+1.5y)' },
+                  { value: 'monthly_occasional', label: '1–3x / month', desc: 'Occasional (+0.5y)' },
+                  { value: 'rare_isolated', label: '< 1x / month', desc: 'Rare / Isolated (-3.0y)' },
                 ].map((opt) => (
                   <button
                     key={opt.value}

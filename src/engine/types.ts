@@ -23,7 +23,7 @@ export type SmokingStatus = 'current_heavy' | 'current_light' | 'former_recent' 
 export type AlcoholIntake = 'none' | 'light_moderate' | 'heavy_binge'; // 0, 1-7/wk, 14+/wk
 export type SleepDurationQuality = 'under_6h' | '6_to_7h' | '7_to_8h_optimal' | 'over_9h' | 'chronic_apnea_insomnia';
 export type StressLevel = 'severe_unmanaged' | 'moderate_daily' | 'well_managed_mindful';
-export type SocialConnection = 'isolated' | 'moderate' | 'strong_connected';
+export type SocialConnection = 'rare_isolated' | 'monthly_occasional' | 'weekly_1_to_2' | 'frequent_3plus_weekly';
 export type OralHealth = 'rarely_never' | 'occasional' | 'daily_flossing';
 export type PreventativeScreening = 'neglected' | 'up_to_date';
 
