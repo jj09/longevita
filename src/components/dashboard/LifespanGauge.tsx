@@ -131,22 +131,22 @@ export const LifespanGauge: React.FC<LifespanGaugeProps> = ({ result }) => {
             />
 
             {/* Tick Markers */}
-            <text x="12" y="122" fill="#64748b" fontSize="11" fontWeight="600">60y</text>
-            <text x="94" y="24" fill="#64748b" fontSize="11" fontWeight="600">85y</text>
-            <text x="168" y="122" fill="#64748b" fontSize="11" fontWeight="600">105y+</text>
+            <text x="15" y="122" textAnchor="middle" fill="#64748b" fontSize="11" fontWeight="600">60y</text>
+            <text x="100" y="12" textAnchor="middle" fill="#64748b" fontSize="11" fontWeight="600">85y</text>
+            <text x="185" y="122" textAnchor="middle" fill="#64748b" fontSize="11" fontWeight="600">105y+</text>
           </svg>
 
-          {/* Central Lifespan Number */}
-          <div className="absolute top-14 flex flex-col items-center">
-            <span className="text-xs sm:text-sm uppercase tracking-wider text-slate-400 font-semibold">
-              Projected Lifespan
-            </span>
-            <div className="flex items-baseline gap-1 mt-0.5">
-              <span className="text-5xl font-black tracking-tight text-white drop-shadow-md">
+          {/* Central Lifespan Number & Label Below */}
+          <div className="absolute top-8 sm:top-9 flex flex-col items-center select-none pointer-events-none">
+            <div className="flex items-baseline gap-1">
+              <span className="text-5xl sm:text-[54px] font-black tracking-tight text-white drop-shadow-md leading-none">
                 {projectedLifespan}
               </span>
-              <span className="text-slate-400 text-lg font-medium">yrs</span>
+              <span className="text-slate-400 text-lg font-bold">yrs</span>
             </div>
+            <span className="text-[11px] sm:text-xs uppercase tracking-widest text-slate-400 font-bold mt-1.5">
+              Projected Lifespan
+            </span>
           </div>
         </div>
 
