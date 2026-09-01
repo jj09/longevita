@@ -90,7 +90,7 @@ export const LifespanGauge: React.FC<LifespanGaugeProps> = ({ result }) => {
 
         {/* Central Radial SVG Gauge */}
         <div className="relative w-64 h-36 flex items-center justify-center mt-2">
-          <svg className="w-64 h-64 overflow-visible" viewBox="0 0 200 120">
+          <svg className="w-64 h-64 overflow-visible" viewBox="0 -10 200 145">
             <defs>
               <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#ef4444" />
@@ -130,10 +130,10 @@ export const LifespanGauge: React.FC<LifespanGaugeProps> = ({ result }) => {
               filter="url(#gaugeGlow)"
             />
 
-            {/* Tick Markers */}
-            <text x="15" y="122" textAnchor="middle" fill="#64748b" fontSize="11" fontWeight="600">60y</text>
-            <text x="100" y="12" textAnchor="middle" fill="#64748b" fontSize="11" fontWeight="600">85y</text>
-            <text x="185" y="122" textAnchor="middle" fill="#64748b" fontSize="11" fontWeight="600">105y+</text>
+            {/* Tick Markers with generous margins */}
+            <text x="15" y="128" textAnchor="middle" fill="#64748b" fontSize="11" fontWeight="600">60y</text>
+            <text x="100" y="4" textAnchor="middle" fill="#64748b" fontSize="11" fontWeight="600">85y</text>
+            <text x="185" y="128" textAnchor="middle" fill="#64748b" fontSize="11" fontWeight="600">105y+</text>
           </svg>
 
           {/* Central Lifespan Number & Label Below */}
