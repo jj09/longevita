@@ -19,9 +19,16 @@ export function getBMICategoryInfo(bmi: number): CategoryInfo {
       badgeClass: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
     };
   }
+  if (bmi <= 27.5) {
+    return {
+      label: 'Mild Overweight (25–27.5)',
+      category: 'Mild Overweight',
+      badgeClass: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+    };
+  }
   if (bmi <= 29.9) {
     return {
-      label: 'Overweight (25–29.9)',
+      label: 'Overweight (27.6–29.9)',
       category: 'Overweight',
       badgeClass: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
     };

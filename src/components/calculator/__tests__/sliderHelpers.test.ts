@@ -13,7 +13,9 @@ describe('sliderHelpers', () => {
     expect(getBMICategoryInfo(17.5).category).toBe('Underweight');
     expect(getBMICategoryInfo(22.0).category).toBe('Optimal');
     expect(getBMICategoryInfo(24.9).category).toBe('Optimal');
-    expect(getBMICategoryInfo(25.4).category).toBe('Overweight');
+    expect(getBMICategoryInfo(25.4).category).toBe('Mild Overweight');
+    expect(getBMICategoryInfo(27.5).category).toBe('Mild Overweight');
+    expect(getBMICategoryInfo(28.5).category).toBe('Overweight');
     expect(getBMICategoryInfo(29.9).category).toBe('Overweight');
     expect(getBMICategoryInfo(31.5).category).toBe('Obesity Class I');
     expect(getBMICategoryInfo(38.0).category).toBe('Severe Obesity');
@@ -58,7 +60,9 @@ describe('sliderHelpers', () => {
     expect(getBMICategoryInfo(18.4).category).toBe('Underweight');
     expect(getBMICategoryInfo(18.5).category).toBe('Optimal');
     expect(getBMICategoryInfo(24.9).category).toBe('Optimal');
-    expect(getBMICategoryInfo(25.0).category).toBe('Overweight');
+    expect(getBMICategoryInfo(25.0).category).toBe('Mild Overweight');
+    expect(getBMICategoryInfo(27.5).category).toBe('Mild Overweight');
+    expect(getBMICategoryInfo(27.6).category).toBe('Overweight');
     expect(getBMICategoryInfo(29.9).category).toBe('Overweight');
     expect(getBMICategoryInfo(30.0).category).toBe('Obesity Class I');
     expect(getBMICategoryInfo(34.9).category).toBe('Obesity Class I');

@@ -59,7 +59,7 @@ describe('Longevity Engine Calculation', () => {
     const res1 = calculateLongevity(profile1);
     const res2 = calculateLongevity(profile2);
     expect(res2.projectedLifespan).toBeGreaterThan(res1.projectedLifespan);
-    expect(res2.projectedLifespan - res1.projectedLifespan).toBeCloseTo(7.5, 1);
+    expect(res2.netDelta - res1.netDelta).toBeCloseTo(7.5, 1);
   });
 
   it('accurately balances coexisting early family cancer with exceptional 90+ relative genetics', () => {
@@ -134,6 +134,14 @@ describe('Category Aggregation & Biological Age', () => {
     expect(res.biologicalAge).toBeGreaterThan(smoker.profile.age);
     expect(res.totalLostYears).toBeGreaterThan(15);
   });
+
+  it('ensures exact arithmetic consistency between netDelta and (totalGainedYears - totalLostYears)', () => {
+    for (const archetype of PRESET_ARCHETYPES) {
+      const res = calculateLongevity(archetype.profile);
+      const diff = Number((res.totalGainedYears - res.totalLostYears).toFixed(1));
+      expect(res.netDelta).toBe(diff);
+    }
+  });
 });
 
 describe('Quiz Questions Registry Consistency', () => {
@@ -141,7 +149,7 @@ describe('Quiz Questions Registry Consistency', () => {
     const ids = new Set(QUIZ_QUESTIONS.map((q) => q.id));
     expect(ids.size).toBe(QUIZ_QUESTIONS.length);
     expect(TOTAL_QUIZ_QUESTIONS).toBe(QUIZ_QUESTIONS.length);
-    expect(TOTAL_QUIZ_QUESTIONS).toBe(27);
+    expect(TOTAL_QUIZ_QUESTIONS).toBe(31);
 
     // Ensure every question has a valid mapped field on DEFAULT_PROFILE
     for (const q of QUIZ_QUESTIONS) {

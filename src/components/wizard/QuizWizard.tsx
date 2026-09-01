@@ -26,8 +26,10 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
   const [answers, setAnswers] = useState<Partial<UserProfile>>({
     age: initialProfile.age,
     systolicBP: initialProfile.systolicBP,
+    diastolicBP: initialProfile.diastolicBP,
     bmi: initialProfile.bmi,
     restingHeartRate: initialProfile.restingHeartRate,
+    dailyWaterGlasses: initialProfile.dailyWaterGlasses,
   });
   const [completedProfile, setCompletedProfile] = useState<UserProfile | null>(null);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
@@ -54,6 +56,15 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
     }
   };
 
+  const handleSliderValue = (field: keyof UserProfile, value: number) => {
+    if (field === 'systolicBP') {
+      const estimatedDiastolic = Math.round(70 + (value - 100) * 0.35);
+      setAnswers((prev) => ({ ...prev, systolicBP: value, diastolicBP: estimatedDiastolic }));
+    } else {
+      setAnswers((prev) => ({ ...prev, [field]: value }));
+    }
+  };
+
   const handleSelectOption = (value: any) => {
     setAnswers((prev) => ({ ...prev, [currentQ.field]: value }));
   };
@@ -64,9 +75,12 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
+      const systolic = answers.systolicBP ?? initialProfile.systolicBP;
+      const diastolic = answers.diastolicBP ?? Math.round(70 + (systolic - 100) * 0.35);
       const finalProfile: UserProfile = {
         ...initialProfile,
         ...answers,
+        diastolicBP: diastolic,
       };
       setCompletedProfile(finalProfile);
       triggerCompletion(finalProfile);
@@ -191,7 +205,7 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
                           const step = currentQ.sliderConfig!.step;
                           const min = currentQ.sliderConfig!.min;
                           const next = Math.max(min, Number((current - step).toFixed(step < 1 ? 1 : 0)));
-                          setAnswers((prev) => ({ ...prev, [currentQ.field]: next }));
+                          handleSliderValue(currentQ.field, next);
                         }}
                         className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-950 border border-slate-700/80 text-slate-100 hover:text-white hover:bg-slate-800 hover:border-slate-600 active:scale-90 flex items-center justify-center text-2xl sm:text-3xl font-black transition-all select-none shadow-md"
                         title="Decrease value"
@@ -218,7 +232,7 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
                           const step = currentQ.sliderConfig!.step;
                           const max = currentQ.sliderConfig!.max;
                           const next = Math.min(max, Number((current + step).toFixed(step < 1 ? 1 : 0)));
-                          setAnswers((prev) => ({ ...prev, [currentQ.field]: next }));
+                          handleSliderValue(currentQ.field, next);
                         }}
                         className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-950 border border-slate-700/80 text-slate-100 hover:text-white hover:bg-slate-800 hover:border-slate-600 active:scale-90 flex items-center justify-center text-2xl sm:text-3xl font-black transition-all select-none shadow-md"
                         title="Increase value"
@@ -227,7 +241,7 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
                       </button>
                     </div>
 
-                    {/* Dynamic Category Pill for BMI, Systolic BP, Resting HR, Age */}
+                    {/* Dynamic Category Pill for BMI, Systolic BP, Resting HR, Age, Water */}
                     {currentQ.id === 'bmi' && (() => {
                       const info = getBMICategoryInfo(answers.bmi ?? initialProfile.bmi);
                       return (
@@ -263,6 +277,16 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
                         </div>
                       );
                     })()}
+
+                    {currentQ.id === 'dailyWaterGlasses' && (() => {
+                      const glasses = (answers.dailyWaterGlasses ?? initialProfile.dailyWaterGlasses) as number;
+                      const isOptimal = glasses >= 6;
+                      return (
+                        <div className={`mt-2.5 px-3 py-1 rounded-full text-xs font-bold border ${isOptimal ? 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30' : 'bg-amber-500/15 text-amber-300 border-amber-500/30'}`}>
+                          {isOptimal ? 'Optimal Hydration (6-8+ glasses)' : 'Suboptimal (< 6 glasses)'}
+                        </div>
+                      );
+                    })()}
                   </div>
                 </div>
 
@@ -273,7 +297,7 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
                   step={currentQ.sliderConfig.step}
                   value={((answers[currentQ.field] ?? initialProfile[currentQ.field]) as number)}
                   onChange={(e) =>
-                    setAnswers((prev) => ({ ...prev, [currentQ.field]: Number(e.target.value) }))
+                    handleSliderValue(currentQ.field, Number(e.target.value))
                   }
                   className="w-full"
                 />
@@ -341,6 +365,19 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
                       <span style={{ width: '18.2%' }} className="text-cyan-400 truncate pl-0.5">71-80</span>
                       <span style={{ width: '18.2%' }} className="text-amber-400 truncate pl-0.5">81-90</span>
                       <span style={{ width: '18.1%' }} className="text-rose-400 truncate text-right">&gt;90 High</span>
+                    </div>
+                  </div>
+                )}
+
+                {currentQ.id === 'dailyWaterGlasses' && (
+                  <div className="space-y-1">
+                    <div className="h-2 w-full rounded-full flex overflow-hidden bg-slate-800">
+                      <div style={{ width: '33.3%' }} className="bg-amber-500/60" title="Suboptimal: 2-5 glasses" />
+                      <div style={{ width: '66.7%' }} className="bg-cyan-500/70" title="Optimal: 6-14 glasses" />
+                    </div>
+                    <div className="flex text-xs text-slate-400 font-medium">
+                      <span style={{ width: '33.3%' }} className="text-amber-400 truncate">2-5 Suboptimal</span>
+                      <span style={{ width: '66.7%' }} className="text-cyan-400 truncate pl-1">6-14 Optimal (6-8+ Recommended)</span>
                     </div>
                   </div>
                 )}

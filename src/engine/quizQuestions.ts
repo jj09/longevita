@@ -355,7 +355,24 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
       { value: 'none', label: 'None', description: 'Zero regular polyphenol intake' },
     ],
   },
-  // 21. Smoking & Tobacco
+  // 21. Daily Hydration
+  {
+    id: 'dailyWaterGlasses',
+    pillar: 'nutrition',
+    pillarLabel: 'Nutrition & Blue Zone Diet',
+    title: 'How many glasses of water do you drink daily?',
+    subtitle: 'Optimal hydration (6+ glasses) maintains serum sodium balance, renal filtration, and blood viscosity.',
+    type: 'slider',
+    field: 'dailyWaterGlasses',
+    sliderConfig: {
+      min: 2,
+      max: 14,
+      step: 1,
+      unit: 'glasses/day',
+      labels: { 2: '2 (Low)', 4: '4', 6: '6 (Optimal)', 8: '8 (Great)', 12: '12+' },
+    },
+  },
+  // 22. Smoking & Tobacco
   {
     id: 'smoking',
     pillar: 'lifestyle',
@@ -372,7 +389,7 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
       { value: 'current_heavy', label: 'Current Heavy Smoker (1+ pack/day)', description: 'Severe vascular damage (-9.5 yrs)' },
     ],
   },
-  // 22. Alcohol
+  // 23. Alcohol
   {
     id: 'alcohol',
     pillar: 'lifestyle',
@@ -387,7 +404,7 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
       { value: 'heavy_binge', label: 'Heavy / Binge (14+ drinks/wk)', description: 'Cardiomyopathy & liver strain (-5.0 yrs)' },
     ],
   },
-  // 23. Sleep Duration & Quality
+  // 24. Sleep Duration & Quality
   {
     id: 'sleep',
     pillar: 'lifestyle',
@@ -403,7 +420,7 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
       { value: 'chronic_apnea_insomnia', label: 'Sleep Apnea / Severe Insomnia', description: 'Nocturnal hypoxia & disrupted REM' },
     ],
   },
-  // 24. Dental Flossing (Dr. Perls Living to 100 Factor!)
+  // 25. Dental Flossing (Dr. Perls Living to 100 Factor!)
   {
     id: 'flossing',
     pillar: 'lifestyle',
@@ -418,7 +435,7 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
       { value: 'rarely_never', label: 'Rarely / Never', description: 'Chronic systemic inflammatory penalty' },
     ],
   },
-  // 25. Stress & Mindset
+  // 26. Stress & Mindset
   {
     id: 'stress',
     pillar: 'lifestyle',
@@ -433,7 +450,7 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
       { value: 'severe_unmanaged', label: 'Severe / Chronic Unmanaged', description: 'Constant high cortisol and burnout' },
     ],
   },
-  // 26. Social Connection (Blue Zone Moai)
+  // 27. Social Connection (Blue Zone Moai)
   {
     id: 'socialConnection',
     pillar: 'lifestyle',
@@ -448,7 +465,7 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
       { value: 'isolated', label: 'Isolated / High Loneliness', description: 'Severe social isolation penalty' },
     ],
   },
-  // 27. Sexual Intimacy & Physical Connection
+  // 28. Sexual Intimacy & Physical Connection
   {
     id: 'intimacyFrequency',
     pillar: 'lifestyle',
@@ -462,6 +479,48 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
       { value: 'frequent_active', label: 'Frequent (3+ times / week)', description: 'High intimate connection, lower cortisol, and vascular stimulation (+2.0 yrs)' },
       { value: 'monthly_occasional', label: 'Monthly / Occasional (1–3 times / month)', description: 'Moderate intimacy and periodic stress relief (+0.6 yrs)' },
       { value: 'rare_none', label: 'Infrequent / Inactive (< 1 time / month)', description: 'Baseline population level with low regular oxytocin release (0.0 yrs)' },
+    ],
+  },
+  // 29. Sun Protection & Skin Care
+  {
+    id: 'sunProtection',
+    pillar: 'lifestyle',
+    pillarLabel: 'Lifestyle, Sleep & Mind',
+    title: 'Do you use daily sunscreen & sun protection (SPF 30+)?',
+    subtitle: 'Protects skin cellular matrix from UV photo-aging and reduces melanoma risk by up to 50%.',
+    type: 'options',
+    field: 'sunProtection',
+    options: [
+      { value: true, label: 'Yes, Daily Sunscreen (SPF 30+)', description: 'Consistent UV protection on face, neck, and hands (+0.6 yrs)' },
+      { value: false, label: 'No / Rarely', description: 'Unprotected cumulative UV exposure (-0.6 yrs)' },
+    ],
+  },
+  // 30. Seatbelt & Safe Driving
+  {
+    id: 'seatbeltSafety',
+    pillar: 'lifestyle',
+    pillarLabel: 'Lifestyle, Sleep & Mind',
+    title: 'Do you consistently wear a seatbelt & avoid phone distractions while driving?',
+    subtitle: 'Vehicle collisions are the leading non-medical cause of lost life years before age 65.',
+    type: 'options',
+    field: 'seatbeltSafety',
+    options: [
+      { value: true, label: 'Always Buckled & Distraction-Free', description: 'Habitual seatbelt usage and zero phone texting while driving (+0.8 yrs)' },
+      { value: false, label: 'Inconsistent / Distracted Driving', description: 'Elevated accidental trauma and mortality risk (-2.0 yrs)' },
+    ],
+  },
+  // 31. Preventative Medical Screenings
+  {
+    id: 'screenings',
+    pillar: 'lifestyle',
+    pillarLabel: 'Lifestyle, Sleep & Mind',
+    title: 'Are you up-to-date on preventative medical screenings?',
+    subtitle: 'Annual blood panels, colonoscopy at 45+, dermatologic skin checks, and age-appropriate exams.',
+    type: 'options',
+    field: 'screenings',
+    options: [
+      { value: 'up_to_date', label: 'Up-to-Date on Recommended Screenings', description: 'Catches silent metabolic and oncological risks when 90%+ curable (+1.8 yrs)' },
+      { value: 'neglected', label: 'Neglected / Avoids Screenings', description: 'Unmonitored progression of silent asymptomatic pathology (-2.0 yrs)' },
     ],
   },
 ];

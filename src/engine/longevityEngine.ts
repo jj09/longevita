@@ -814,19 +814,29 @@ export function calculateLongevity(profile: UserProfile): LongevityCalculationRe
     };
   });
 
-  const netDelta = Number(impacts.reduce((acc, it) => acc + it.yearsDelta, 0).toFixed(1));
   const totalGainedYears = Number(impacts.filter((it) => it.yearsDelta > 0).reduce((acc, it) => acc + it.yearsDelta, 0).toFixed(1));
   const totalLostYears = Number(impacts.filter((it) => it.yearsDelta < 0).reduce((acc, it) => acc + Math.abs(it.yearsDelta), 0).toFixed(1));
+  // Exact arithmetic consistency: netDelta is strictly (totalGained - totalLost)
+  const netDelta = Number((totalGainedYears - totalLostYears).toFixed(1));
 
-  // Projected Lifespan: Actuarial baseline + Net Delta (bounded between age + 1 and 115)
-  const rawProjected = actuarialBaseline + netDelta;
+  // Sub-linear actuarial dampening (diminishing returns for stacked independent factors)
+  const effectiveGained = totalGainedYears <= 15
+    ? totalGainedYears
+    : 15 + Math.sqrt(totalGainedYears - 15) * 3.6;
+
+  const effectiveLost = totalLostYears <= 20
+    ? totalLostYears
+    : 20 + Math.sqrt(totalLostYears - 20) * 2.8;
+
+  const effectiveDelta = effectiveGained - effectiveLost;
+
+  // Projected Lifespan: Actuarial baseline + Effective Delta (bounded between age + 1 and 115)
+  const rawProjected = actuarialBaseline + effectiveDelta;
   const projectedLifespan = Number(Math.max(profile.age + 1, Math.min(115, rawProjected)).toFixed(1));
 
   // Biological Age calculation:
-  // If user has +10 net delta, their body wears down slower, so biological age is lower than chronological age.
-  // We compute aging velocity: 1 year of calendar time = (Actuarial / Projected) biological wear.
-  const agingFactor = actuarialBaseline / Math.max(50, projectedLifespan);
-  const bioAgeDiff = (agingFactor - 1) * (profile.age * 0.4);
+  // Reflects biological wear vs chronological age based on healthspan acceleration/deceleration.
+  const bioAgeDiff = -(effectiveDelta * 0.45);
   const biologicalAge = Number(Math.max(18, Math.min(105, profile.age + bioAgeDiff)).toFixed(1));
 
   // Confidence Interval (+/- 3.5 to 5.0 years based on age)

@@ -452,6 +452,129 @@ const MODIFIABLE_CANDIDATES: ModifiableCandidate[] = [
     scientificEvidence:
       'BMJ Caerphilly 10-year prospective study demonstrated a 50% reduction in all-cause mortality in adults with frequent intimate activity (2+ times/week), mediated by oxytocin-cortisol dampening, ~30% higher salivary IgA antibodies, and endothelial nitric oxide release.',
   },
+
+  // 18. LIPID & CHOLESTEROL PANEL OPTIMIZATION
+  {
+    parameterKey: 'lipidStatus',
+    title: 'Optimize Lipid Panel (ApoB < 70 / LDL < 100 mg/dL)',
+    description: 'Eliminate coronary plaque accumulation through dietary fiber, plant sterols, and lipid-lowering therapies (statin/ezetimibe).',
+    pillar: 'biometrics',
+    effortScore: 2,
+    difficultyLabel: 'Easy',
+    category: 'medical_optimization',
+    isApplicable: (p) => p.lipidStatus === 'high_uncontrolled' || p.lipidStatus === 'moderate_high',
+    getTargetProfile: (p) => ({
+      targetProfile: { ...p, lipidStatus: 'optimal' },
+      targetValue: 'optimal',
+      targetDisplay: 'Optimal (ApoB < 70 / LDL < 100)',
+    }),
+    getCurrentDisplay: (p) => (p.lipidStatus === 'high_uncontrolled' ? 'High Unmanaged (LDL 160+)' : 'Borderline / Moderate (LDL 100–159)'),
+    actionSteps: [
+      'Consult your physician for an advanced lipid panel testing ApoB, LDL-P, and Lipoprotein(a).',
+      'If ApoB is >80 mg/dL or LDL >100 mg/dL, discuss low-dose statin, Ezetimibe, or PCSK9 inhibitor therapy to arrest atherosclerosis.',
+      'Eliminate trans-fats and increase soluble fiber (psyllium husk, oats, legumes) by 10-15g daily.',
+    ],
+    scientificEvidence:
+      'Mendelian randomization studies establish that lifetime low levels of ApoB and LDL particles prevent the initiation of atherosclerotic plaque, adding 2 to 4 years of cardiovascular event-free survival.',
+  },
+
+  // 19. REDUCE SEDENTARY SITTING TIME
+  {
+    parameterKey: 'sittingHours',
+    title: 'Break Up Sedentary Desk Time (< 4-6 hours/day)',
+    description: 'Use a sit-stand desk and take 2-minute walking breaks every hour to maintain lipoprotein lipase activity.',
+    pillar: 'fitness',
+    effortScore: 2,
+    difficultyLabel: 'Easy',
+    category: 'quick_win',
+    isApplicable: (p) => p.sittingHours === 'over_8h',
+    getTargetProfile: (p) => ({
+      targetProfile: { ...p, sittingHours: 'under_4h' },
+      targetValue: 'under_4h',
+      targetDisplay: '< 4 hours/day (Active)',
+    }),
+    getCurrentDisplay: () => '8+ hours/day (High Sitting)',
+    actionSteps: [
+      'Alternate between standing and sitting every 45-60 minutes using an adjustable standing desk.',
+      'Take a 2-minute walking or calf-raise break every hour to reactivate lower limb venous return.',
+      'Stand up during phone calls and virtual audio meetings.',
+    ],
+    scientificEvidence:
+      'Uninterrupted sitting suppresses muscular lipoprotein lipase by up to 90%. Breaking prolonged sitting lowers postprandial glucose and systemic vascular resistance, extending life expectancy by up to 1.5-2.3 years.',
+  },
+
+  // 20. DAILY HYDRATION
+  {
+    parameterKey: 'dailyWaterGlasses',
+    title: 'Optimal Daily Hydration (6–8+ Glasses/day)',
+    description: 'Maintain healthy serum sodium and renal filtration with 6 to 8 glasses of pure water daily.',
+    pillar: 'nutrition',
+    effortScore: 1,
+    difficultyLabel: 'Micro-Habit (Effortless)',
+    category: 'quick_win',
+    isApplicable: (p) => p.dailyWaterGlasses < 6,
+    getTargetProfile: (p) => ({
+      targetProfile: { ...p, dailyWaterGlasses: 8 },
+      targetValue: 8,
+      targetDisplay: '8 glasses/day (Optimal)',
+    }),
+    getCurrentDisplay: (p) => `${p.dailyWaterGlasses} glasses/day (Suboptimal)`,
+    actionSteps: [
+      'Drink a 16 oz glass of water immediately upon waking to rehydrate after overnight respiratory water loss.',
+      'Keep a reusable 32 oz stainless steel water bottle at your work desk and finish 2 full bottles daily.',
+    ],
+    scientificEvidence:
+      'NIH prospective studies published in eBioMedicine showed that middle-aged adults with optimal serum sodium (138-142 mmol/L, reflecting good hydration) had significantly lower biological aging, fewer chronic diseases, and longer survival.',
+  },
+
+  // 21. RED & PROCESSED MEAT REDUCTION
+  {
+    parameterKey: 'redMeat',
+    title: 'Replace Processed & Daily Red Meat with Fish & Plants',
+    description: 'Swap sausages, bacon, and daily steaks for wild fatty fish, lentils, beans, and Mediterranean protein.',
+    pillar: 'nutrition',
+    effortScore: 2,
+    difficultyLabel: 'Easy',
+    category: 'longevity_habit',
+    isApplicable: (p) => p.redMeat === 'frequent_daily',
+    getTargetProfile: (p) => ({
+      targetProfile: { ...p, redMeat: 'rare_none' },
+      targetValue: 'rare_none',
+      targetDisplay: 'Rare / None (Fish & Plants)',
+    }),
+    getCurrentDisplay: () => 'Daily Red / Processed Meat',
+    actionSteps: [
+      'Substitute processed deli meats and bacon with wild sardines, salmon, or avocado in breakfasts and lunches.',
+      'Designate at least 3-4 days per week as plant-protein centered (lentil stews, chickpea curries, tempeh).',
+    ],
+    scientificEvidence:
+      'Harvard prospective cohorts of over 120,000 participants found that substituting one daily serving of processed red meat with fish or legumes was associated with a 14-19% lower mortality rate.',
+  },
+
+  // 22. HEALTHY BODY MASS INDEX & VISCERAL ADIPOSITY
+  {
+    parameterKey: 'bmi',
+    title: 'Optimize Body Mass Index & Visceral Adiposity (18.5–24.9)',
+    description: 'Reduce visceral fat to normalize fasting insulin and decrease myocardial mechanical strain.',
+    pillar: 'biometrics',
+    effortScore: 4,
+    difficultyLabel: 'Challenging',
+    category: 'high_impact',
+    isApplicable: (p) => p.bmi > 27.5,
+    getTargetProfile: (p) => ({
+      targetProfile: { ...p, bmi: 23.5 },
+      targetValue: 23.5,
+      targetDisplay: 'BMI 23.5 (Optimal Range)',
+    }),
+    getCurrentDisplay: (p) => `BMI ${p.bmi.toFixed(1)} (${p.bmi >= 30 ? 'Obese' : 'Overweight'})`,
+    actionSteps: [
+      'Maintain a modest 300-500 kcal daily deficit while consuming 1.2-1.6g/kg protein to preserve lean muscle.',
+      'Combine resistance training 3x/week with 8,000+ daily steps to optimize body recomposition.',
+      'Eliminate liquid calories, refined starches, and late-night snacking within 3 hours of sleep.',
+    ],
+    scientificEvidence:
+      'Global BMI Mortality Collaboration meta-analysis (10.6 million participants across 239 studies) demonstrated that all-cause mortality is lowest in the BMI 20.0-24.9 range, adding 2.8 to 5.0 years of life expectancy compared to class I/II obesity.',
+  },
 ];
 
 /**
