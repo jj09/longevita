@@ -124,8 +124,8 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
     id: 'systolicBP',
     pillar: 'biometrics',
     pillarLabel: 'Biometrics & Clinical',
-    title: 'What is your typical Systolic Blood Pressure?',
-    subtitle: 'Optimal systolic is <120 mmHg. (Diastolic will be estimated proportionally)',
+    title: 'What is your typical Blood Pressure (Systolic / Diastolic)?',
+    subtitle: 'Optimal clinical resting blood pressure is <120 / <80 mmHg. Adjust both upper (systolic) and lower (diastolic) numbers.',
     type: 'slider',
     field: 'systolicBP',
     sliderConfig: {

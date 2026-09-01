@@ -5,9 +5,11 @@ import confetti from 'canvas-confetti';
 import {
   getBMICategoryInfo,
   getSystolicBPInfo,
+  getDiastolicBPInfo,
   getRestingHRInfo,
   getAgeCategoryInfo,
 } from '../calculator/sliderHelpers';
+import { getBloodPressureCategory } from '../../engine/longevityEngine';
 import { BMICalculator } from '../calculator/BMICalculator';
 
 import { QUIZ_QUESTIONS } from '../../engine/quizQuestions';
@@ -57,12 +59,7 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
   };
 
   const handleSliderValue = (field: keyof UserProfile, value: number) => {
-    if (field === 'systolicBP') {
-      const estimatedDiastolic = Math.round(70 + (value - 100) * 0.35);
-      setAnswers((prev) => ({ ...prev, systolicBP: value, diastolicBP: estimatedDiastolic }));
-    } else {
-      setAnswers((prev) => ({ ...prev, [field]: value }));
-    }
+    setAnswers((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSelectOption = (value: any) => {
@@ -75,12 +72,9 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
-      const systolic = answers.systolicBP ?? initialProfile.systolicBP;
-      const diastolic = answers.diastolicBP ?? Math.round(70 + (systolic - 100) * 0.35);
       const finalProfile: UserProfile = {
         ...initialProfile,
         ...answers,
-        diastolicBP: diastolic,
       };
       setCompletedProfile(finalProfile);
       triggerCompletion(finalProfile);
@@ -192,211 +186,388 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
 
             {/* Render Question Input: Slider */}
             {currentQ.type === 'slider' && currentQ.sliderConfig && (
-              <div className="py-6 space-y-6">
-                {/* Dynamic Value & Category Card with Prominent Steppers */}
-                <div className="flex flex-col items-center justify-center">
-                  <div className="px-6 py-5 rounded-2xl bg-slate-900 border border-slate-700 text-center shadow-xl min-w-[260px]">
-                    <div className="flex items-center justify-center gap-4 sm:gap-6">
-                      {/* Stepper Decrement */}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const current = (answers[currentQ.field] ?? initialProfile[currentQ.field]) as number;
-                          const step = currentQ.sliderConfig!.step;
-                          const min = currentQ.sliderConfig!.min;
-                          const next = Math.max(min, Number((current - step).toFixed(step < 1 ? 1 : 0)));
-                          handleSliderValue(currentQ.field, next);
-                        }}
-                        className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-950 border border-slate-700/80 text-slate-100 hover:text-white hover:bg-slate-800 hover:border-slate-600 active:scale-90 flex items-center justify-center text-2xl sm:text-3xl font-black transition-all select-none shadow-md"
-                        title="Decrease value"
-                      >
-                        −
-                      </button>
+              <div className="py-4 space-y-6">
+                {currentQ.id === 'systolicBP' ? (
+                  /* ==================================================== */
+                  /* DUAL BLOOD PRESSURE INPUTS (SYSTOLIC & DIASTOLIC) */
+                  /* ==================================================== */
+                  <div className="space-y-5">
+                    {/* Overall Clinical BP Status Badge */}
+                    {(() => {
+                      const systolic = (answers.systolicBP ?? initialProfile.systolicBP) as number;
+                      const diastolic = (answers.diastolicBP ?? initialProfile.diastolicBP) as number;
+                      const bpCategory = getBloodPressureCategory(systolic, diastolic);
 
-                      <div className="flex items-baseline justify-center gap-1.5 min-w-[120px]">
-                        <span className="text-4xl sm:text-5xl font-black text-cyan-300">
-                          {currentQ.id === 'bmi'
-                            ? ((answers.bmi ?? initialProfile.bmi) as number).toFixed(1)
-                            : ((answers[currentQ.field] ?? initialProfile[currentQ.field]) as number)}
-                        </span>
-                        <span className="text-slate-400 text-sm font-semibold">
-                          {currentQ.sliderConfig.unit}
-                        </span>
+                      const categoryConfig: Record<string, { label: string; delta: string; badge: string }> = {
+                        optimal: { label: 'Optimal Blood Pressure', delta: '+2.0 yrs', badge: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30' },
+                        elevated: { label: 'Elevated Blood Pressure', delta: '+0.5 yrs', badge: 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30' },
+                        stage1: { label: 'Stage 1 Hypertension', delta: '-1.5 yrs', badge: 'bg-amber-500/15 text-amber-300 border-amber-500/30' },
+                        stage2: { label: 'Stage 2 Hypertension', delta: '-3.5 yrs', badge: 'bg-orange-500/15 text-orange-300 border-orange-500/30' },
+                        severe_untreated: { label: 'Severe Hypertension', delta: '-6.5 yrs', badge: 'bg-rose-500/20 text-rose-400 border-rose-500/40' },
+                      };
+
+                      const meta = categoryConfig[bpCategory] || categoryConfig.optimal;
+
+                      return (
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-md">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-black text-sm">
+                              BP
+                            </div>
+                            <div>
+                              <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Clinical Reading</div>
+                              <div className="text-base sm:text-lg font-extrabold text-white">
+                                {systolic} / {diastolic} <span className="text-xs font-normal text-slate-400">mmHg</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className={`px-3.5 py-1.5 rounded-full text-xs font-bold border ${meta.badge}`}>
+                            {meta.label} ({meta.delta})
+                          </div>
+                        </div>
+                      );
+                    })()}
+
+                    {/* Dual Inputs Grid: Systolic & Diastolic */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                      {/* 1. Systolic Blood Pressure (Top Number) */}
+                      <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/90 border border-slate-700/80 shadow-lg space-y-3.5">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="text-sm font-bold text-slate-200">Systolic (Upper)</div>
+                            <div className="text-xs text-slate-400">Peak arterial contraction</div>
+                          </div>
+                          {(() => {
+                            const info = getSystolicBPInfo((answers.systolicBP ?? initialProfile.systolicBP) as number);
+                            return (
+                              <div className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${info.badgeClass}`}>
+                                {info.category}
+                              </div>
+                            );
+                          })()}
+                        </div>
+
+                        {/* Stepper + Big Value */}
+                        <div className="flex items-center justify-center gap-3 py-1">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const current = (answers.systolicBP ?? initialProfile.systolicBP) as number;
+                              handleSliderValue('systolicBP', Math.max(100, current - 1));
+                            }}
+                            className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-950 border border-slate-700 text-slate-100 hover:text-white hover:bg-slate-800 active:scale-90 flex items-center justify-center text-xl font-black transition-all select-none shadow-md"
+                            title="Decrease Systolic"
+                          >
+                            −
+                          </button>
+                          <div className="flex items-baseline justify-center gap-1 min-w-[90px] text-center">
+                            <span className="text-3xl font-black text-cyan-300">
+                              {answers.systolicBP ?? initialProfile.systolicBP}
+                            </span>
+                            <span className="text-slate-400 text-xs font-semibold">mmHg</span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const current = (answers.systolicBP ?? initialProfile.systolicBP) as number;
+                              handleSliderValue('systolicBP', Math.min(175, current + 1));
+                            }}
+                            className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-950 border border-slate-700 text-slate-100 hover:text-white hover:bg-slate-800 active:scale-90 flex items-center justify-center text-xl font-black transition-all select-none shadow-md"
+                            title="Increase Systolic"
+                          >
+                            +
+                          </button>
+                        </div>
+
+                        <input
+                          type="range"
+                          min={100}
+                          max={175}
+                          step={1}
+                          value={(answers.systolicBP ?? initialProfile.systolicBP) as number}
+                          onChange={(e) => handleSliderValue('systolicBP', Number(e.target.value))}
+                          className="w-full"
+                        />
+
+                        {/* Systolic Segmented Scale */}
+                        <div className="space-y-1">
+                          <div className="h-1.5 w-full rounded-full flex overflow-hidden bg-slate-800">
+                            <div style={{ width: '26.7%' }} className="bg-emerald-500/70" title="Optimal: <120" />
+                            <div style={{ width: '13.3%' }} className="bg-cyan-500/60" title="Elevated: 120-129" />
+                            <div style={{ width: '13.3%' }} className="bg-amber-500/60" title="Stage 1: 130-139" />
+                            <div style={{ width: '26.7%' }} className="bg-orange-500/60" title="Stage 2: 140-159" />
+                            <div style={{ width: '20.0%' }} className="bg-rose-500/60" title="Severe: 160+" />
+                          </div>
+                          <div className="flex text-[10px] text-slate-400 font-medium">
+                            <span style={{ width: '26.7%' }} className="text-emerald-400 truncate">&lt;120</span>
+                            <span style={{ width: '13.3%' }} className="text-cyan-400 truncate pl-0.5">120-129</span>
+                            <span style={{ width: '13.3%' }} className="text-amber-400 truncate pl-0.5">130-139</span>
+                            <span style={{ width: '26.7%' }} className="text-orange-400 truncate pl-0.5">140-159</span>
+                            <span style={{ width: '20.0%' }} className="text-rose-400 truncate text-right">160+</span>
+                          </div>
+                        </div>
                       </div>
 
-                      {/* Stepper Increment */}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const current = (answers[currentQ.field] ?? initialProfile[currentQ.field]) as number;
-                          const step = currentQ.sliderConfig!.step;
-                          const max = currentQ.sliderConfig!.max;
-                          const next = Math.min(max, Number((current + step).toFixed(step < 1 ? 1 : 0)));
-                          handleSliderValue(currentQ.field, next);
-                        }}
-                        className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-950 border border-slate-700/80 text-slate-100 hover:text-white hover:bg-slate-800 hover:border-slate-600 active:scale-90 flex items-center justify-center text-2xl sm:text-3xl font-black transition-all select-none shadow-md"
-                        title="Increase value"
-                      >
-                        +
-                      </button>
+                      {/* 2. Diastolic Blood Pressure (Bottom Number) */}
+                      <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/90 border border-slate-700/80 shadow-lg space-y-3.5">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="text-sm font-bold text-slate-200">Diastolic (Lower)</div>
+                            <div className="text-xs text-slate-400">Resting arterial pressure</div>
+                          </div>
+                          {(() => {
+                            const info = getDiastolicBPInfo((answers.diastolicBP ?? initialProfile.diastolicBP) as number);
+                            return (
+                              <div className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${info.badgeClass}`}>
+                                {info.category}
+                              </div>
+                            );
+                          })()}
+                        </div>
+
+                        {/* Stepper + Big Value */}
+                        <div className="flex items-center justify-center gap-3 py-1">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const current = (answers.diastolicBP ?? initialProfile.diastolicBP) as number;
+                              handleSliderValue('diastolicBP', Math.max(60, current - 1));
+                            }}
+                            className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-950 border border-slate-700 text-slate-100 hover:text-white hover:bg-slate-800 active:scale-90 flex items-center justify-center text-xl font-black transition-all select-none shadow-md"
+                            title="Decrease Diastolic"
+                          >
+                            −
+                          </button>
+                          <div className="flex items-baseline justify-center gap-1 min-w-[90px] text-center">
+                            <span className="text-3xl font-black text-cyan-300">
+                              {answers.diastolicBP ?? initialProfile.diastolicBP}
+                            </span>
+                            <span className="text-slate-400 text-xs font-semibold">mmHg</span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const current = (answers.diastolicBP ?? initialProfile.diastolicBP) as number;
+                              handleSliderValue('diastolicBP', Math.min(115, current + 1));
+                            }}
+                            className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-950 border border-slate-700 text-slate-100 hover:text-white hover:bg-slate-800 active:scale-90 flex items-center justify-center text-xl font-black transition-all select-none shadow-md"
+                            title="Increase Diastolic"
+                          >
+                            +
+                          </button>
+                        </div>
+
+                        <input
+                          type="range"
+                          min={60}
+                          max={115}
+                          step={1}
+                          value={(answers.diastolicBP ?? initialProfile.diastolicBP) as number}
+                          onChange={(e) => handleSliderValue('diastolicBP', Number(e.target.value))}
+                          className="w-full"
+                        />
+
+                        {/* Diastolic Segmented Scale */}
+                        <div className="space-y-1">
+                          <div className="h-1.5 w-full rounded-full flex overflow-hidden bg-slate-800">
+                            <div style={{ width: '36.4%' }} className="bg-emerald-500/70" title="Optimal: <80" />
+                            <div style={{ width: '18.2%' }} className="bg-amber-500/60" title="Stage 1: 80-89" />
+                            <div style={{ width: '18.2%' }} className="bg-orange-500/60" title="Stage 2: 90-99" />
+                            <div style={{ width: '27.2%' }} className="bg-rose-500/60" title="Severe: 100+" />
+                          </div>
+                          <div className="flex text-[10px] text-slate-400 font-medium">
+                            <span style={{ width: '36.4%' }} className="text-emerald-400 truncate">&lt;80</span>
+                            <span style={{ width: '18.2%' }} className="text-amber-400 truncate pl-0.5">80-89</span>
+                            <span style={{ width: '18.2%' }} className="text-orange-400 truncate pl-0.5">90-99</span>
+                            <span style={{ width: '27.2%' }} className="text-rose-400 truncate text-right">100+</span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-
-                    {/* Dynamic Category Pill for BMI, Systolic BP, Resting HR, Age, Water */}
-                    {currentQ.id === 'bmi' && (() => {
-                      const info = getBMICategoryInfo(answers.bmi ?? initialProfile.bmi);
-                      return (
-                        <div className={`mt-2.5 px-3 py-1 rounded-full text-xs font-bold border ${info.badgeClass}`}>
-                          {info.category} ({info.label})
-                        </div>
-                      );
-                    })()}
-
-                    {currentQ.id === 'systolicBP' && (() => {
-                      const info = getSystolicBPInfo(answers.systolicBP ?? initialProfile.systolicBP);
-                      return (
-                        <div className={`mt-2.5 px-3 py-1 rounded-full text-xs font-bold border ${info.badgeClass}`}>
-                          {info.category} ({info.label})
-                        </div>
-                      );
-                    })()}
-
-                    {currentQ.id === 'restingHeartRate' && (() => {
-                      const info = getRestingHRInfo(answers.restingHeartRate ?? initialProfile.restingHeartRate);
-                      return (
-                        <div className={`mt-2.5 px-3 py-1 rounded-full text-xs font-bold border ${info.badgeClass}`}>
-                          {info.category} ({info.label})
-                        </div>
-                      );
-                    })()}
-
-                    {currentQ.id === 'age' && (() => {
-                      const info = getAgeCategoryInfo(answers.age ?? initialProfile.age);
-                      return (
-                        <div className={`mt-2.5 px-3 py-1 rounded-full text-xs font-bold border ${info.badgeClass}`}>
-                          {info.category} ({info.label})
-                        </div>
-                      );
-                    })()}
-
-                    {currentQ.id === 'dailyWaterGlasses' && (() => {
-                      const glasses = (answers.dailyWaterGlasses ?? initialProfile.dailyWaterGlasses) as number;
-                      const isOptimal = glasses >= 6;
-                      return (
-                        <div className={`mt-2.5 px-3 py-1 rounded-full text-xs font-bold border ${isOptimal ? 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30' : 'bg-amber-500/15 text-amber-300 border-amber-500/30'}`}>
-                          {isOptimal ? 'Optimal Hydration (6-8+ glasses)' : 'Suboptimal (< 6 glasses)'}
-                        </div>
-                      );
-                    })()}
                   </div>
-                </div>
-
-                <input
-                  type="range"
-                  min={currentQ.sliderConfig.min}
-                  max={currentQ.sliderConfig.max}
-                  step={currentQ.sliderConfig.step}
-                  value={((answers[currentQ.field] ?? initialProfile[currentQ.field]) as number)}
-                  onChange={(e) =>
-                    handleSliderValue(currentQ.field, Number(e.target.value))
-                  }
-                  className="w-full"
-                />
-
-                {/* Accurate Segmented Scales for Specific Sliders */}
-                {currentQ.id === 'bmi' && (
+                ) : (
+                  /* ==================================================== */
+                  /* STANDARD SINGLE SLIDER (BMI, RESTING HR, WATER, AGE) */
+                  /* ==================================================== */
                   <>
-                    <div className="space-y-1">
-                      <div className="h-2 w-full rounded-full flex overflow-hidden bg-slate-800">
-                        <div style={{ width: '9.6%' }} className="bg-amber-500/60" title="Underweight: <18.5" />
-                        <div style={{ width: '25.0%' }} className="bg-emerald-500/70" title="Optimal: 18.5 - 24.9" />
-                        <div style={{ width: '19.2%' }} className="bg-amber-500/60" title="Overweight: 25.0 - 29.9" />
-                        <div style={{ width: '46.2%' }} className="bg-rose-500/60" title="Obese: 30.0+" />
-                      </div>
-                      <div className="flex text-xs text-slate-400 font-medium">
-                        <span style={{ width: '9.6%' }} className="text-amber-400 truncate">&lt;18.5</span>
-                        <span style={{ width: '25.0%' }} className="text-emerald-400 truncate pl-1">18.5-24.9 Optimal</span>
-                        <span style={{ width: '19.2%' }} className="text-amber-400 truncate pl-1">25-29.9 Overweight</span>
-                        <span style={{ width: '46.2%' }} className="text-rose-400 truncate text-right">30.0+ Obese</span>
+                    {/* Dynamic Value & Category Card with Prominent Steppers */}
+                    <div className="flex flex-col items-center justify-center">
+                      <div className="px-6 py-5 rounded-2xl bg-slate-900 border border-slate-700 text-center shadow-xl min-w-[260px]">
+                        <div className="flex items-center justify-center gap-4 sm:gap-6">
+                          {/* Stepper Decrement */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const current = (answers[currentQ.field] ?? initialProfile[currentQ.field]) as number;
+                              const step = currentQ.sliderConfig!.step;
+                              const min = currentQ.sliderConfig!.min;
+                              const next = Math.max(min, Number((current - step).toFixed(step < 1 ? 1 : 0)));
+                              handleSliderValue(currentQ.field, next);
+                            }}
+                            className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-950 border border-slate-700/80 text-slate-100 hover:text-white hover:bg-slate-800 hover:border-slate-600 active:scale-90 flex items-center justify-center text-2xl sm:text-3xl font-black transition-all select-none shadow-md"
+                            title="Decrease value"
+                          >
+                            −
+                          </button>
+
+                          <div className="flex items-baseline justify-center gap-1.5 min-w-[120px]">
+                            <span className="text-4xl sm:text-5xl font-black text-cyan-300">
+                              {currentQ.id === 'bmi'
+                                ? ((answers.bmi ?? initialProfile.bmi) as number).toFixed(1)
+                                : ((answers[currentQ.field] ?? initialProfile[currentQ.field]) as number)}
+                            </span>
+                            <span className="text-slate-400 text-sm font-semibold">
+                              {currentQ.sliderConfig.unit}
+                            </span>
+                          </div>
+
+                          {/* Stepper Increment */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const current = (answers[currentQ.field] ?? initialProfile[currentQ.field]) as number;
+                              const step = currentQ.sliderConfig!.step;
+                              const max = currentQ.sliderConfig!.max;
+                              const next = Math.min(max, Number((current + step).toFixed(step < 1 ? 1 : 0)));
+                              handleSliderValue(currentQ.field, next);
+                            }}
+                            className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-950 border border-slate-700/80 text-slate-100 hover:text-white hover:bg-slate-800 hover:border-slate-600 active:scale-90 flex items-center justify-center text-2xl sm:text-3xl font-black transition-all select-none shadow-md"
+                            title="Increase value"
+                          >
+                            +
+                          </button>
+                        </div>
+
+                        {/* Dynamic Category Pill for BMI, Resting HR, Age, Water */}
+                        {currentQ.id === 'bmi' && (() => {
+                          const info = getBMICategoryInfo(answers.bmi ?? initialProfile.bmi);
+                          return (
+                            <div className={`mt-2.5 px-3 py-1 rounded-full text-xs font-bold border ${info.badgeClass}`}>
+                              {info.category} ({info.label})
+                            </div>
+                          );
+                        })()}
+
+                        {currentQ.id === 'restingHeartRate' && (() => {
+                          const info = getRestingHRInfo(answers.restingHeartRate ?? initialProfile.restingHeartRate);
+                          return (
+                            <div className={`mt-2.5 px-3 py-1 rounded-full text-xs font-bold border ${info.badgeClass}`}>
+                              {info.category} ({info.label})
+                            </div>
+                          );
+                        })()}
+
+                        {currentQ.id === 'age' && (() => {
+                          const info = getAgeCategoryInfo(answers.age ?? initialProfile.age);
+                          return (
+                            <div className={`mt-2.5 px-3 py-1 rounded-full text-xs font-bold border ${info.badgeClass}`}>
+                              {info.category} ({info.label})
+                            </div>
+                          );
+                        })()}
+
+                        {currentQ.id === 'dailyWaterGlasses' && (() => {
+                          const glasses = (answers.dailyWaterGlasses ?? initialProfile.dailyWaterGlasses) as number;
+                          const isOptimal = glasses >= 6;
+                          return (
+                            <div className={`mt-2.5 px-3 py-1 rounded-full text-xs font-bold border ${isOptimal ? 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30' : 'bg-amber-500/15 text-amber-300 border-amber-500/30'}`}>
+                              {isOptimal ? 'Optimal Hydration (6-8+ glasses)' : 'Suboptimal (< 6 glasses)'}
+                            </div>
+                          );
+                        })()}
                       </div>
                     </div>
 
-                    {/* Integrated Height, Weight & Gender BMI Calculator */}
-                    <BMICalculator
-                      currentBMI={answers.bmi ?? initialProfile.bmi}
-                      currentSex={answers.sex ?? initialProfile.sex}
-                      onUpdateBMI={(bmi) => setAnswers((prev) => ({ ...prev, bmi }))}
-                      onUpdateSex={(sex) => setAnswers((prev) => ({ ...prev, sex }))}
-                      isOpenDefault={false}
+                    <input
+                      type="range"
+                      min={currentQ.sliderConfig.min}
+                      max={currentQ.sliderConfig.max}
+                      step={currentQ.sliderConfig.step}
+                      value={((answers[currentQ.field] ?? initialProfile[currentQ.field]) as number)}
+                      onChange={(e) =>
+                        handleSliderValue(currentQ.field, Number(e.target.value))
+                      }
+                      className="w-full"
                     />
+
+                    {/* Accurate Segmented Scales for Specific Sliders */}
+                    {currentQ.id === 'bmi' && (
+                      <>
+                        <div className="space-y-1">
+                          <div className="h-2 w-full rounded-full flex overflow-hidden bg-slate-800">
+                            <div style={{ width: '9.6%' }} className="bg-amber-500/60" title="Underweight: <18.5" />
+                            <div style={{ width: '25.0%' }} className="bg-emerald-500/70" title="Optimal: 18.5 - 24.9" />
+                            <div style={{ width: '19.2%' }} className="bg-amber-500/60" title="Overweight: 25.0 - 29.9" />
+                            <div style={{ width: '46.2%' }} className="bg-rose-500/60" title="Obese: 30.0+" />
+                          </div>
+                          <div className="flex text-xs text-slate-400 font-medium">
+                            <span style={{ width: '9.6%' }} className="text-amber-400 truncate">&lt;18.5</span>
+                            <span style={{ width: '25.0%' }} className="text-emerald-400 truncate pl-1">18.5-24.9 Optimal</span>
+                            <span style={{ width: '19.2%' }} className="text-amber-400 truncate pl-1">25-29.9 Overweight</span>
+                            <span style={{ width: '46.2%' }} className="text-rose-400 truncate text-right">30.0+ Obese</span>
+                          </div>
+                        </div>
+
+                        {/* Integrated Height, Weight & Gender BMI Calculator */}
+                        <BMICalculator
+                          currentBMI={answers.bmi ?? initialProfile.bmi}
+                          currentSex={answers.sex ?? initialProfile.sex}
+                          onUpdateBMI={(bmi) => setAnswers((prev) => ({ ...prev, bmi }))}
+                          onUpdateSex={(sex) => setAnswers((prev) => ({ ...prev, sex }))}
+                          isOpenDefault={false}
+                        />
+                      </>
+                    )}
+
+                    {currentQ.id === 'restingHeartRate' && (
+                      <div className="space-y-1">
+                        <div className="h-2 w-full rounded-full flex overflow-hidden bg-slate-800">
+                          <div style={{ width: '27.3%' }} className="bg-emerald-500/70" title="Athletic: <60 bpm" />
+                          <div style={{ width: '18.2%' }} className="bg-teal-500/60" title="Good: 60-70 bpm" />
+                          <div style={{ width: '18.2%' }} className="bg-cyan-500/60" title="Normal: 71-80 bpm" />
+                          <div style={{ width: '18.2%' }} className="bg-amber-500/60" title="Elevated: 81-90 bpm" />
+                          <div style={{ width: '18.1%' }} className="bg-rose-500/60" title="High: >90 bpm" />
+                        </div>
+                        <div className="flex text-xs text-slate-400 font-medium">
+                          <span style={{ width: '27.3%' }} className="text-emerald-400 truncate">&lt;60 Athletic</span>
+                          <span style={{ width: '18.2%' }} className="text-teal-400 truncate pl-0.5">60-70</span>
+                          <span style={{ width: '18.2%' }} className="text-cyan-400 truncate pl-0.5">71-80</span>
+                          <span style={{ width: '18.2%' }} className="text-amber-400 truncate pl-0.5">81-90</span>
+                          <span style={{ width: '18.1%' }} className="text-rose-400 truncate text-right">&gt;90 High</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {currentQ.id === 'dailyWaterGlasses' && (
+                      <div className="space-y-1">
+                        <div className="h-2 w-full rounded-full flex overflow-hidden bg-slate-800">
+                          <div style={{ width: '33.3%' }} className="bg-amber-500/60" title="Suboptimal: 2-5 glasses" />
+                          <div style={{ width: '66.7%' }} className="bg-cyan-500/70" title="Optimal: 6-14 glasses" />
+                        </div>
+                        <div className="flex text-xs text-slate-400 font-medium">
+                          <span style={{ width: '33.3%' }} className="text-amber-400 truncate">2-5 Suboptimal</span>
+                          <span style={{ width: '66.7%' }} className="text-cyan-400 truncate pl-1">6-14 Optimal (6-8+ Recommended)</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {currentQ.id === 'age' && (
+                      <div className="space-y-1">
+                        <div className="h-2 w-full rounded-full flex overflow-hidden bg-slate-800">
+                          <div style={{ width: '22.1%' }} className="bg-cyan-500/60" title="Young Adult: 18–34" />
+                          <div style={{ width: '26.0%' }} className="bg-emerald-500/70" title="Prime Midlife: 35–54" />
+                          <div style={{ width: '26.0%' }} className="bg-amber-500/60" title="Mature Adult: 55–74" />
+                          <div style={{ width: '25.9%' }} className="bg-purple-500/60" title="Senior Horizon: 75–95" />
+                        </div>
+                        <div className="flex text-xs text-slate-400 font-medium">
+                          <span style={{ width: '22.1%' }} className="text-cyan-400 truncate">18 Min</span>
+                          <span style={{ width: '26.0%' }} className="text-emerald-400 truncate pl-0.5">35y Prime</span>
+                          <span style={{ width: '26.0%' }} className="text-amber-400 truncate pl-0.5">55y Mature</span>
+                          <span style={{ width: '25.9%' }} className="text-purple-400 truncate text-right">75-95y Senior</span>
+                        </div>
+                      </div>
+                    )}
                   </>
-                )}
-
-                {currentQ.id === 'systolicBP' && (
-                  <div className="space-y-1">
-                    <div className="h-2 w-full rounded-full flex overflow-hidden bg-slate-800">
-                      <div style={{ width: '26.7%' }} className="bg-emerald-500/70" title="Optimal: <120" />
-                      <div style={{ width: '13.3%' }} className="bg-cyan-500/60" title="Elevated: 120-129" />
-                      <div style={{ width: '13.3%' }} className="bg-amber-500/60" title="Stage 1: 130-139" />
-                      <div style={{ width: '26.7%' }} className="bg-orange-500/60" title="Stage 2: 140-159" />
-                      <div style={{ width: '20.0%' }} className="bg-rose-500/60" title="Severe: 160+" />
-                    </div>
-                    <div className="flex text-xs text-slate-400 font-medium">
-                      <span style={{ width: '26.7%' }} className="text-emerald-400 truncate">&lt;120 Optimal</span>
-                      <span style={{ width: '13.3%' }} className="text-cyan-400 truncate pl-0.5">120-129</span>
-                      <span style={{ width: '13.3%' }} className="text-amber-400 truncate pl-0.5">130-139</span>
-                      <span style={{ width: '26.7%' }} className="text-orange-400 truncate pl-0.5">140-159</span>
-                      <span style={{ width: '20.0%' }} className="text-rose-400 truncate text-right">160+</span>
-                    </div>
-                  </div>
-                )}
-
-                {currentQ.id === 'restingHeartRate' && (
-                  <div className="space-y-1">
-                    <div className="h-2 w-full rounded-full flex overflow-hidden bg-slate-800">
-                      <div style={{ width: '27.3%' }} className="bg-emerald-500/70" title="Athletic: <60 bpm" />
-                      <div style={{ width: '18.2%' }} className="bg-teal-500/60" title="Good: 60-70 bpm" />
-                      <div style={{ width: '18.2%' }} className="bg-cyan-500/60" title="Normal: 71-80 bpm" />
-                      <div style={{ width: '18.2%' }} className="bg-amber-500/60" title="Elevated: 81-90 bpm" />
-                      <div style={{ width: '18.1%' }} className="bg-rose-500/60" title="High: >90 bpm" />
-                    </div>
-                    <div className="flex text-xs text-slate-400 font-medium">
-                      <span style={{ width: '27.3%' }} className="text-emerald-400 truncate">&lt;60 Athletic</span>
-                      <span style={{ width: '18.2%' }} className="text-teal-400 truncate pl-0.5">60-70</span>
-                      <span style={{ width: '18.2%' }} className="text-cyan-400 truncate pl-0.5">71-80</span>
-                      <span style={{ width: '18.2%' }} className="text-amber-400 truncate pl-0.5">81-90</span>
-                      <span style={{ width: '18.1%' }} className="text-rose-400 truncate text-right">&gt;90 High</span>
-                    </div>
-                  </div>
-                )}
-
-                {currentQ.id === 'dailyWaterGlasses' && (
-                  <div className="space-y-1">
-                    <div className="h-2 w-full rounded-full flex overflow-hidden bg-slate-800">
-                      <div style={{ width: '33.3%' }} className="bg-amber-500/60" title="Suboptimal: 2-5 glasses" />
-                      <div style={{ width: '66.7%' }} className="bg-cyan-500/70" title="Optimal: 6-14 glasses" />
-                    </div>
-                    <div className="flex text-xs text-slate-400 font-medium">
-                      <span style={{ width: '33.3%' }} className="text-amber-400 truncate">2-5 Suboptimal</span>
-                      <span style={{ width: '66.7%' }} className="text-cyan-400 truncate pl-1">6-14 Optimal (6-8+ Recommended)</span>
-                    </div>
-                  </div>
-                )}
-
-                {currentQ.id === 'age' && (
-                  <div className="space-y-1">
-                    <div className="h-2 w-full rounded-full flex overflow-hidden bg-slate-800">
-                      <div style={{ width: '22.1%' }} className="bg-cyan-500/60" title="Young Adult: 18–34" />
-                      <div style={{ width: '26.0%' }} className="bg-emerald-500/70" title="Prime Midlife: 35–54" />
-                      <div style={{ width: '26.0%' }} className="bg-amber-500/60" title="Mature Adult: 55–74" />
-                      <div style={{ width: '25.9%' }} className="bg-purple-500/60" title="Senior Horizon: 75–95" />
-                    </div>
-                    <div className="flex text-xs text-slate-400 font-medium">
-                      <span style={{ width: '22.1%' }} className="text-cyan-400 truncate">18 Min</span>
-                      <span style={{ width: '26.0%' }} className="text-emerald-400 truncate pl-0.5">35y Prime</span>
-                      <span style={{ width: '26.0%' }} className="text-amber-400 truncate pl-0.5">55y Mature</span>
-                      <span style={{ width: '25.9%' }} className="text-purple-400 truncate text-right">75-95y Senior</span>
-                    </div>
-                  </div>
                 )}
               </div>
             )}
