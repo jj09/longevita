@@ -137,14 +137,14 @@ export const LifespanGauge: React.FC<LifespanGaugeProps> = ({ result }) => {
           </svg>
 
           {/* Central Lifespan Number & Label Below */}
-          <div className="absolute top-8 sm:top-9 flex flex-col items-center select-none pointer-events-none">
+          <div className="absolute top-14 flex flex-col items-center select-none pointer-events-none">
             <div className="flex items-baseline gap-1">
-              <span className="text-5xl sm:text-[54px] font-black tracking-tight text-white drop-shadow-md leading-none">
+              <span className="text-4xl sm:text-[46px] font-black tracking-tight text-white drop-shadow-md leading-none">
                 {projectedLifespan}
               </span>
-              <span className="text-slate-400 text-lg font-bold">yrs</span>
+              <span className="text-slate-400 text-base sm:text-lg font-bold">yrs</span>
             </div>
-            <span className="text-[11px] sm:text-xs uppercase tracking-widest text-slate-400 font-bold mt-1.5">
+            <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-slate-400 font-bold mt-2">
               Projected Lifespan
             </span>
           </div>
