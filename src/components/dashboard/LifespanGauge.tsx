@@ -151,7 +151,7 @@ export const LifespanGauge: React.FC<LifespanGaugeProps> = ({ result }) => {
         </div>
 
         {/* Delta vs Actuarial Baseline */}
-        <div className="mt-4 flex items-center justify-center text-center">
+        <div className="mt-7 sm:mt-8 flex items-center justify-center text-center">
           {netDelta >= 0 ? (
             <div className="flex items-center justify-center gap-1.5 text-emerald-400 bg-emerald-500/10 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold border border-emerald-500/20 text-center flex-wrap">
               <TrendingUp className="w-4 h-4 flex-shrink-0" />
