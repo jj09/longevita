@@ -80,16 +80,16 @@ describe('Longevity Engine Calculation', () => {
     expect(longevityImpact?.yearsDelta).toBe(3.5);
   });
 
-  it('accurately computes intimacy frequency impact (+1.8 yrs for weekly sweet spot)', () => {
-    const p1: UserProfile = { ...DEFAULT_PROFILE, intimacyFrequency: 'rare_none' };
-    const p2: UserProfile = { ...DEFAULT_PROFILE, intimacyFrequency: 'weekly_optimal' };
-    const res1 = calculateLongevity(p1);
-    const res2 = calculateLongevity(p2);
+  it('accurately computes relationship status impact (+3.0 yrs for partnered/married)', () => {
+    const singleProfile: UserProfile = { ...DEFAULT_PROFILE, relationshipStatus: 'single' };
+    const marriedProfile: UserProfile = { ...DEFAULT_PROFILE, relationshipStatus: 'partnered_married' };
+    const res1 = calculateLongevity(singleProfile);
+    const res2 = calculateLongevity(marriedProfile);
     expect(res2.projectedLifespan).toBeGreaterThan(res1.projectedLifespan);
-    const intimacyItem = res2.categorySummaries
+    const relItem = res2.categorySummaries
       .flatMap((c) => c.items)
-      .find((i) => i.key === 'intimacyFrequency');
-    expect(intimacyItem?.yearsDelta).toBe(1.8);
+      .find((i) => i.key === 'relationshipStatus');
+    expect(relItem?.yearsDelta).toBe(3.0);
   });
 });
 
@@ -149,7 +149,7 @@ describe('Quiz Questions Registry Consistency', () => {
     const ids = new Set(QUIZ_QUESTIONS.map((q) => q.id));
     expect(ids.size).toBe(QUIZ_QUESTIONS.length);
     expect(TOTAL_QUIZ_QUESTIONS).toBe(QUIZ_QUESTIONS.length);
-    expect(TOTAL_QUIZ_QUESTIONS).toBe(31);
+    expect(TOTAL_QUIZ_QUESTIONS).toBe(30);
 
     // Ensure every question has a valid mapped field on DEFAULT_PROFILE
     for (const q of QUIZ_QUESTIONS) {

@@ -862,35 +862,6 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
               </div>
             </div>
 
-            {/* Sexual Intimacy & Physical Connection */}
-            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-              <label className="text-sm font-bold text-slate-200 block mb-1">
-                Sexual Intimacy & Physical Connection
-              </label>
-              <p className="text-xs text-slate-400 mb-3">Oxytocin, salivary IgA immune defense, and vascular health</p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {[
-                  { value: 'weekly_optimal', label: '1–2x / week', desc: 'Optimal sweet spot (+1.8y)' },
-                  { value: 'frequent_active', label: '3+ / week', desc: 'Frequent vitality (+2.0y)' },
-                  { value: 'monthly_occasional', label: '1–3x / month', desc: 'Moderate connection (+0.6y)' },
-                  { value: 'rare_none', label: '< 1x / month', desc: 'Baseline (0.0y)' },
-                ].map((opt) => (
-                  <button
-                    key={opt.value}
-                    onClick={() => update('intimacyFrequency', opt.value as any)}
-                    className={`p-3 rounded-xl text-left text-xs sm:text-sm transition-all border min-h-[48px] ${
-                      profile.intimacyFrequency === opt.value
-                        ? 'bg-rose-500/15 text-rose-300 border-rose-500/40 font-bold'
-                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
-                    }`}
-                  >
-                    <div>{opt.label}</div>
-                    <div className="text-xs text-slate-500 mt-0.5">{opt.desc}</div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
             {/* Quick Toggles: Sunscreen, Seatbelt, Screenings */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {/* Sun Protection */}
@@ -1037,7 +1008,7 @@ export const LiveParameterControls: React.FC<LiveParameterControlsProps> = ({ pr
               <p className="text-xs text-slate-400 mb-3">Cohabitation safety, crisis intervention, and social baseline</p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 {[
-                  { value: 'partnered_married', label: 'Married / Partnered', desc: 'Mutual care (+2.0y)' },
+                  { value: 'partnered_married', label: 'Married / Partnered', desc: 'Mutual care & support (+3.0y)' },
                   { value: 'single', label: 'Single', desc: 'Neutral baseline' },
                   { value: 'separated_divorced_widowed', label: 'Divorced / Widowed', desc: 'Bereavement stress (-1.5y)' },
                 ].map((opt) => (

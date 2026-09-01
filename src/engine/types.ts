@@ -24,7 +24,6 @@ export type AlcoholIntake = 'none' | 'light_moderate' | 'heavy_binge'; // 0, 1-7
 export type SleepDurationQuality = 'under_6h' | '6_to_7h' | '7_to_8h_optimal' | 'over_9h' | 'chronic_apnea_insomnia';
 export type StressLevel = 'severe_unmanaged' | 'moderate_daily' | 'well_managed_mindful';
 export type SocialConnection = 'isolated' | 'moderate' | 'strong_connected';
-export type IntimacyFrequency = 'rare_none' | 'monthly_occasional' | 'weekly_optimal' | 'frequent_active';
 export type OralHealth = 'rarely_never' | 'occasional' | 'daily_flossing';
 export type PreventativeScreening = 'neglected' | 'up_to_date';
 
@@ -66,7 +65,6 @@ export interface UserProfile {
   sleep: SleepDurationQuality;
   stress: StressLevel;
   socialConnection: SocialConnection;
-  intimacyFrequency: IntimacyFrequency;
   flossing: OralHealth;
   sunProtection: boolean;
   seatbeltSafety: boolean;

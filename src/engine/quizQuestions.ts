@@ -67,7 +67,7 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
     type: 'options',
     field: 'relationshipStatus',
     options: [
-      { value: 'partnered_married', label: 'Married / Partnered', description: 'Cohabitation support, mutual care & crisis intervention (+2.0 yrs)' },
+      { value: 'partnered_married', label: 'Married / Partnered', description: 'Cohabitation support, mutual care & crisis intervention (+3.0 yrs)' },
       { value: 'single', label: 'Single', description: 'Neutral population baseline' },
       { value: 'separated_divorced_widowed', label: 'Divorced / Widowed', description: 'Associated with elevated bereavement stress (-1.5 yrs)' },
     ],
@@ -465,23 +465,7 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
       { value: 'isolated', label: 'Isolated / High Loneliness', description: 'Severe social isolation penalty' },
     ],
   },
-  // 28. Sexual Intimacy & Physical Connection
-  {
-    id: 'intimacyFrequency',
-    pillar: 'lifestyle',
-    pillarLabel: 'Lifestyle, Sleep & Mind',
-    title: 'What is your frequency of sexual intimacy & physical connection?',
-    subtitle: 'Regular intimacy triggers oxytocin release, elevates salivary IgA immune defense, and suppresses chronic cortisol.',
-    type: 'options',
-    field: 'intimacyFrequency',
-    options: [
-      { value: 'weekly_optimal', label: 'Weekly Sweet Spot (1–2 times / week)', description: 'Peak IgA antibody defense, oxytocin surge, and cardiovascular benefit (+1.8 yrs)' },
-      { value: 'frequent_active', label: 'Frequent (3+ times / week)', description: 'High intimate connection, lower cortisol, and vascular stimulation (+2.0 yrs)' },
-      { value: 'monthly_occasional', label: 'Monthly / Occasional (1–3 times / month)', description: 'Moderate intimacy and periodic stress relief (+0.6 yrs)' },
-      { value: 'rare_none', label: 'Infrequent / Inactive (< 1 time / month)', description: 'Baseline population level with low regular oxytocin release (0.0 yrs)' },
-    ],
-  },
-  // 29. Sun Protection & Skin Care
+  // 28. Sun Protection & Skin Care
   {
     id: 'sunProtection',
     pillar: 'lifestyle',
@@ -495,7 +479,7 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
       { value: false, label: 'No / Rarely', description: 'Unprotected cumulative UV exposure (-0.6 yrs)' },
     ],
   },
-  // 30. Seatbelt & Safe Driving
+  // 29. Seatbelt & Safe Driving
   {
     id: 'seatbeltSafety',
     pillar: 'lifestyle',
@@ -509,7 +493,7 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
       { value: false, label: 'Inconsistent / Distracted Driving', description: 'Elevated accidental trauma and mortality risk (-2.0 yrs)' },
     ],
   },
-  // 31. Preventative Medical Screenings
+  // 30. Preventative Medical Screenings
   {
     id: 'screenings',
     pillar: 'lifestyle',
