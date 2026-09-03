@@ -174,60 +174,6 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
       <main className="flex-1 max-w-3xl w-full mx-auto px-4 py-6 md:py-10 flex flex-col justify-center">
         {!isCompleted ? (
           <>
-            {/* Real-Time Telemetry HUD */}
-            <div className="mb-4 sm:mb-5 p-3.5 sm:p-4 rounded-2xl bg-slate-900/90 border border-slate-800/90 shadow-xl backdrop-blur-md">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                {/* Left: Live Projected Lifespan + Delta */}
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 flex-shrink-0">
-                    <Sparkles className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <div className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                      <span>Live Longevity Projection</span>
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    </div>
-                    <div className="flex items-baseline gap-2 mt-0.5">
-                      <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                        {liveLifespan} <span className="text-xs sm:text-sm font-semibold text-slate-400">yrs</span>
-                      </span>
-                      <span
-                        className={`text-[11px] sm:text-xs font-bold px-2 py-0.5 rounded-full border ${
-                          liveNetDelta >= 0
-                            ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
-                            : 'bg-rose-500/15 text-rose-300 border-rose-500/30'
-                        }`}
-                      >
-                        {liveNetDelta >= 0 ? `+${liveNetDelta}y vs base` : `${liveNetDelta}y vs base`}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Right: Confidence Interval & Narrowing Precision */}
-                <div className="flex flex-col sm:items-end justify-center bg-slate-950/60 sm:bg-transparent p-2.5 sm:p-0 rounded-xl border border-slate-800/60 sm:border-0">
-                  <div className="flex items-center gap-1.5 text-xs text-slate-300 font-semibold">
-                    <span className="text-slate-400 font-normal">Likely Horizon:</span>
-                    <span className="font-bold text-cyan-300">{ciLow} – {ciHigh} yrs</span>
-                    <span className="text-[11px] text-slate-400 font-mono">(±{uncertaintyMargin}y)</span>
-                  </div>
-
-                  {/* Precision Caliper Progress */}
-                  <div className="flex items-center gap-2 mt-1.5 w-full sm:w-48">
-                    <div className="flex-1 h-2 rounded-full bg-slate-800 overflow-hidden flex">
-                      <div
-                        className="h-full bg-gradient-to-r from-cyan-500 to-emerald-400 transition-all duration-500"
-                        style={{ width: `${precisionPercent}%` }}
-                      />
-                    </div>
-                    <span className="text-[11px] font-bold text-emerald-400 flex-shrink-0">
-                      {precisionPercent}% Calibrated
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             <div className="glass-panel rounded-3xl p-6 sm:p-10 border border-slate-800 shadow-2xl relative">
               {/* Pillar Badge */}
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs font-semibold text-slate-300 mb-4">
@@ -699,7 +645,61 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
               </button>
             </div>
           </div>
-        </>
+
+          {/* Real-Time Telemetry HUD (Positioned Below Question) */}
+          <div className="mt-4 sm:mt-5 p-3.5 sm:p-4 rounded-2xl bg-slate-900/90 border border-slate-800/90 shadow-xl backdrop-blur-md">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                {/* Left: Live Projected Lifespan + Delta */}
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 flex-shrink-0">
+                    <Sparkles className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                      <span>Live Longevity Projection</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    </div>
+                    <div className="flex items-baseline gap-2 mt-0.5">
+                      <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                        {liveLifespan} <span className="text-xs sm:text-sm font-semibold text-slate-400">yrs</span>
+                      </span>
+                      <span
+                        className={`text-[11px] sm:text-xs font-bold px-2 py-0.5 rounded-full border ${
+                          liveNetDelta >= 0
+                            ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                            : 'bg-rose-500/15 text-rose-300 border-rose-500/30'
+                        }`}
+                      >
+                        {liveNetDelta >= 0 ? `+${liveNetDelta}y vs base` : `${liveNetDelta}y vs base`}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right: Confidence Interval & Narrowing Precision */}
+                <div className="flex flex-col sm:items-end justify-center bg-slate-950/60 sm:bg-transparent p-2.5 sm:p-0 rounded-xl border border-slate-800/60 sm:border-0">
+                  <div className="flex items-center gap-1.5 text-xs text-slate-300 font-semibold">
+                    <span className="text-slate-400 font-normal">Likely Horizon:</span>
+                    <span className="font-bold text-cyan-300">{ciLow} – {ciHigh} yrs</span>
+                    <span className="text-[11px] text-slate-400 font-mono">(±{uncertaintyMargin}y)</span>
+                  </div>
+
+                  {/* Precision Caliper Progress */}
+                  <div className="flex items-center gap-2 mt-1.5 w-full sm:w-48">
+                    <div className="flex-1 h-2 rounded-full bg-slate-800 overflow-hidden flex">
+                      <div
+                        className="h-full bg-gradient-to-r from-cyan-500 to-emerald-400 transition-all duration-500"
+                        style={{ width: `${precisionPercent}%` }}
+                      />
+                    </div>
+                    <span className="text-[11px] font-bold text-emerald-400 flex-shrink-0">
+                      {precisionPercent}% Calibrated
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
       ) : (
           /* Completion Screen */
           <div className="glass-panel rounded-3xl p-6 sm:p-12 border border-emerald-500/40 text-center shadow-2xl relative overflow-hidden">
