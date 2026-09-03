@@ -21,7 +21,7 @@ import {
   getRestingHRInfo,
   getAgeCategoryInfo,
 } from '../calculator/sliderHelpers';
-import { getBloodPressureCategory, calculateLongevity } from '../../engine/longevityEngine';
+import { getBloodPressureCategory, calculateProgressiveLongevity } from '../../engine/longevityEngine';
 import { BMICalculator } from '../calculator/BMICalculator';
 
 import { QUIZ_QUESTIONS } from '../../engine/quizQuestions';
@@ -39,11 +39,6 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
 }) => {
   const [answers, setAnswers] = useState<Partial<UserProfile>>({
     age: initialProfile.age,
-    systolicBP: initialProfile.systolicBP,
-    diastolicBP: initialProfile.diastolicBP,
-    bmi: initialProfile.bmi,
-    restingHeartRate: initialProfile.restingHeartRate,
-    dailyWaterGlasses: initialProfile.dailyWaterGlasses,
   });
   const [completedProfile, setCompletedProfile] = useState<UserProfile | null>(null);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
@@ -55,17 +50,26 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
   const progressPercent = Math.round(((currentIndex + 1) / questions.length) * 100);
 
   const isCurrentAnswered =
-    currentQ.type === 'slider'
+    currentQ.type === 'slider' || currentQ.type === 'bp_slider'
       ? true
       : answers[currentQ.field] !== undefined;
 
-  // Real-Time Longevity Engine Calculation
-  const currentLiveProfile: UserProfile = {
-    ...initialProfile,
-    ...answers,
-  };
+  // Include active question defaults for sliders so live engine responds immediately to slider changes
+  const effectiveAnswers: Partial<UserProfile> = { ...answers };
+  if (currentQ.type === 'slider' && effectiveAnswers[currentQ.field] === undefined) {
+    effectiveAnswers[currentQ.field] = initialProfile[currentQ.field] as any;
+  }
+  if (currentQ.type === 'bp_slider') {
+    if (effectiveAnswers.systolicBP === undefined) effectiveAnswers.systolicBP = initialProfile.systolicBP;
+    if (effectiveAnswers.diastolicBP === undefined) effectiveAnswers.diastolicBP = initialProfile.diastolicBP;
+  }
 
-  const liveResult = calculateLongevity(currentLiveProfile);
+  // Real-Time Longevity Engine Calculation (Progressive Accumulation)
+  const liveResult = calculateProgressiveLongevity(
+    effectiveAnswers,
+    initialProfile.age,
+    (effectiveAnswers.sex ?? initialProfile.sex)
+  );
   const liveLifespan = liveResult.projectedLifespan;
   const liveNetDelta = liveResult.netDelta;
 

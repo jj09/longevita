@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { calculateLongevity, getBloodPressureCategory } from '../longevityEngine';
+import { calculateLongevity, calculateProgressiveLongevity, getBloodPressureCategory } from '../longevityEngine';
 import { getRecommendations } from '../recommendationEngine';
 import { getActuarialBaseline } from '../actuarial';
 import { DEFAULT_PROFILE, PRESET_ARCHETYPES } from '../presets';
@@ -161,6 +161,33 @@ describe('Category Aggregation & Biological Age', () => {
   });
 });
 
+describe('Progressive Longevity Calculation during Quiz', () => {
+  it('starts at exact actuarial baseline for unanswered profile', () => {
+    const baselineRes = calculateProgressiveLongevity({ age: 38, sex: 'male' });
+    expect(baselineRes.actuarialBaseline).toBe(78.6);
+    expect(baselineRes.netDelta).toBe(0);
+    expect(baselineRes.projectedLifespan).toBe(78.6);
+  });
+
+  it('immediately increases lifespan when selecting positive habits', () => {
+    const base = calculateProgressiveLongevity({ age: 38, sex: 'male' });
+    const withMarriage = calculateProgressiveLongevity({ age: 38, sex: 'male', relationshipStatus: 'partnered_married' });
+    expect(withMarriage.netDelta).toBe(3.0);
+    expect(withMarriage.projectedLifespan).toBeCloseTo(base.projectedLifespan + 3.0, 1);
+
+    const withCardio = calculateProgressiveLongevity({ age: 38, sex: 'male', relationshipStatus: 'partnered_married', cardio: 'high' });
+    expect(withCardio.netDelta).toBe(7.0);
+    expect(withCardio.projectedLifespan).toBeCloseTo(base.projectedLifespan + 7.0, 1);
+  });
+
+  it('immediately decreases lifespan when selecting risk factors', () => {
+    const base = calculateProgressiveLongevity({ age: 38, sex: 'male' });
+    const withSmoking = calculateProgressiveLongevity({ age: 38, sex: 'male', smoking: 'current_heavy' });
+    expect(withSmoking.netDelta).toBe(-8.5);
+    expect(withSmoking.projectedLifespan).toBeCloseTo(base.projectedLifespan - 8.5, 1);
+  });
+});
+
 describe('Quiz Questions Registry Consistency', () => {
   it('has consistent unique questions and matches TOTAL_QUIZ_QUESTIONS', () => {
     const ids = new Set(QUIZ_QUESTIONS.map((q) => q.id));
@@ -174,4 +201,5 @@ describe('Quiz Questions Registry Consistency', () => {
     }
   });
 });
+
 

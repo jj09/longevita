@@ -846,3 +846,544 @@ export function calculateLongevity(profile: UserProfile): LongevityCalculationRe
     riskGrade,
   };
 }
+
+/**
+ * Calculates progressive real-time longevity projection for partial answers during the quiz wizard.
+ * Unanswered fields have 0.0 impact, so each selected answer dynamically moves the projection.
+ */
+export function calculateProgressiveLongevity(
+  answers: Partial<UserProfile>,
+  defaultAge: number = 38,
+  defaultSex: 'male' | 'female' = 'male'
+): LongevityCalculationResult {
+  const age = answers.age ?? defaultAge;
+  const sex = answers.sex ?? defaultSex;
+  const actuarialBaseline = getActuarialBaseline(age, sex);
+  const impacts: ImpactBreakdownItem[] = [];
+
+  // 1. Relationship Status
+  let relDelta = 0;
+  if (answers.relationshipStatus === 'partnered_married') relDelta = 3.0;
+  else if (answers.relationshipStatus === 'separated_divorced_widowed') relDelta = -1.5;
+  if (answers.relationshipStatus !== undefined) {
+    impacts.push({
+      key: 'relationshipStatus',
+      label: 'Relationship & Partnership',
+      category: 'demographics',
+      yearsDelta: relDelta,
+      currentValueDisplay: String(answers.relationshipStatus),
+      scientificExplanation: '',
+      isPositive: relDelta >= 0,
+    });
+  }
+
+  // 2. Early Family Disease History
+  let disDelta = 0;
+  if (answers.earlyFamilyDisease === 'early_cvd') disDelta = -2.5;
+  else if (answers.earlyFamilyDisease === 'early_cancer') disDelta = -2.5;
+  else if (answers.earlyFamilyDisease === 'multiple_early') disDelta = -4.0;
+  if (answers.earlyFamilyDisease !== undefined) {
+    impacts.push({
+      key: 'earlyFamilyDisease',
+      label: 'Early Family Disease Risk',
+      category: 'demographics',
+      yearsDelta: disDelta,
+      currentValueDisplay: String(answers.earlyFamilyDisease),
+      scientificExplanation: '',
+      isPositive: disDelta >= 0,
+    });
+  }
+
+  // 3. Exceptional Family Longevity
+  let famDelta = 0;
+  if (answers.familyLongevity === 'relative_85_89') famDelta = 1.5;
+  else if (answers.familyLongevity === 'relative_90_99') famDelta = 3.5;
+  else if (answers.familyLongevity === 'centenarian_100plus') famDelta = 5.0;
+  if (answers.familyLongevity !== undefined) {
+    impacts.push({
+      key: 'familyLongevity',
+      label: 'Exceptional Family Longevity',
+      category: 'demographics',
+      yearsDelta: famDelta,
+      currentValueDisplay: String(answers.familyLongevity),
+      scientificExplanation: '',
+      isPositive: famDelta >= 0,
+    });
+  }
+
+  // 4. Air Quality & Environment
+  let airDelta = 0;
+  if (answers.airQuality === 'clean_rural') airDelta = 1.0;
+  else if (answers.airQuality === 'polluted_urban') airDelta = -1.8;
+  if (answers.airQuality !== undefined) {
+    impacts.push({
+      key: 'airQuality',
+      label: 'Air Quality & Environment',
+      category: 'demographics',
+      yearsDelta: airDelta,
+      currentValueDisplay: String(answers.airQuality),
+      scientificExplanation: '',
+      isPositive: airDelta >= 0,
+    });
+  }
+
+  // 5. Blood Pressure
+  if (answers.systolicBP !== undefined || answers.diastolicBP !== undefined || answers.bpCategory !== undefined) {
+    const bpCat = answers.bpCategory || getBloodPressureCategory(answers.systolicBP ?? 120, answers.diastolicBP ?? 80);
+    let bpDelta = 0;
+    if (bpCat === 'optimal') bpDelta = 1.8;
+    else if (bpCat === 'elevated') bpDelta = 0.0;
+    else if (bpCat === 'stage1') bpDelta = -1.5;
+    else if (bpCat === 'stage2') bpDelta = -3.2;
+    else bpDelta = -5.5;
+    impacts.push({
+      key: 'bloodPressure',
+      label: 'Blood Pressure',
+      category: 'biometrics',
+      yearsDelta: bpDelta,
+      currentValueDisplay: `${answers.systolicBP ?? 120}/${answers.diastolicBP ?? 80} mmHg`,
+      scientificExplanation: '',
+      isPositive: bpDelta >= 0,
+    });
+  }
+
+  // 6. Blood Sugar
+  if (answers.bloodSugar !== undefined) {
+    let sugarDelta = 0;
+    if (answers.bloodSugar === 'normal') sugarDelta = 1.0;
+    else if (answers.bloodSugar === 'prediabetes') sugarDelta = -1.2;
+    else if (answers.bloodSugar === 'type2_controlled') sugarDelta = -2.5;
+    else if (answers.bloodSugar === 'type2_uncontrolled') sugarDelta = -6.0;
+    impacts.push({
+      key: 'bloodSugar',
+      label: 'Blood Glucose & Metabolic Health',
+      category: 'biometrics',
+      yearsDelta: sugarDelta,
+      currentValueDisplay: String(answers.bloodSugar),
+      scientificExplanation: '',
+      isPositive: sugarDelta >= 0,
+    });
+  }
+
+  // 7. Lipid Status
+  if (answers.lipidStatus !== undefined) {
+    let lipidDelta = 0;
+    if (answers.lipidStatus === 'optimal') lipidDelta = 1.2;
+    else if (answers.lipidStatus === 'moderate_high') lipidDelta = -1.0;
+    else if (answers.lipidStatus === 'high_uncontrolled') lipidDelta = -3.0;
+    else if (answers.lipidStatus === 'high_managed_statin') lipidDelta = 0.2;
+    impacts.push({
+      key: 'lipidStatus',
+      label: 'Lipid & Cholesterol Profile',
+      category: 'biometrics',
+      yearsDelta: lipidDelta,
+      currentValueDisplay: String(answers.lipidStatus),
+      scientificExplanation: '',
+      isPositive: lipidDelta >= 0,
+    });
+  }
+
+  // 8. BMI
+  if (answers.bmi !== undefined) {
+    let bmiDelta = 0;
+    if (answers.bmi < 18.5) bmiDelta = -2.0;
+    else if (answers.bmi <= 24.9) bmiDelta = 1.5;
+    else if (answers.bmi <= 27.5) bmiDelta = 0.0;
+    else if (answers.bmi <= 29.9) bmiDelta = -1.2;
+    else if (answers.bmi <= 34.9) bmiDelta = -2.8;
+    else bmiDelta = -5.0;
+    impacts.push({
+      key: 'bmi',
+      label: 'Body Mass Index & Adiposity',
+      category: 'biometrics',
+      yearsDelta: bmiDelta,
+      currentValueDisplay: `BMI ${answers.bmi.toFixed(1)}`,
+      scientificExplanation: '',
+      isPositive: bmiDelta >= 0,
+    });
+  }
+
+  // 9. Resting HR
+  if (answers.restingHeartRate !== undefined) {
+    let hrDelta = 0;
+    if (answers.restingHeartRate < 60) hrDelta = 1.2;
+    else if (answers.restingHeartRate <= 70) hrDelta = 0.5;
+    else if (answers.restingHeartRate <= 80) hrDelta = 0.0;
+    else if (answers.restingHeartRate <= 90) hrDelta = -1.0;
+    else hrDelta = -2.5;
+    impacts.push({
+      key: 'restingHeartRate',
+      label: 'Resting Heart Rate & Autonomic Tone',
+      category: 'biometrics',
+      yearsDelta: hrDelta,
+      currentValueDisplay: `${answers.restingHeartRate} bpm`,
+      scientificExplanation: '',
+      isPositive: hrDelta >= 0,
+    });
+  }
+
+  // 10. Cardio
+  if (answers.cardio !== undefined) {
+    let cardioDelta = 0;
+    if (answers.cardio === 'high') cardioDelta = 4.0;
+    else if (answers.cardio === 'moderate') cardioDelta = 2.5;
+    else if (answers.cardio === 'sedentary') cardioDelta = -3.5;
+    impacts.push({
+      key: 'cardio',
+      label: 'Cardiorespiratory Fitness & VO2 Max',
+      category: 'fitness',
+      yearsDelta: cardioDelta,
+      currentValueDisplay: String(answers.cardio),
+      scientificExplanation: '',
+      isPositive: cardioDelta >= 0,
+    });
+  }
+
+  // 11. Strength Training
+  if (answers.strengthTraining !== undefined) {
+    let stDelta = 0;
+    if (answers.strengthTraining === 'optimal') stDelta = 2.0;
+    else if (answers.strengthTraining === 'none') stDelta = -1.5;
+    impacts.push({
+      key: 'strengthTraining',
+      label: 'Strength & Resistance Training',
+      category: 'fitness',
+      yearsDelta: stDelta,
+      currentValueDisplay: String(answers.strengthTraining),
+      scientificExplanation: '',
+      isPositive: stDelta >= 0,
+    });
+  }
+
+  // 12. Daily Steps
+  if (answers.dailySteps !== undefined) {
+    let stepDelta = 0;
+    if (answers.dailySteps === 'over_10k') stepDelta = 2.5;
+    else if (answers.dailySteps === '8k_to_10k') stepDelta = 1.5;
+    else if (answers.dailySteps === 'under_4k') stepDelta = -2.0;
+    impacts.push({
+      key: 'dailySteps',
+      label: 'Daily Step Count & NEAT',
+      category: 'fitness',
+      yearsDelta: stepDelta,
+      currentValueDisplay: String(answers.dailySteps),
+      scientificExplanation: '',
+      isPositive: stepDelta >= 0,
+    });
+  }
+
+  // 13. Sitting Hours
+  if (answers.sittingHours !== undefined) {
+    let sitDelta = 0;
+    if (answers.sittingHours === 'under_4h') sitDelta = 1.0;
+    else if (answers.sittingHours === 'over_8h') sitDelta = -2.0;
+    impacts.push({
+      key: 'sittingHours',
+      label: 'Sedentary Screen & Sitting Time',
+      category: 'fitness',
+      yearsDelta: sitDelta,
+      currentValueDisplay: String(answers.sittingHours),
+      scientificExplanation: '',
+      isPositive: sitDelta >= 0,
+    });
+  }
+
+  // 14. Diet Pattern
+  if (answers.dietPattern !== undefined) {
+    let dietDelta = 0;
+    if (answers.dietPattern === 'mediterranean_bluezone') dietDelta = 3.0;
+    else if (answers.dietPattern === 'standard_processed') dietDelta = -3.0;
+    impacts.push({
+      key: 'dietPattern',
+      label: 'Dietary Pattern & Whole Foods',
+      category: 'nutrition',
+      yearsDelta: dietDelta,
+      currentValueDisplay: String(answers.dietPattern),
+      scientificExplanation: '',
+      isPositive: dietDelta >= 0,
+    });
+  }
+
+  // 15. Red Meat
+  if (answers.redMeat !== undefined) {
+    let meatDelta = 0;
+    if (answers.redMeat === 'rare_none') meatDelta = 1.0;
+    else if (answers.redMeat === 'frequent_daily') meatDelta = -1.8;
+    impacts.push({
+      key: 'redMeat',
+      label: 'Processed & Red Meat Intake',
+      category: 'nutrition',
+      yearsDelta: meatDelta,
+      currentValueDisplay: String(answers.redMeat),
+      scientificExplanation: '',
+      isPositive: meatDelta >= 0,
+    });
+  }
+
+  // 16. Veggie & Fruit Servings
+  if (answers.veggieFruitServings !== undefined) {
+    let vegDelta = 0;
+    if (answers.veggieFruitServings === '5_plus') vegDelta = 2.0;
+    else if (answers.veggieFruitServings === 'under_2') vegDelta = -2.0;
+    impacts.push({
+      key: 'veggieFruitServings',
+      label: 'Vegetable & Fruit Fiber Intake',
+      category: 'nutrition',
+      yearsDelta: vegDelta,
+      currentValueDisplay: String(answers.veggieFruitServings),
+      scientificExplanation: '',
+      isPositive: vegDelta >= 0,
+    });
+  }
+
+  // 17. Ultra-Processed Foods
+  if (answers.ultraProcessed !== undefined) {
+    let upDelta = 0;
+    if (answers.ultraProcessed === 'minimal_rare') upDelta = 1.5;
+    else if (answers.ultraProcessed === 'daily_frequent') upDelta = -2.5;
+    impacts.push({
+      key: 'ultraProcessed',
+      label: 'Ultra-Processed Foods & Added Sugar',
+      category: 'nutrition',
+      yearsDelta: upDelta,
+      currentValueDisplay: String(answers.ultraProcessed),
+      scientificExplanation: '',
+      isPositive: upDelta >= 0,
+    });
+  }
+
+  // 18. Polyphenols
+  if (answers.polyphenols !== undefined) {
+    let polyDelta = 0;
+    if (answers.polyphenols === 'high_green_tea_berries') polyDelta = 1.5;
+    else if (answers.polyphenols === 'none') polyDelta = -1.0;
+    impacts.push({
+      key: 'polyphenols',
+      label: 'Polyphenols (Green Tea, Berries, EVOO)',
+      category: 'nutrition',
+      yearsDelta: polyDelta,
+      currentValueDisplay: String(answers.polyphenols),
+      scientificExplanation: '',
+      isPositive: polyDelta >= 0,
+    });
+  }
+
+  // 19. Daily Water Glasses
+  if (answers.dailyWaterGlasses !== undefined) {
+    let waterDelta = answers.dailyWaterGlasses >= 6 ? 0.5 : -0.5;
+    impacts.push({
+      key: 'dailyWaterGlasses',
+      label: 'Daily Hydration',
+      category: 'nutrition',
+      yearsDelta: waterDelta,
+      currentValueDisplay: `${answers.dailyWaterGlasses} glasses/day`,
+      scientificExplanation: '',
+      isPositive: waterDelta >= 0,
+    });
+  }
+
+  // 20. Smoking
+  if (answers.smoking !== undefined) {
+    let smokeDelta = 0;
+    if (answers.smoking === 'former_long') smokeDelta = -1.0;
+    else if (answers.smoking === 'former_recent') smokeDelta = -3.0;
+    else if (answers.smoking === 'current_light') smokeDelta = -5.0;
+    else if (answers.smoking === 'current_heavy') smokeDelta = -8.5;
+    impacts.push({
+      key: 'smoking',
+      label: 'Tobacco & Smoking Status',
+      category: 'lifestyle',
+      yearsDelta: smokeDelta,
+      currentValueDisplay: String(answers.smoking),
+      scientificExplanation: '',
+      isPositive: smokeDelta >= 0,
+    });
+  }
+
+  // 21. Alcohol
+  if (answers.alcohol !== undefined) {
+    let alcDelta = 0;
+    if (answers.alcohol === 'heavy_binge') alcDelta = -4.0;
+    impacts.push({
+      key: 'alcohol',
+      label: 'Alcohol Consumption Pattern',
+      category: 'lifestyle',
+      yearsDelta: alcDelta,
+      currentValueDisplay: String(answers.alcohol),
+      scientificExplanation: '',
+      isPositive: alcDelta >= 0,
+    });
+  }
+
+  // 22. Sleep
+  if (answers.sleep !== undefined) {
+    let sleepDelta = 0;
+    if (answers.sleep === '7_to_8h_optimal') sleepDelta = 2.0;
+    else if (answers.sleep === 'under_6h') sleepDelta = -2.5;
+    else if (answers.sleep === 'over_9h') sleepDelta = -1.5;
+    else if (answers.sleep === 'chronic_apnea_insomnia') sleepDelta = -4.0;
+    impacts.push({
+      key: 'sleep',
+      label: 'Sleep Duration & Sleep Quality',
+      category: 'lifestyle',
+      yearsDelta: sleepDelta,
+      currentValueDisplay: String(answers.sleep),
+      scientificExplanation: '',
+      isPositive: sleepDelta >= 0,
+    });
+  }
+
+  // 23. Stress
+  if (answers.stress !== undefined) {
+    let strDelta = 0;
+    if (answers.stress === 'well_managed_mindful') strDelta = 2.0;
+    else if (answers.stress === 'severe_unmanaged') strDelta = -3.5;
+    impacts.push({
+      key: 'stress',
+      label: 'Chronic Stress & Psychological Resilience',
+      category: 'lifestyle',
+      yearsDelta: strDelta,
+      currentValueDisplay: String(answers.stress),
+      scientificExplanation: '',
+      isPositive: strDelta >= 0,
+    });
+  }
+
+  // 24. Social Connection
+  if (answers.socialConnection !== undefined) {
+    let socDelta = 0;
+    if (answers.socialConnection === 'frequent_3plus_weekly') socDelta = 3.0;
+    else if (answers.socialConnection === 'weekly_1_to_2') socDelta = 1.5;
+    else if (answers.socialConnection === 'monthly_occasional') socDelta = 0.5;
+    else if (answers.socialConnection === 'rare_isolated') socDelta = -3.0;
+    impacts.push({
+      key: 'socialConnection',
+      label: 'In-Person Social Connection & Community',
+      category: 'lifestyle',
+      yearsDelta: socDelta,
+      currentValueDisplay: String(answers.socialConnection),
+      scientificExplanation: '',
+      isPositive: socDelta >= 0,
+    });
+  }
+
+  // 25. Flossing
+  if (answers.flossing !== undefined) {
+    let flossDelta = 0;
+    if (answers.flossing === 'daily_flossing') flossDelta = 1.2;
+    else if (answers.flossing === 'rarely_never') flossDelta = -1.2;
+    impacts.push({
+      key: 'flossing',
+      label: 'Daily Dental Flossing (Oral Microbiome)',
+      category: 'lifestyle',
+      yearsDelta: flossDelta,
+      currentValueDisplay: String(answers.flossing),
+      scientificExplanation: '',
+      isPositive: flossDelta >= 0,
+    });
+  }
+
+  // 26. Sun Protection
+  if (answers.sunProtection !== undefined) {
+    let sunDelta = answers.sunProtection ? 0.6 : -0.6;
+    impacts.push({
+      key: 'sunProtection',
+      label: 'Sun Protection & Skin Health',
+      category: 'lifestyle',
+      yearsDelta: sunDelta,
+      currentValueDisplay: answers.sunProtection ? 'Consistent Sunscreen' : 'Unprotected UV',
+      scientificExplanation: '',
+      isPositive: sunDelta >= 0,
+    });
+  }
+
+  // 27. Seatbelt Safety
+  if (answers.seatbeltSafety !== undefined) {
+    let seatDelta = answers.seatbeltSafety ? 0.8 : -2.0;
+    impacts.push({
+      key: 'seatbeltSafety',
+      label: 'Seatbelt & Transport Safety',
+      category: 'lifestyle',
+      yearsDelta: seatDelta,
+      currentValueDisplay: answers.seatbeltSafety ? 'Always Buckled' : 'Inconsistent Seatbelt',
+      scientificExplanation: '',
+      isPositive: seatDelta >= 0,
+    });
+  }
+
+  // 28. Screenings
+  if (answers.screenings !== undefined) {
+    let screenDelta = answers.screenings === 'up_to_date' ? 1.8 : -2.0;
+    impacts.push({
+      key: 'screenings',
+      label: 'Preventative Medical Screenings',
+      category: 'lifestyle',
+      yearsDelta: screenDelta,
+      currentValueDisplay: answers.screenings === 'up_to_date' ? 'Up-to-Date' : 'Neglected',
+      scientificExplanation: '',
+      isPositive: screenDelta >= 0,
+    });
+  }
+
+  // Aggregation
+  let totalGainedYears = 0;
+  let totalLostYears = 0;
+  impacts.forEach((item) => {
+    if (item.yearsDelta > 0) totalGainedYears += item.yearsDelta;
+    else if (item.yearsDelta < 0) totalLostYears += Math.abs(item.yearsDelta);
+  });
+
+  totalGainedYears = Number(totalGainedYears.toFixed(1));
+  totalLostYears = Number(totalLostYears.toFixed(1));
+  const netDelta = Number((totalGainedYears - totalLostYears).toFixed(1));
+
+  const effectiveGained =
+    totalGainedYears <= 15
+      ? totalGainedYears
+      : 15 + Math.sqrt(totalGainedYears - 15) * 3.6;
+
+  const effectiveLost =
+    totalLostYears <= 20
+      ? totalLostYears
+      : 20 + Math.sqrt(totalLostYears - 20) * 2.8;
+
+  const effectiveDelta = effectiveGained - effectiveLost;
+  const rawProjected = actuarialBaseline + effectiveDelta;
+  const projectedLifespan = Number(
+    Math.max(age + 1, Math.min(115, rawProjected)).toFixed(1)
+  );
+
+  const bioAgeDiff = -(effectiveDelta * 0.45);
+  const biologicalAge = Number(
+    Math.max(18, Math.min(105, age + bioAgeDiff)).toFixed(1)
+  );
+
+  const margin = Number((3.5 + Math.max(0, (age - 40) * 0.03)).toFixed(1));
+  const confidenceRange: [number, number] = [
+    Number(Math.max(age, projectedLifespan - margin).toFixed(1)),
+    Number((projectedLifespan + margin).toFixed(1)),
+  ];
+
+  let riskGrade: 'A+' | 'A' | 'B' | 'C' | 'D' | 'F' = 'B';
+  if (projectedLifespan >= 98) riskGrade = 'A+';
+  else if (projectedLifespan >= 90) riskGrade = 'A';
+  else if (projectedLifespan >= 82) riskGrade = 'B';
+  else if (projectedLifespan >= 76) riskGrade = 'C';
+  else if (projectedLifespan >= 70) riskGrade = 'D';
+  else riskGrade = 'F';
+
+  return {
+    projectedLifespan,
+    biologicalAge,
+    chronologicalAge: age,
+    actuarialBaseline,
+    totalGainedYears,
+    totalLostYears,
+    netDelta,
+    confidenceRange,
+    categorySummaries: [],
+    allImpacts: impacts,
+    riskGrade,
+  };
+}
+
