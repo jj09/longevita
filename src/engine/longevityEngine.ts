@@ -801,27 +801,13 @@ export function calculateLongevity(profile: UserProfile): LongevityCalculationRe
   // Exact arithmetic consistency: netDelta is strictly (totalGained - totalLost)
   const netDelta = Number((totalGainedYears - totalLostYears).toFixed(1));
 
-  // Sub-linear actuarial dampening (smooth diminishing returns with continuous slope <= 1.0)
-  // For total gains > 15y, each stacked year yields smooth diminishing returns: h(x) = (M * x) / (M + x)
-  const MAX_ADDITIONAL_GAINS = 15;
-  const effectiveGained = totalGainedYears <= 15
-    ? totalGainedYears
-    : 15 + (MAX_ADDITIONAL_GAINS * (totalGainedYears - 15)) / (MAX_ADDITIONAL_GAINS + (totalGainedYears - 15));
-
-  const MAX_ADDITIONAL_LOSSES = 15;
-  const effectiveLost = totalLostYears <= 20
-    ? totalLostYears
-    : 20 + (MAX_ADDITIONAL_LOSSES * (totalLostYears - 20)) / (MAX_ADDITIONAL_LOSSES + (totalLostYears - 20));
-
-  const effectiveDelta = effectiveGained - effectiveLost;
-
-  // Projected Lifespan: Actuarial baseline + Effective Delta (bounded between age + 1 and 115)
-  const rawProjected = actuarialBaseline + effectiveDelta;
+  // Projected Lifespan: Actuarial baseline + Net Delta (bounded between age + 1 and 115 supercentenarian ceiling)
+  const rawProjected = actuarialBaseline + netDelta;
   const projectedLifespan = Number(Math.max(profile.age + 1, Math.min(115, rawProjected)).toFixed(1));
 
   // Biological Age calculation:
   // Reflects biological wear vs chronological age based on healthspan acceleration/deceleration.
-  const bioAgeDiff = -(effectiveDelta * 0.45);
+  const bioAgeDiff = -(netDelta * 0.45);
   const biologicalAge = Number(Math.max(18, Math.min(105, profile.age + bioAgeDiff)).toFixed(1));
 
   // Confidence Interval (+/- 3.5 to 5.0 years based on age)

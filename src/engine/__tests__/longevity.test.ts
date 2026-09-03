@@ -180,8 +180,8 @@ describe('Progressive Longevity Calculation during Quiz', () => {
     expect(withCardio.projectedLifespan).toBeCloseTo(base.projectedLifespan + 7.0, 1);
   });
 
-  it('never amplifies marginal gains beyond their nominal delta when crossing 15y threshold', () => {
-    // Base profile with exactly 15.0 years gain
+  it('maintains exact transparent additivity: projectedLifespan === baseline + netDelta up to 115y ceiling', () => {
+    // Base profile with 15.0 years gain
     const profileAt15: Partial<UserProfile> = {
       age: 38,
       sex: 'male',
@@ -195,16 +195,16 @@ describe('Progressive Longevity Calculation during Quiz', () => {
     expect(resAt15.totalGainedYears).toBe(15.0);
     expect(resAt15.projectedLifespan).toBeCloseTo(78.6 + 15.0, 1);
 
-    // Add +1.5 yrs (8k-10k daily steps)
+    // Add +1.5 yrs (8k-10k daily steps) -> exactly 16.5y net delta
     const profileWithSteps = { ...profileAt15, dailySteps: '8k_to_10k' as const };
     const resWithSteps = calculateProgressiveLongevity(profileWithSteps);
     expect(resWithSteps.totalGainedYears).toBe(16.5);
     expect(resWithSteps.netDelta).toBe(16.5);
+    expect(resWithSteps.projectedLifespan).toBeCloseTo(78.6 + 16.5, 1);
 
-    // The projected lifespan increase must be strictly <= 1.5 yrs (diminishing return), never > 1.5 yrs!
-    const lifespanIncrease = resWithSteps.projectedLifespan - resAt15.projectedLifespan;
-    expect(lifespanIncrease).toBeLessThanOrEqual(1.5);
-    expect(lifespanIncrease).toBeGreaterThan(1.0);
+    // Verify lifespan increases by exactly 1.5 yrs matching question label
+    const lifespanIncrease = Number((resWithSteps.projectedLifespan - resAt15.projectedLifespan).toFixed(1));
+    expect(lifespanIncrease).toBe(1.5);
   });
 
   it('produces identical projectedLifespan as calculateLongevity when full profile is answered', () => {
