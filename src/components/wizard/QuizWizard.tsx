@@ -298,10 +298,10 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
 
                       const categoryConfig: Record<string, { label: string; delta: string; badge: string }> = {
                         optimal: { label: 'Optimal Blood Pressure', delta: '+2.0 yrs', badge: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30' },
-                        elevated: { label: 'Elevated Blood Pressure', delta: '+0.5 yrs', badge: 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30' },
+                        elevated: { label: 'Elevated Blood Pressure', delta: '0.0 yrs baseline', badge: 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30' },
                         stage1: { label: 'Stage 1 Hypertension', delta: '-1.5 yrs', badge: 'bg-amber-500/15 text-amber-300 border-amber-500/30' },
                         stage2: { label: 'Stage 2 Hypertension', delta: '-3.5 yrs', badge: 'bg-orange-500/15 text-orange-300 border-orange-500/30' },
-                        severe_untreated: { label: 'Severe Hypertension', delta: '-6.5 yrs', badge: 'bg-rose-500/20 text-rose-400 border-rose-500/40' },
+                        severe_untreated: { label: 'Severe Hypertension', delta: '-6.0 yrs', badge: 'bg-rose-500/20 text-rose-400 border-rose-500/40' },
                       };
 
                       const meta = categoryConfig[bpCategory] || categoryConfig.optimal;

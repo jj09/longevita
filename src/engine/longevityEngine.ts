@@ -137,20 +137,20 @@ export function calculateLongevity(profile: UserProfile): LongevityCalculationRe
   let bpDisplay = profile.systolicBP !== undefined && profile.diastolicBP !== undefined ? `${profile.systolicBP}/${profile.diastolicBP} mmHg (${bpCat})` : 'Unspecified';
   let bpExpl = '';
   if (bpCat === 'optimal') {
-    bpDelta = 1.8;
-    bpExpl = 'Optimal BP (<120/80) preserves arterial elasticity, prevents endothelial damage, and minimizes stroke/heart failure risk (+1.8 yrs).';
+    bpDelta = 2.0;
+    bpExpl = 'Optimal BP (<120/80) preserves arterial elasticity, prevents endothelial damage, and minimizes stroke/heart failure risk (+2.0 yrs).';
   } else if (bpCat === 'elevated') {
     bpDelta = 0.0;
-    bpExpl = 'Elevated BP (120-129/<80) represents early vascular stiffening.';
+    bpExpl = 'Elevated BP (120-129/<80) represents early vascular stiffening (0.0 yrs baseline).';
   } else if (bpCat === 'stage1') {
     bpDelta = -1.5;
     bpExpl = 'Stage 1 Hypertension (130-139/80-89) steadily increases microvascular strain and renal decline (-1.5 yrs).';
   } else if (bpCat === 'stage2') {
-    bpDelta = -3.2;
-    bpExpl = 'Stage 2 Hypertension (140+/90+) significantly accelerates coronary artery disease, stroke, and cognitive impairment (-3.2 yrs).';
+    bpDelta = -3.5;
+    bpExpl = 'Stage 2 Hypertension (140+/90+) significantly accelerates coronary artery disease, stroke, and cognitive impairment (-3.5 yrs).';
   } else if (bpCat === 'severe_untreated') {
-    bpDelta = -5.5;
-    bpExpl = 'Severe / Untreated Hypertension (160+/100+) is a critical risk multiplier for acute cardiovascular events (-5.5 yrs).';
+    bpDelta = -6.0;
+    bpExpl = 'Severe / Untreated Hypertension (160+/100+) is a critical risk multiplier for acute cardiovascular events (-6.0 yrs).';
   }
   impacts.push({
     key: 'bloodPressure',
