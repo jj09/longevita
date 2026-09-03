@@ -801,14 +801,17 @@ export function calculateLongevity(profile: UserProfile): LongevityCalculationRe
   // Exact arithmetic consistency: netDelta is strictly (totalGained - totalLost)
   const netDelta = Number((totalGainedYears - totalLostYears).toFixed(1));
 
-  // Sub-linear actuarial dampening (diminishing returns for stacked independent factors)
+  // Sub-linear actuarial dampening (smooth diminishing returns with continuous slope <= 1.0)
+  // For total gains > 15y, each stacked year yields smooth diminishing returns: h(x) = (M * x) / (M + x)
+  const MAX_ADDITIONAL_GAINS = 15;
   const effectiveGained = totalGainedYears <= 15
     ? totalGainedYears
-    : 15 + Math.sqrt(totalGainedYears - 15) * 3.6;
+    : 15 + (MAX_ADDITIONAL_GAINS * (totalGainedYears - 15)) / (MAX_ADDITIONAL_GAINS + (totalGainedYears - 15));
 
+  const MAX_ADDITIONAL_LOSSES = 15;
   const effectiveLost = totalLostYears <= 20
     ? totalLostYears
-    : 20 + Math.sqrt(totalLostYears - 20) * 2.8;
+    : 20 + (MAX_ADDITIONAL_LOSSES * (totalLostYears - 20)) / (MAX_ADDITIONAL_LOSSES + (totalLostYears - 20));
 
   const effectiveDelta = effectiveGained - effectiveLost;
 

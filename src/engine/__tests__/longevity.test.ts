@@ -180,6 +180,33 @@ describe('Progressive Longevity Calculation during Quiz', () => {
     expect(withCardio.projectedLifespan).toBeCloseTo(base.projectedLifespan + 7.0, 1);
   });
 
+  it('never amplifies marginal gains beyond their nominal delta when crossing 15y threshold', () => {
+    // Base profile with exactly 15.0 years gain
+    const profileAt15: Partial<UserProfile> = {
+      age: 38,
+      sex: 'male',
+      relationshipStatus: 'partnered_married', // +3.0
+      familyLongevity: 'centenarian_100plus', // +5.0
+      cardio: 'high', // +4.0
+      smoking: 'never', // +3.0
+    }; // Total gained = 15.0
+
+    const resAt15 = calculateProgressiveLongevity(profileAt15);
+    expect(resAt15.totalGainedYears).toBe(15.0);
+    expect(resAt15.projectedLifespan).toBeCloseTo(78.6 + 15.0, 1);
+
+    // Add +1.5 yrs (8k-10k daily steps)
+    const profileWithSteps = { ...profileAt15, dailySteps: '8k_to_10k' as const };
+    const resWithSteps = calculateProgressiveLongevity(profileWithSteps);
+    expect(resWithSteps.totalGainedYears).toBe(16.5);
+    expect(resWithSteps.netDelta).toBe(16.5);
+
+    // The projected lifespan increase must be strictly <= 1.5 yrs (diminishing return), never > 1.5 yrs!
+    const lifespanIncrease = resWithSteps.projectedLifespan - resAt15.projectedLifespan;
+    expect(lifespanIncrease).toBeLessThanOrEqual(1.5);
+    expect(lifespanIncrease).toBeGreaterThan(1.0);
+  });
+
   it('produces identical projectedLifespan as calculateLongevity when full profile is answered', () => {
     for (const archetype of PRESET_ARCHETYPES) {
       const progressiveRes = calculateProgressiveLongevity(archetype.profile);
