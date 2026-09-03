@@ -230,7 +230,7 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
     options: [
       { value: 'high', label: 'Optimal / High (300+ min/wk)', description: '~45–60 min/day of brisk walking, cycling, or jogging (+4.0 yrs)' },
       { value: 'moderate', label: 'Moderate (150 min/wk)', description: '~30 min/day, 5 days/wk of brisk exercise or cardio (+2.5 yrs)' },
-      { value: 'light', label: 'Light (<60 min/wk)', description: 'Irregular or occasional cardio sessions' },
+      { value: 'light', label: 'Light (<60 min/wk)', description: 'Irregular or occasional cardio sessions (-1.0 yr)' },
       { value: 'sedentary', label: 'Sedentary (0 min/wk)', description: 'No intentional brisk aerobic exercise (-3.5 yrs)' },
     ],
   },
@@ -246,7 +246,7 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
     options: [
       { value: 'optimal', label: 'Optimal (3+ days/wk)', description: 'Compound resistance lifts & calisthenics (+2.2 yrs)' },
       { value: 'occasional', label: 'Occasional (1-2 days/wk)', description: 'Basic muscle maintenance (+1.0 yr)' },
-      { value: 'none', label: 'None (0 days/wk)', description: 'Accelerated sarcopenia risk' },
+      { value: 'none', label: 'None (0 days/wk)', description: 'Accelerated sarcopenia risk (-1.2 yrs)' },
     ],
   },
   // 14. Daily Steps
@@ -262,7 +262,7 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
       { value: 'over_10k', label: '10,000+ steps / day', description: 'Active everyday movement (+2.5 yrs)' },
       { value: '8k_to_10k', label: '8,000 - 10,000 steps / day', description: 'Optimal longevity threshold (+1.5 yrs)' },
       { value: '4k_to_7k', label: '4,000 - 7,000 steps / day', description: 'Moderate daily movement baseline' },
-      { value: 'under_4k', label: '< 4,000 steps / day', description: 'Sedentary day-to-day lifestyle' },
+      { value: 'under_4k', label: '< 4,000 steps / day', description: 'Sedentary day-to-day lifestyle (-2.0 yrs)' },
     ],
   },
   // 15. Sitting Hours
@@ -276,8 +276,8 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
     field: 'sittingHours',
     options: [
       { value: 'under_4h', label: '< 4 hours/day', description: 'Active on feet / standing desk (+0.8 yrs)' },
-      { value: '4h_to_8h', label: '4 - 8 hours/day', description: 'Typical desk work' },
-      { value: 'over_8h', label: '8+ hours/day', description: 'High sedentary desk time' },
+      { value: '4h_to_8h', label: '4 - 8 hours/day', description: 'Typical desk work (0.0 yrs baseline)' },
+      { value: 'over_8h', label: '8+ hours/day', description: 'High sedentary desk time (-1.5 yrs)' },
     ],
   },
   // 16. Dietary Pattern
@@ -292,7 +292,7 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
     options: [
       { value: 'mediterranean_bluezone', label: 'Mediterranean / Blue Zone Diet', description: 'EVOO, legumes, diverse plants, nuts & wild fish (+3.5 yrs)' },
       { value: 'moderate_balanced', label: 'Balanced Whole Foods', description: 'Home-cooked varied meals (+1.0 yr)' },
-      { value: 'standard_processed', label: 'Standard Processed / Fast Food', description: 'High refined carbohydrates and seed oils' },
+      { value: 'standard_processed', label: 'Standard Processed / Fast Food', description: 'High refined carbohydrates and seed oils (-3.0 yrs)' },
     ],
   },
   // 17. Red Meat
@@ -306,8 +306,8 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
     field: 'redMeat',
     options: [
       { value: 'rare_none', label: 'Rare / None (Plant & Wild Fish)', description: 'Blue Zone style protein intake (+1.5 yrs)' },
-      { value: 'weekly_moderate', label: 'Weekly (1-2 times/week)', description: 'Moderate consumption' },
-      { value: 'frequent_daily', label: 'Daily / Frequent', description: 'High processed meat intake' },
+      { value: 'weekly_moderate', label: 'Weekly (1-2 times/week)', description: 'Moderate consumption (0.0 yrs baseline)' },
+      { value: 'frequent_daily', label: 'Daily / Frequent', description: 'High processed and red meat intake (-2.0 yrs)' },
     ],
   },
   // 18. Fruits, Veggies & Fiber
@@ -322,7 +322,7 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
     options: [
       { value: '5_plus', label: '5+ servings per day', description: 'Rich microbiome diversity (+2.0 yrs)' },
       { value: '2_to_4', label: '2 - 4 servings per day', description: 'Moderate daily intake (+0.5 yrs)' },
-      { value: 'under_2', label: '< 2 servings per day', description: 'Suboptimal fiber' },
+      { value: 'under_2', label: '< 2 servings per day', description: 'Suboptimal fiber (-1.5 yrs)' },
     ],
   },
   // 19. Ultra-Processed Foods
@@ -336,8 +336,8 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
     field: 'ultraProcessed',
     options: [
       { value: 'minimal_rare', label: 'Minimal / Rare Indulgence', description: 'Clean whole nutrition (+1.5 yrs)' },
-      { value: 'occasional', label: 'Occasional (1-2x/week)', description: 'Moderate indulgences' },
-      { value: 'daily_frequent', label: 'Daily / Frequent', description: 'High daily packaged snacks & sodas' },
+      { value: 'occasional', label: 'Occasional (1-2x/week)', description: 'Moderate indulgences (0.0 yrs baseline)' },
+      { value: 'daily_frequent', label: 'Daily / Frequent', description: 'High daily packaged snacks & sodas (-2.2 yrs)' },
     ],
   },
   // 20. Polyphenols
@@ -352,7 +352,7 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
     options: [
       { value: 'high_green_tea_berries', label: 'High (Green Tea / Matcha / Berries)', description: '2+ cups green tea + fresh berries daily (+1.2 yrs)' },
       { value: 'moderate_coffee_tea', label: 'Moderate Coffee or Tea', description: '1-2 cups daily (+0.6 yrs)' },
-      { value: 'none', label: 'None', description: 'Zero regular polyphenol intake' },
+      { value: 'none', label: 'None', description: 'Zero regular polyphenol intake (0.0 yrs baseline)' },
     ],
   },
   // 21. Daily Hydration
@@ -385,7 +385,7 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
       { value: 'never', label: 'Never Smoked', description: 'Clean arterial endothelial baseline (+3.0 yrs)' },
       { value: 'former_long', label: 'Former Smoker (10+ yrs quit)', description: 'Arterial risk largely normalized (+2.0 yrs)' },
       { value: 'former_recent', label: 'Former Smoker (<5 yrs quit)', description: 'Actively recovering (+0.5 yrs)' },
-      { value: 'current_light', label: 'Current Light Smoker / Vaping', description: '<10 cigs/day or regular vape' },
+      { value: 'current_light', label: 'Current Light Smoker / Vaping', description: '<10 cigs/day or regular vape (-4.5 yrs)' },
       { value: 'current_heavy', label: 'Current Heavy Smoker (1+ pack/day)', description: 'Severe vascular damage (-9.5 yrs)' },
     ],
   },
@@ -400,7 +400,7 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
     field: 'alcohol',
     options: [
       { value: 'none', label: 'Zero Alcohol (Non-drinker)', description: 'Zero hepatic or carcinogen burden (+0.5 yrs)' },
-      { value: 'light_moderate', label: 'Light / Moderate (1-7 drinks/wk)', description: 'Low mortality risk' },
+      { value: 'light_moderate', label: 'Light / Moderate (1-7 drinks/wk)', description: 'Low mortality risk (0.0 yrs baseline)' },
       { value: 'heavy_binge', label: 'Heavy / Binge (14+ drinks/wk)', description: 'Cardiomyopathy & liver strain (-5.0 yrs)' },
     ],
   },
@@ -415,9 +415,10 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
     field: 'sleep',
     options: [
       { value: '7_to_8h_optimal', label: '7 - 8 Hours Optimal & Restful', description: 'Full circadian hormonal restoration (+2.2 yrs)' },
-      { value: '6_to_7h', label: '6 - 7 Hours', description: 'Average sleep duration' },
-      { value: 'under_6h', label: '< 6 Hours / Chronic Short Sleep', description: 'Elevated morning cortisol & vascular risk' },
-      { value: 'chronic_apnea_insomnia', label: 'Sleep Apnea / Severe Insomnia', description: 'Nocturnal hypoxia & disrupted REM' },
+      { value: '6_to_7h', label: '6 - 7 Hours', description: 'Average sleep duration (0.0 yrs baseline)' },
+      { value: 'under_6h', label: '< 6 Hours / Chronic Short Sleep', description: 'Elevated morning cortisol & vascular risk (-2.8 yrs)' },
+      { value: 'over_9h', label: '9+ Hours (Excessive)', description: 'Statistical correlation with underlying inflammation (-1.5 yrs)' },
+      { value: 'chronic_apnea_insomnia', label: 'Sleep Apnea / Severe Insomnia', description: 'Nocturnal hypoxia & disrupted REM (-4.0 yrs)' },
     ],
   },
   // 25. Dental Flossing (Dr. Perls Living to 100 Factor!)
@@ -431,8 +432,8 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
     field: 'flossing',
     options: [
       { value: 'daily_flossing', label: 'Yes, Daily Flossing', description: 'Famous #1 Micro-Habit for longevity (+1.2 yrs)' },
-      { value: 'occasional', label: 'Occasional (1-3x/week)', description: 'Partial periodontal protection' },
-      { value: 'rarely_never', label: 'Rarely / Never', description: 'Chronic systemic inflammatory penalty' },
+      { value: 'occasional', label: 'Occasional (1-3x/week)', description: 'Partial periodontal protection (0.0 yrs baseline)' },
+      { value: 'rarely_never', label: 'Rarely / Never', description: 'Chronic systemic inflammatory penalty (-1.2 yrs)' },
     ],
   },
   // 26. Stress & Mindset
@@ -446,8 +447,8 @@ export const QUIZ_QUESTIONS: QuestionConfig[] = [
     field: 'stress',
     options: [
       { value: 'well_managed_mindful', label: 'Mindful & Resilient', description: 'Active meditation, nature, high vagal tone (+2.0 yrs)' },
-      { value: 'moderate_daily', label: 'Moderate Daily Stress', description: 'Average everyday stress' },
-      { value: 'severe_unmanaged', label: 'Severe / Chronic Unmanaged', description: 'Constant high cortisol and burnout' },
+      { value: 'moderate_daily', label: 'Moderate Daily Stress', description: 'Average everyday stress (0.0 yrs baseline)' },
+      { value: 'severe_unmanaged', label: 'Severe / Chronic Unmanaged', description: 'Constant high cortisol and burnout (-3.5 yrs)' },
     ],
   },
   // 27. In-Person Social Connection

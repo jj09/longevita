@@ -117,7 +117,7 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
     } else {
       const finalProfile: UserProfile = {
         ...initialProfile,
-        ...answers,
+        ...effectiveAnswers,
       };
       setCompletedProfile(finalProfile);
       triggerCompletion(finalProfile);

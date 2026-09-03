@@ -180,11 +180,14 @@ describe('Progressive Longevity Calculation during Quiz', () => {
     expect(withCardio.projectedLifespan).toBeCloseTo(base.projectedLifespan + 7.0, 1);
   });
 
-  it('immediately decreases lifespan when selecting risk factors', () => {
-    const base = calculateProgressiveLongevity({ age: 38, sex: 'male' });
-    const withSmoking = calculateProgressiveLongevity({ age: 38, sex: 'male', smoking: 'current_heavy' });
-    expect(withSmoking.netDelta).toBe(-8.5);
-    expect(withSmoking.projectedLifespan).toBeCloseTo(base.projectedLifespan - 8.5, 1);
+  it('produces identical projectedLifespan as calculateLongevity when full profile is answered', () => {
+    for (const archetype of PRESET_ARCHETYPES) {
+      const progressiveRes = calculateProgressiveLongevity(archetype.profile);
+      const standardRes = calculateLongevity(archetype.profile);
+      expect(progressiveRes.projectedLifespan).toBe(standardRes.projectedLifespan);
+      expect(progressiveRes.netDelta).toBe(standardRes.netDelta);
+      expect(progressiveRes.biologicalAge).toBe(standardRes.biologicalAge);
+    }
   });
 });
 
