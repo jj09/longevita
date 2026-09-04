@@ -104,11 +104,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
 
         {/* Divider */}
-        <div className="w-full max-w-3xl my-12 sm:my-16 border-t border-slate-800/80 relative flex items-center justify-center">
-          <span className="bg-slate-950 px-4 text-xs sm:text-sm font-bold uppercase tracking-widest text-slate-400">
-            Or Explore an Archetype Directly
-          </span>
-        </div>
+        <div className="w-full max-w-3xl my-12 sm:my-16 border-t border-slate-800/80" />
 
         {/* Archetype Cards Section */}
         <div className="w-full max-w-5xl text-left">
