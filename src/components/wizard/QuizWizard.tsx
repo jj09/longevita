@@ -12,6 +12,7 @@ import {
   Brain,
   Trophy,
   Sparkles,
+  SkipForward,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import {
@@ -112,6 +113,19 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
   const handleNext = () => {
     if (!isCurrentAnswered) return;
 
+    if (currentIndex < questions.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    } else {
+      const finalProfile: UserProfile = {
+        ...initialProfile,
+        ...effectiveAnswers,
+      };
+      setCompletedProfile(finalProfile);
+      triggerCompletion(finalProfile);
+    }
+  };
+
+  const handleSkip = () => {
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
@@ -631,18 +645,30 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
                 <span>Back</span>
               </button>
 
-              <button
-                onClick={handleNext}
-                disabled={!isCurrentAnswered}
-                className={`px-5 py-3 sm:px-7 sm:py-3.5 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center gap-2 shadow-lg min-h-[48px] ${
-                  isCurrentAnswered
-                    ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-emerald-500/20 active:scale-95 cursor-pointer'
-                    : 'bg-slate-800/80 text-slate-500 border border-slate-700/60 cursor-not-allowed shadow-none opacity-60'
-                }`}
-              >
-                <span>{currentIndex === questions.length - 1 ? 'Finish & Calculate' : 'Next Question'}</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-2 sm:gap-3">
+                <button
+                  type="button"
+                  onClick={handleSkip}
+                  className="px-3.5 py-3 sm:px-4 sm:py-3.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-900 border border-transparent hover:border-slate-800 transition-all flex items-center gap-1.5 min-h-[48px] active:scale-95"
+                  title="Skip this question (uses standard baseline average)"
+                >
+                  <SkipForward className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400" />
+                  <span>Skip</span>
+                </button>
+
+                <button
+                  onClick={handleNext}
+                  disabled={!isCurrentAnswered}
+                  className={`px-5 py-3 sm:px-7 sm:py-3.5 rounded-xl text-sm sm:text-base font-bold transition-all flex items-center gap-2 shadow-lg min-h-[48px] ${
+                    isCurrentAnswered
+                      ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-emerald-500/20 active:scale-95 cursor-pointer'
+                      : 'bg-slate-800/80 text-slate-500 border border-slate-700/60 cursor-not-allowed shadow-none opacity-60'
+                  }`}
+                >
+                  <span>{currentIndex === questions.length - 1 ? 'Finish & Calculate' : 'Next Question'}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           </div>
 
