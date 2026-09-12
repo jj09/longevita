@@ -501,7 +501,7 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
                           const info = getBMICategoryInfo(answers.bmi ?? initialProfile.bmi);
                           return (
                             <div className={`mt-2.5 px-3 py-1 rounded-full text-xs font-bold border ${info.badgeClass}`}>
-                              {info.category} ({info.label})
+                              {info.label}
                             </div>
                           );
                         })()}
@@ -510,7 +510,7 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
                           const info = getRestingHRInfo(answers.restingHeartRate ?? initialProfile.restingHeartRate);
                           return (
                             <div className={`mt-2.5 px-3 py-1 rounded-full text-xs font-bold border ${info.badgeClass}`}>
-                              {info.category} ({info.label})
+                              {info.label}
                             </div>
                           );
                         })()}
@@ -519,7 +519,7 @@ export const QuizWizard: React.FC<QuizWizardProps> = ({
                           const info = getAgeCategoryInfo(answers.age ?? initialProfile.age);
                           return (
                             <div className={`mt-2.5 px-3 py-1 rounded-full text-xs font-bold border ${info.badgeClass}`}>
-                              {info.category} ({info.label})
+                              {info.label}
                             </div>
                           );
                         })()}
